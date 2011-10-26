@@ -10,6 +10,7 @@ package GGCApplet;
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.InetAddress;
 import java.text.ParseException;
 
 import javax.swing.*;
@@ -85,17 +86,20 @@ public class AppletStart extends Applet
 		pShowIP = new JPanel();
 		pShowIP.setLayout(new GridLayout(4,1));
 		pShowIP.setVisible(false);
-    
-    //Finds the current machine's IP address.
+
+		/**
+		 * Finds the current machine's IP address.
+		 * @author Ian Graham
+		 */
 		try
-    {
-	     InetAddress iP = InetAddress.getLocalHost();
-	     cIP = iP.getHostAddress();
-    }
-    catch(Exception e) 
-    {
-     e.printStackTrace();
-    }
+		{
+			InetAddress iP = InetAddress.getLocalHost();
+			cIP = iP.getHostAddress();
+		}
+		catch(Exception e) 
+		{
+			e.printStackTrace();
+		}
 
 		JLabel ipLabel1 = new JLabel("Please have your responders ");
 		JLabel ipLabel2 = new JLabel("connect to this IP: ");
@@ -141,19 +145,19 @@ public class AppletStart extends Applet
 
 			rContorlP = new JButton("Connect");
 			rContorlP.setEnabled(false);
-			
+
 			InputMethodListener checkFilled1 = new CheckFilled1();
 			ip1.addInputMethodListener(checkFilled1);
-			
+
 			InputMethodListener checkFilled2 = new CheckFilled2();
 			ip1.addInputMethodListener(checkFilled2);
-			
+
 			InputMethodListener checkFilled3 = new CheckFilled3();
 			ip1.addInputMethodListener(checkFilled3);
-			
+
 			InputMethodListener checkFilled4 = new CheckFilled4();
 			ip1.addInputMethodListener(checkFilled4);
-			
+
 			ActionListener connectIPCard = new ConnectIPCard();
 			rContorlP.addActionListener(connectIPCard);
 
@@ -271,7 +275,7 @@ public class AppletStart extends Applet
 			pConnectIP.setVisible(false);
 		}
 	}
-	
+
 	public class CheckFilled1 implements InputMethodListener
 	{
 
@@ -282,7 +286,7 @@ public class AppletStart extends Applet
 				rContorlP.setEnabled(true);
 			else
 				rContorlP.setEnabled(false);
-			
+
 			System.out.println("Test");
 		}
 
@@ -298,7 +302,7 @@ public class AppletStart extends Applet
 		}
 
 	}
-	
+
 	public class CheckFilled2 implements InputMethodListener
 	{
 
@@ -322,7 +326,7 @@ public class AppletStart extends Applet
 		}
 
 	}
-	
+
 	public class CheckFilled3 implements InputMethodListener
 	{
 
@@ -346,7 +350,7 @@ public class AppletStart extends Applet
 		}
 
 	}
-	
+
 	public class CheckFilled4 implements InputMethodListener
 	{
 
