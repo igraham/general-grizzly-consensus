@@ -85,9 +85,17 @@ public class AppletStart extends Applet
 		pShowIP = new JPanel();
 		pShowIP.setLayout(new GridLayout(4,1));
 		pShowIP.setVisible(false);
-
-		//Set the Ip of the computer here; Dummy data entered here.
-		cIP = "192.168.0.1";
+    
+    //Finds the current machine's IP address.
+		try
+    {
+	     InetAddress iP = InetAddress.getLocalHost();
+	     cIP = iP.getHostAddress();
+    }
+    catch(Exception e) 
+    {
+     e.printStackTrace();
+    }
 
 		JLabel ipLabel1 = new JLabel("Please have your responders ");
 		JLabel ipLabel2 = new JLabel("connect to this IP: ");
