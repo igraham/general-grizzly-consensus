@@ -3,6 +3,7 @@
  * 
  * @author Marcus Michalske
  * TODO need to either import a Bar Graph library or create one from scratch.
+  *R: Don't forget what I said about the method I wanted in the PPT
  * TODO Add more functionality to the different panels.
  */
 package GGCApplet;
@@ -33,8 +34,12 @@ public class AppletStart extends Applet
 	private JButton rContorlP;
 	//The IP of the computer
 	private String cIP = "000.000.0.0";
-	//The type of queries to be polled upon.
+  /** The type of queries to be polled upon.
 	private String[] types = {"True/False", "A-C", "A-D", "A-E"};
+    MARCUS AND IAN: THIS IS WRONG, we are using True/False, and positive int Multiple choice decided by user input into a JTextField.
+   Also you're missing defaultMultipleChoice Answer which is used to maintain the number of multchoice answers
+   between questions. It starts at 4, and is updated whenever the JTextField is changed.
+   */
 	//This is to tell that all the IP numbers have been filled in.
 	private boolean ip1Entered = false, ip2Entered = false, ip3Entered = false, ip4Entered = false;
 
@@ -42,9 +47,13 @@ public class AppletStart extends Applet
 	{
 		JFrame mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
 		mainFrame.setSize(300, 432);
-		mainFrame.setResizable(false);
+		//mainFrame.setResizable(false);
+     //MARCUS: I told you that we wanted to make it resizable, because the user would expect and prefer that.
 		mainFrame.setVisible(true);
 
+     //MARCUS: We do NOT want to create all of the panels at once, because half of them will never be used in every instance
+    //USE changePanel(JPanel p) as created in GUIForm on the Google Docs page and have each of your panel creation methods
+    //return a panel
 		selectPane();
 		showIP();
 		connectIP();
@@ -52,7 +61,9 @@ public class AppletStart extends Applet
 		createSessionManager();
 
 		mfContainer = mainFrame.getContentPane();
-		mfContainer.setLayout(new CardLayout());		
+		mfContainer.setLayout(new CardLayout()); 
+     //MARCUS: SessionManagers will never use a responderpane, and responders will never see a sessionmanager pane, 
+   //do not slow down the program by building them here    
 		mfContainer.add(pSelect, "Selection Panel");
 		mfContainer.add(pShowIP, "IP Panel");
 		mfContainer.add(pConnectIP, "IP Connection Panel");
@@ -71,6 +82,7 @@ public class AppletStart extends Applet
 		JButton bResponder = new JButton("Responder");
 		JButton bSManager = new JButton("Session Manager");
 
+     //MARCUS: Listeners WILL contain listener in the name. I made this change in GUIForm.
 		ActionListener selectionCardR = new SelectionCardR();
 		ActionListener selectionCardSM = new SelectionCardSM();
 		bResponder.addActionListener(selectionCardR);
@@ -80,6 +92,9 @@ public class AppletStart extends Applet
 		pSelect.add(bSManager);
 	}
 
+/**
+  *IAN: IP Display is here
+*/
 	private void showIP()
 	{
 		pShowIP = new JPanel();
@@ -127,10 +142,6 @@ public class AppletStart extends Applet
 			JFormattedTextField ip4 = new JFormattedTextField(formatter);
 			ip4.setColumns(2);
 
-			JLabel dot1= new JLabel(".");
-			JLabel dot2= new JLabel(".");
-			JLabel dot3= new JLabel(".");
-
 			rContorlP = new JButton("Connect");
 			rContorlP.setEnabled(false);
 			
@@ -150,11 +161,11 @@ public class AppletStart extends Applet
 			rContorlP.addActionListener(connectIPCard);
 
 			lP1.add(ip1);
-			lP1.add(dot1);
+			lP1.add(new JLabel("."));
 			lP1.add(ip2);
-			lP1.add(dot2);
+			lP1.add(new JLabel("."));
 			lP1.add(ip3);
-			lP1.add(dot3);
+			lP1.add(new JLabel("."));
 			lP1.add(ip4);
 			lP2.add(rContorlP);
 
@@ -177,6 +188,9 @@ public class AppletStart extends Applet
 
 		JPanel lP2 = new JPanel();
 		lP1.setLayout(new GridLayout(3,2));
+
+     //MARCUS: For Loop, and this method has to take an input of boolean true/false, int multchoiceanswers
+     //Go back, look at the PPT, look at the methods I talked about
 
 		JButton tButton = new JButton("True");
 		JButton fButton = new JButton("False");
@@ -415,7 +429,8 @@ public class AppletStart extends Applet
 	 *
 	 */
 
-	public class GGCAnswerListener implements ActionListener{
+	public class GGCAnswerListener implements ActionListener
+   {
 
 		@Override
 		public void actionPerformed(ActionEvent e)
@@ -455,6 +470,10 @@ public class AppletStart extends Applet
 		}
 	}*/
 
+/**
+*Don't forget, I want a method that accepts int[] where the length is the number of bars, and the values are the height
+Remember, from the powerpoint?
+*/
 	class GraphBox extends JComponent
 	{
 		public void paint(Graphics g)
