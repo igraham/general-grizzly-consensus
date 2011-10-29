@@ -16,6 +16,18 @@ import java.text.ParseException;
 import javax.swing.*;
 import javax.swing.text.*;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
+
 public class AppletStart extends Applet
 {
 	//The container to hold the layout of the main frame of the Applet.
@@ -216,7 +228,7 @@ public class AppletStart extends Applet
 		pSessionM = new JPanel();
 		pSessionM.setVisible(true);
 
-		pSessionM.setLayout(new GridLayout(1,2));
+		pSessionM.setLayout(new GridLayout(2,1));
 
 		JPanel lP1 = new JPanel();
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -232,8 +244,111 @@ public class AppletStart extends Applet
 
 		pSessionM.add(lP1);
 		//TODO Make a UPDATABLE bar graph, maybe a new class that interfaces with it?
-		pSessionM.add(new GraphBox());
+		CategoryDataset dataset = createDataset();
+        JFreeChart chart = createChart(dataset);
+        ChartPanel chartPanel = new ChartPanel(chart);
+        
+		pSessionM.add(chartPanel);
 	}
+	
+	private static CategoryDataset createDataset()
+	{
+
+        // row keys...
+        String seriesT = "True";
+        String seriesF = "False";
+        String seriesA = "A";
+        String seriesB = "B";
+        String seriesC = "C";
+        String seriesD = "D";
+        String seriesE = "E";
+
+        // column keys...
+        String categoryR = "Responses";
+
+        // create the dataset...
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        dataset.addValue(1.0, seriesT, categoryR);
+        dataset.addValue(4.0, seriesF, categoryR);
+        dataset.addValue(3.0, seriesA, categoryR);
+        dataset.addValue(5.0, seriesB, categoryR);
+        dataset.addValue(6.0, seriesC, categoryR);
+        dataset.addValue(7.0, seriesD, categoryR);
+        dataset.addValue(8.0, seriesE, categoryR);
+
+        return dataset;
+
+    }
+	
+    private static JFreeChart createChart(CategoryDataset dataset)
+    {
+
+        // create the chart...
+        JFreeChart chart = ChartFactory.createBarChart(
+            "Number of Responses",       // chart title
+            "Response type",               // domain axis label
+            "Number of Responses",                  // range axis label
+            dataset,                  // data
+            PlotOrientation.VERTICAL, // orientation
+            true,                     // include legend
+            true,                     // tooltips?
+            false                     // URLs?
+        );
+
+        /*
+         * Code supplied from BarChartDemo1 at:
+         * http://www.jfree.org/jfreechart
+         * 
+         * code edited by Marcus Michalske 
+         */
+
+        // set the background color for the chart...
+        chart.setBackgroundPaint(Color.white);
+
+        // get a reference to the plot for further customisation...
+        CategoryPlot plot = (CategoryPlot) chart.getPlot();
+
+        // set the range axis to display integers only...
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+        // disable bar outlines...
+        BarRenderer renderer = (BarRenderer) plot.getRenderer();
+        renderer.setDrawBarOutline(false);
+
+        // set up gradient paints for series...
+        GradientPaint gp0 = new GradientPaint(0.0f, 0.0f, new Color(0, 125, 75),
+                0.0f, 0.0f, new Color(0, 0, 0));
+        GradientPaint gp1 = new GradientPaint(0.0f, 0.0f, Color.white,
+                0.0f, 0.0f, Color.darkGray);
+        GradientPaint gp2 = new GradientPaint(0.0f, 0.0f, new Color(0, 125, 75),
+                0.0f, 0.0f, new Color(0, 0, 0));
+        GradientPaint gp3 = new GradientPaint(0.0f, 0.0f, Color.white,
+                0.0f, 0.0f, Color.darkGray);
+        GradientPaint gp4 = new GradientPaint(0.0f, 0.0f, new Color(0, 125, 75),
+                0.0f, 0.0f, new Color(0, 0, 0));
+        GradientPaint gp5 = new GradientPaint(0.0f, 0.0f, Color.white,
+                0.0f, 0.0f, Color.darkGray);
+        GradientPaint gp6 = new GradientPaint(0.0f, 0.0f, new Color(0, 125, 75),
+                0.0f, 0.0f, new Color(0, 0, 0));
+        renderer.setSeriesPaint(0, gp0);
+        renderer.setSeriesPaint(1, gp1);
+        renderer.setSeriesPaint(2, gp2);
+        renderer.setSeriesPaint(3, gp3);
+        renderer.setSeriesPaint(4, gp4);
+        renderer.setSeriesPaint(5, gp5);
+        renderer.setSeriesPaint(6, gp6);
+
+        CategoryAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setCategoryLabelPositions(
+                CategoryLabelPositions.createUpRotationLabelPositions(
+                        Math.PI / 6.0));
+        // OPTIONAL CUSTOMISATION COMPLETED.
+
+        return chart;
+
+    }
 
 	public void stop()
 	{
