@@ -44,6 +44,10 @@ public class AppletStart extends Applet
 	private JPanel pSessionM;
 	//This is the button for the responder to connect to the IP.
 	private JButton rContorlP;
+	//This is the button which shows and hides the graph.
+	private JButton pShowHide;
+	//The panel which contains the graph which displays the results of the question.
+	private ChartPanel chartPanel;
 	//The IP of the computer
 	private String cIP = "000.000.0.0";
 	//The type of queries to be polled upon.
@@ -227,6 +231,8 @@ public class AppletStart extends Applet
 	{
 		pSessionM = new JPanel();
 		pSessionM.setVisible(true);
+		pShowHide = new JButton("Show/Hide");
+		pShowHide.addActionListener(new GGCGraphListener());
 
 		pSessionM.setLayout(new GridLayout(2,1));
 
@@ -239,6 +245,7 @@ public class AppletStart extends Applet
 
 		JComboBox qType = new JComboBox(types);
 		JLabel bGraph = new JLabel("Bar Graph here");
+		
 
 		lP1.add(qType);
 
@@ -246,8 +253,8 @@ public class AppletStart extends Applet
 		//TODO Make a UPDATABLE bar graph, maybe a new class that interfaces with it?
 		CategoryDataset dataset = createDataset();
         JFreeChart chart = createChart(dataset);
-        ChartPanel chartPanel = new ChartPanel(chart);
-        
+        chartPanel = new ChartPanel(chart);
+        pSessionM.add(pShowHide);
 		pSessionM.add(chartPanel);
 	}
 	
@@ -379,6 +386,7 @@ public class AppletStart extends Applet
 		{
 			pSessionM.setVisible(true);
 			pShowIP.setVisible(false);
+			
 		}
 	}
 
@@ -507,6 +515,7 @@ public class AppletStart extends Applet
 			 * graphPanel.setVisible(!graphPanel.isVisible())
 			 *
 			 */
+			chartPanel.setVisible(!chartPanel.isVisible());
 
 		}
 
