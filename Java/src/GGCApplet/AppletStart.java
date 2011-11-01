@@ -11,10 +11,11 @@ import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.InetAddress;
-import java.text.ParseException;
+import java.util.ArrayList;
 
 import javax.swing.*;
-import javax.swing.text.*;
+
+import GeneralGrizzlyConsensus.*;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -28,8 +29,10 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-public class AppletStart extends Applet
+public class AppletStart extends Applet implements ActionListener
 {
+	//I added this because the client/server GUI's had it.
+	private static final long serialVersionUID = 1L;
 	//The container to hold the layout of the main frame of the Applet.
 	private Container mfContainer;
 	//The panel that will hold the selection between a responder or session manager.
@@ -53,29 +56,22 @@ public class AppletStart extends Applet
 	//The type of queries to be polled upon.
 	private String[] types = {"True/False", "A-C", "A-D", "A-E"};
 	//This is to tell that all the IP numbers have been filled in.
-	private boolean ip1Entered = false, ip2Entered = false, ip3Entered = false, ip4Entered = false;
+	private JTextField[] ip;
+	//This is the instance of the server that, should it need to be used, will be initialized.
+	private GGCServer server;
+	//This list of buttons will be initialized if the responder button is pressed.
+	private ArrayList<JButton> buttons;
 
 	public void init()
 	{
+		
 		JFrame mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
 		mainFrame.setSize(300, 432);
-		mainFrame.setResizable(false);
 		mainFrame.setVisible(true);
-
 		selectPane();
-		showIP();
-		connectIP();
-		createResponder();
-		createSessionManager();
-
 		mfContainer = mainFrame.getContentPane();
 		mfContainer.setLayout(new CardLayout());		
 		mfContainer.add(pSelect, "Selection Panel");
-		mfContainer.add(pShowIP, "IP Panel");
-		mfContainer.add(pConnectIP, "IP Connection Panel");
-		mfContainer.add(pResponder, "Responders Panel");
-		mfContainer.add(pSessionM, "Session Managers Panel");
-
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
@@ -136,63 +132,44 @@ public class AppletStart extends Applet
 		pConnectIP = new JPanel();
 		pConnectIP.setLayout(new GridLayout(2,1));
 		pConnectIP.setVisible(false);
-
 		JPanel lP1 = new JPanel();
 		lP1.setLayout(new FlowLayout(FlowLayout.TRAILING));
 
 		JPanel lP2 = new JPanel();
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-		try
-		{
-			MaskFormatter formatter = new MaskFormatter("###"); 
-			JFormattedTextField ip1 = new JFormattedTextField(formatter);
-			ip1.setColumns(2);
-			JFormattedTextField ip2 = new JFormattedTextField(formatter);
-			ip2.setColumns(2);
-			JFormattedTextField ip3 = new JFormattedTextField(formatter);
-			ip3.setColumns(2);
-			JFormattedTextField ip4 = new JFormattedTextField(formatter);
-			ip4.setColumns(2);
+		ip = new JTextField[4];
+		JTextField ip1 = new JTextField();
+		ip1.setColumns(3);
+		ip[0] = ip1;
+		JTextField ip2 = new JTextField();
+		ip2.setColumns(3);
+		ip[1] = ip2;
+		JTextField ip3 = new JTextField();
+		ip3.setColumns(3);
+		ip[2] = ip3;
+		JTextField ip4 = new JTextField();
+		ip4.setColumns(3);
+		ip[3] = ip4;
 
-			JLabel dot1= new JLabel(".");
-			JLabel dot2= new JLabel(".");
-			JLabel dot3= new JLabel(".");
+		JLabel dot1= new JLabel(".");
+		JLabel dot2= new JLabel(".");
+		JLabel dot3= new JLabel(".");
 
-			rContorlP = new JButton("Connect");
-			rContorlP.setEnabled(false);
+		rContorlP = new JButton("Connect");
+		rContorlP.addActionListener(new GGCConnectListener());
 
-			InputMethodListener checkFilled1 = new CheckFilled1();
-			ip1.addInputMethodListener(checkFilled1);
+		lP1.add(ip1);
+		lP1.add(dot1);
+		lP1.add(ip2);
+		lP1.add(dot2);
+		lP1.add(ip3);
+		lP1.add(dot3);
+		lP1.add(ip4);
+		lP2.add(rContorlP);
 
-			InputMethodListener checkFilled2 = new CheckFilled2();
-			ip1.addInputMethodListener(checkFilled2);
-
-			InputMethodListener checkFilled3 = new CheckFilled3();
-			ip1.addInputMethodListener(checkFilled3);
-
-			InputMethodListener checkFilled4 = new CheckFilled4();
-			ip1.addInputMethodListener(checkFilled4);
-
-			ActionListener connectIPCard = new ConnectIPCard();
-			rContorlP.addActionListener(connectIPCard);
-
-			lP1.add(ip1);
-			lP1.add(dot1);
-			lP1.add(ip2);
-			lP1.add(dot2);
-			lP1.add(ip3);
-			lP1.add(dot3);
-			lP1.add(ip4);
-			lP2.add(rContorlP);
-
-			pConnectIP.add(lP1);
-			pConnectIP.add(lP2);
-		}
-		catch (ParseException e)
-		{
-			e.printStackTrace();
-		}
+		pConnectIP.add(lP1);
+		pConnectIP.add(lP2);
 	}
 
 	private void createResponder()
@@ -205,7 +182,7 @@ public class AppletStart extends Applet
 
 		JPanel lP2 = new JPanel();
 		lP1.setLayout(new GridLayout(3,2));
-
+		//Whatever buttons end up here, add them to the ArrayList of buttons.
 		JButton tButton = new JButton("True");
 		JButton fButton = new JButton("False");
 		JButton aButton = new JButton("A");
@@ -239,14 +216,9 @@ public class AppletStart extends Applet
 		JPanel lP1 = new JPanel();
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-		JPanel lP2 = new JPanel();
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
 		//lP2.setBackground(new Color(255,255,255));
-
 		JComboBox qType = new JComboBox(types);
-		JLabel bGraph = new JLabel("Bar Graph here");
-		
-
 		lP1.add(qType);
 
 		pSessionM.add(lP1);
@@ -254,6 +226,7 @@ public class AppletStart extends Applet
 		CategoryDataset dataset = createDataset();
         JFreeChart chart = createChart(dataset);
         chartPanel = new ChartPanel(chart);
+        pSessionM.add(new JLabel(cIP));
         pSessionM.add(pShowHide);
 		pSessionM.add(chartPanel);
 	}
@@ -366,6 +339,11 @@ public class AppletStart extends Applet
 	{
 		public void actionPerformed(ActionEvent arg0)
 		{
+			buttons = new ArrayList<JButton>();
+			connectIP();
+			mfContainer.add(pConnectIP, "IP Connection Panel");
+			createResponder();
+			mfContainer.add(pResponder, "Responders Panel");
 			pConnectIP.setVisible(true);
 			pSelect.setVisible(false);
 		}
@@ -375,6 +353,10 @@ public class AppletStart extends Applet
 	{
 		public void actionPerformed(ActionEvent arg0)
 		{
+			showIP();
+			mfContainer.add(pShowIP, "IP Panel");
+			createSessionManager();
+			mfContainer.add(pSessionM, "Session Managers Panel");
 			pShowIP.setVisible(true);
 			pSelect.setVisible(false);
 		}
@@ -390,112 +372,95 @@ public class AppletStart extends Applet
 		}
 	}
 
-	class ConnectIPCard implements ActionListener
+	/**
+	 * This listener will be attached to the button in the student screen.
+	 * This class can be used by GGCConnection to test the connection to the specified IP address.
+	 * This class will handle user input for a student connecting to the professor
+	 * AND CONNECT.
+	 * @author Ian Graham
+	 *
+	 */
+	public class GGCConnectListener implements ActionListener
 	{
-		public void actionPerformed(ActionEvent arg0)
+		@Override
+		public void actionPerformed(ActionEvent e) 
 		{
-			pResponder.setVisible(true);
-			pConnectIP.setVisible(false);
+			String[] IP = new String[4];
+			IP[0] = ip[0].getText();
+			IP[1] = ip[1].getText();
+			IP[2] = ip[2].getText();
+			IP[3] = ip[3].getText();
+			if(isValidIP(IP))
+			{
+				//Use changePanel here instead whenever that gets added back.
+				pResponder.setVisible(true);
+				pConnectIP.setVisible(false);
+			}
 		}
 	}
-
-	public class CheckFilled1 implements InputMethodListener
+	
+	/**
+	 * This method checks to see whether the given String input is a valid IP address.
+	 * This method also pops up error boxes every time bad input is given when connect is pressed.
+	 * As a result, that part can be deleted and it would be fine with me.
+	 * @author Ian Graham
+	 * @param IP
+	 * @return Returns true if it is a valid IP address, and false if it has any deviations
+	 * such as numbers greater than 255 or less than 0, and characters other than numbers.
+	 */
+	private boolean isValidIP(String[] IP)
 	{
-
-		@Override
-		public void caretPositionChanged(InputMethodEvent arg0)
+		for(int i = 0; i < IP.length; i++)
 		{
-			if (ip1Entered && ip2Entered && !ip3Entered && ip4Entered)
-				rContorlP.setEnabled(true);
-			else
-				rContorlP.setEnabled(false);
+			if(IP[i].length() == 0)
+			{
+				JOptionPane.showMessageDialog(null, "Please fill out all text boxes before attempting to connect.",
+						"Invalid IP", JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+			try
+			{
+				int num = Integer.parseInt(IP[i]);
+				if(i == 0 || i == 3)
+				{
+					if(num > 254 || num < 1)
+					{
+						showBadIPField(i);
+						JOptionPane.showMessageDialog(null, "Please use numbers between 254 and 1 for the first and last box.",
+								"Invalid IP", JOptionPane.ERROR_MESSAGE);
+						return false;
+					}
 
-			System.out.println("Test");
+				}
+				if(i == 1 || i == 2)
+				{
+					if(num > 254 || num < 0)
+					{
+						showBadIPField(i);
+						JOptionPane.showMessageDialog(null, "Please use numbers between 254 and 0 for the second and third box.",
+								"Invalid IP", JOptionPane.ERROR_MESSAGE);
+						return false;
+					}
+
+				}
+			}
+			catch(NumberFormatException e)
+			{
+				JOptionPane.showMessageDialog(null, "Please use numbers when entering the IP.",
+						"Invalid IP", JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
 		}
-
-		@Override
-		public void inputMethodTextChanged(InputMethodEvent arg0)
-		{
-			ip1Entered = true;
-			if (ip1Entered && ip2Entered && !ip3Entered && ip4Entered)
-				rContorlP.setEnabled(true);
-			else
-				rContorlP.setEnabled(false);
-			System.out.println("Test");
-		}
-
+		return true;
 	}
-
-	public class CheckFilled2 implements InputMethodListener
+	/**
+	 * When the user has a bad IP address in a particular field, this method will highlight which one.
+	 * You may or may not wish to use this.
+	 */
+	private void showBadIPField(int i)
 	{
-
-		@Override
-		public void caretPositionChanged(InputMethodEvent arg0)
-		{
-			if (ip1Entered && ip2Entered && !ip3Entered && ip4Entered)
-				rContorlP.setEnabled(true);
-			else
-				rContorlP.setEnabled(false);
-		}
-
-		@Override
-		public void inputMethodTextChanged(InputMethodEvent arg0)
-		{
-			ip2Entered = true;
-			if (ip1Entered && ip2Entered && !ip3Entered && ip4Entered)
-				rContorlP.setEnabled(true);
-			else
-				rContorlP.setEnabled(false);
-		}
-
-	}
-
-	public class CheckFilled3 implements InputMethodListener
-	{
-
-		@Override
-		public void caretPositionChanged(InputMethodEvent arg0)
-		{
-			if (ip1Entered && ip2Entered && !ip3Entered && ip4Entered)
-				rContorlP.setEnabled(true);
-			else
-				rContorlP.setEnabled(false);
-		}
-
-		@Override
-		public void inputMethodTextChanged(InputMethodEvent arg0)
-		{
-			ip3Entered = true;
-			if (ip1Entered && ip2Entered && !ip3Entered && ip4Entered)
-				rContorlP.setEnabled(true);
-			else
-				rContorlP.setEnabled(false);
-		}
-
-	}
-
-	public class CheckFilled4 implements InputMethodListener
-	{
-
-		@Override
-		public void caretPositionChanged(InputMethodEvent arg0)
-		{
-			if (ip1Entered && ip2Entered && !ip3Entered && ip4Entered)
-				rContorlP.setEnabled(true);
-			else
-				rContorlP.setEnabled(false);
-		}
-
-		@Override
-		public void inputMethodTextChanged(InputMethodEvent arg0)
-		{
-			ip4Entered = true;
-			if (ip1Entered && ip2Entered && !ip3Entered && ip4Entered)
-				rContorlP.setEnabled(true);
-			else
-				rContorlP.setEnabled(false);
-		}
-
+		ip[i].requestFocus();
+		ip[i].selectAll();
 	}
 
 	/**
@@ -508,13 +473,6 @@ public class AppletStart extends Applet
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			/*
-			 * The listener will show or hide the graph, depending on its current state.
-			 * As suggested, the code should be something like this:
-			 *
-			 * graphPanel.setVisible(!graphPanel.isVisible())
-			 *
-			 */
 			chartPanel.setVisible(!chartPanel.isVisible());
 
 		}
@@ -598,5 +556,11 @@ public class AppletStart extends Applet
 			g.setColor(Color.WHITE);
 			g.fill3DRect(20, 20, 120, 120,true);
 		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO This must use the action listener code from Steven's GUI's.
+		
 	}
 }
