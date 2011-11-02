@@ -11,7 +11,6 @@ import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -574,7 +573,7 @@ public class AppletStart extends Applet
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == sendAnswer)
 			{
-				server.sendMessageToAll("T");
+				client.sendMessage("T");
 			}
 			else if (e.getID() == GGCGlobals.INSTANCE.MESSAGE_EVENT_ID)
 			{
