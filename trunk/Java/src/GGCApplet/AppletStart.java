@@ -2,8 +2,11 @@
  * Converted to Applet format, need input on how it will pull objects from on end or the other.
  * 
  * @author Marcus Michalske
- * TODO need to either import a Bar Graph library or create one from scratch.
  * TODO Add more functionality to the different panels.
+ * TODO Fix the radio buttons to have functionality along with text field.
+ * TODO Add the "Update question button" along with a default "Questions" button with the last number of buttons.
+ * TODO Axis on bar graph need to be updated to reflect correct layout.
+ * TODO add functionality to bar graph so that updates after it is hidden.
  */
 package GGCApplet;
 
@@ -70,6 +73,8 @@ public class AppletStart extends Applet
 	private GGCConnection client;
 	//This list of buttons will be initialized if the responder button is pressed.
 	private ArrayList<JButton> buttons;
+	//Make an object of cloneable Radio Buttons for the responder
+	private JRadioButton rButton;
 	//This is the main frame for the whole GUI.
 	private JFrame mainFrame;
 
@@ -197,30 +202,25 @@ public class AppletStart extends Applet
 		pResponder.setVisible(false);
 
 		JPanel lP1 = new JPanel();
-		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
-
-		JPanel lP2 = new JPanel();
-		lP1.setLayout(new GridLayout(3,2));
+		lP1.setLayout(new GridLayout(3,1));
+		
+		String sPerm = "Test";
+		
 		//Whatever buttons end up here, add them to the ArrayList of buttons.
-		JButton tButton = new JButton("True");
-		JButton fButton = new JButton("False");
-		JButton aButton = new JButton("A");
-		JButton bButton = new JButton("B");
-		JButton cButton = new JButton("C");
-		JButton dButton = new JButton("D");
-		JButton eButton = new JButton("E");
+		ButtonGroup bg = new ButtonGroup();
+		JRadioButton tRButton = new JRadioButton("True");
+		JRadioButton fRButton = new JRadioButton("False");
+		JRadioButton rButton = new JRadioButton(sPerm);
 
-		lP1.add(tButton);
-		lP1.add(fButton);
-
-		lP2.add(aButton);
-		lP2.add(bButton);
-		lP2.add(cButton);
-		lP2.add(dButton);
-		lP2.add(eButton);
+		bg.add(tRButton);
+		bg.add(fRButton);
+		bg.add(rButton);
+		
+		lP1.add(tRButton);
+		lP1.add(fRButton);
+		lP1.add(rButton);
 
 		pResponder.add(lP1);
-		pResponder.add(lP2);
 	}
 	private void setupResponderCloseListener()
 	{
