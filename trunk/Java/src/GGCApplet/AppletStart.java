@@ -270,23 +270,28 @@ public class AppletStart extends Applet
 		pSessionM.setLayout(new GridLayout(2,1));
 
 		JPanel lP1 = new JPanel();
+		JPanel lP2 = new JPanel();
+		JPanel lP3 = new JPanel();
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
+		lP2.setLayout(new GridLayout(2,1));
 
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
 		//lP2.setBackground(new Color(255,255,255));
 		JComboBox qType = new JComboBox(types);
-		JRadioButton tfButton = new JRadioButton();
-		JRadioButton numButton = new JRadioButton();
-		JTextField numField = new JTextField();
+		JRadioButton tfButton = new JRadioButton("True/False");
+		JRadioButton numButton = new JRadioButton("Number Responces: ");
+		JTextField numField = new JTextField(5);
 		ButtonGroup bg = new ButtonGroup();
 		
 		bg.add(tfButton);
 		bg.add(numButton);
 		
 		sendQuestion = new JButton("Send Question");
-		lP1.add(tfButton);
-		lP1.add(numButton);
-		lP1.add(numField);
+		lP2.add(tfButton);
+		lP3.add(numButton);
+		lP3.add(numField);
+		lP2.add(lP3);
+		lP1.add(lP2);
 		lP1.add(sendQuestion);
 		pSessionM.add(lP1);
 		//TODO Make a UPDATABLE bar graph, maybe a new class that interfaces with it?
