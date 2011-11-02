@@ -271,8 +271,18 @@ public class AppletStart extends Applet
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
 		//lP2.setBackground(new Color(255,255,255));
 		JComboBox qType = new JComboBox(types);
+		JRadioButton tfButton = new JRadioButton();
+		JRadioButton numButton = new JRadioButton();
+		JTextField numField = new JTextField();
+		ButtonGroup bg = new ButtonGroup();
+		
+		bg.add(tfButton);
+		bg.add(numButton);
+		
 		sendQuestion = new JButton("Send Question");
-		lP1.add(qType);
+		lP1.add(tfButton);
+		lP1.add(numButton);
+		lP1.add(numField);
 		lP1.add(sendQuestion);
 		pSessionM.add(lP1);
 		//TODO Make a UPDATABLE bar graph, maybe a new class that interfaces with it?
@@ -541,6 +551,14 @@ public class AppletStart extends Applet
 		ip[i].requestFocus();
 		ip[i].selectAll();
 	}
+	
+	@Deprecated
+	private void changePanel(JPanel jp)
+    {
+        Container container = mainFrame.getContentPane();        
+        jp.setVisible(true);
+        container.add(jp);
+    }
 
 	/**
 	 * This class listens for the graph show/hide button. If it is clicked, it shows or hides the graph.
