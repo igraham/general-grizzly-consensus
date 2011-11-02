@@ -10,7 +10,10 @@ package GGCApplet;
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -29,7 +32,7 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-public class AppletStart extends Applet implements ActionListener
+public class AppletStart extends Applet
 {
 	//I added this because the client/server GUI's had it.
 	private static final long serialVersionUID = 1L;
@@ -49,6 +52,10 @@ public class AppletStart extends Applet implements ActionListener
 	private JButton rContorlP;
 	//This is the button which shows and hides the graph.
 	private JButton pShowHide;
+	//This button is the Session Manager's way of sending questions to the students.
+	private JButton sendQuestion;
+	//This button is the Responder's way of sending an answer to the professor.
+	private JButton sendAnswer;
 	//The panel which contains the graph which displays the results of the question.
 	private ChartPanel chartPanel;
 	//The IP of the computer
@@ -59,13 +66,18 @@ public class AppletStart extends Applet implements ActionListener
 	private JTextField[] ip;
 	//This is the instance of the server that, should it need to be used, will be initialized.
 	private GGCServer server;
+	//This is an instance of a connection which will essentially serve as the client. It will be initialized
+	//upon clicking on responder.
+	private GGCConnection client;
 	//This list of buttons will be initialized if the responder button is pressed.
 	private ArrayList<JButton> buttons;
+	//This is the main frame for the whole GUI.
+	private JFrame mainFrame;
 
 	public void init()
 	{
 		
-		JFrame mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
+		mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
 		mainFrame.setSize(300, 432);
 		mainFrame.setVisible(true);
 		selectPane();
@@ -99,9 +111,10 @@ public class AppletStart extends Applet implements ActionListener
 		pShowIP.setLayout(new GridLayout(4,1));
 		pShowIP.setVisible(false);
 
-		/**
-		 * Finds the current machine's IP address.
-		 * @author Ian Graham
+		/*
+		 * Finds the current machine's IP address. Faulty code, replace so we can always get the right
+		 * IP address.
+		 * -Ian Graham
 		 */
 		try
 		{
@@ -203,6 +216,43 @@ public class AppletStart extends Applet implements ActionListener
 		pResponder.add(lP1);
 		pResponder.add(lP2);
 	}
+	private void setupResponderCloseListener()
+	{
+	       mainFrame.addWindowListener(new java.awt.event.WindowAdapter() 
+	       {
+	           public void windowClosing(WindowEvent winEvt)
+	           {
+	               // Do Socket clean-up here.
+	               if (client != null)
+	                   client.closeConnection();
+	               System.exit(0);
+	           }
+	       });
+	}
+	/**
+	    * This method is essentially the same as the old setupConnection method but
+	    * it takes in an IP address as a parameter and is public.
+	    * @param IP
+	    */
+	   private void setupConnection(String IP)
+	   {
+		   try
+	       {
+	           client = new GGCConnection(new Socket(IP,
+	                   GGCGlobals.INSTANCE.COMMUNICATION_PORT), new ResponderListener());
+	           Thread t = new Thread(client);
+	           t.start();
+	       }
+	       catch (UnknownHostException e)
+	       {
+	           JOptionPane.showMessageDialog(this, "Unknown host.");
+	       }
+	       catch (IOException e)
+	       {
+	           // JOptionPane.showMessageDialog(this, "Cannot connect to host.");
+	           JOptionPane.showMessageDialog(this, e.getMessage());
+	       }
+	   }
 
 	private void createSessionManager()
 	{
@@ -219,8 +269,9 @@ public class AppletStart extends Applet implements ActionListener
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
 		//lP2.setBackground(new Color(255,255,255));
 		JComboBox qType = new JComboBox(types);
+		sendQuestion = new JButton("Send Question");
 		lP1.add(qType);
-
+		lP1.add(sendQuestion);
 		pSessionM.add(lP1);
 		//TODO Make a UPDATABLE bar graph, maybe a new class that interfaces with it?
 		CategoryDataset dataset = createDataset();
@@ -230,7 +281,6 @@ public class AppletStart extends Applet implements ActionListener
         pSessionM.add(pShowHide);
 		pSessionM.add(chartPanel);
 	}
-	
 	private static CategoryDataset createDataset()
 	{
 
@@ -329,11 +379,30 @@ public class AppletStart extends Applet implements ActionListener
         return chart;
 
     }
-
-	public void stop()
-	{
-
-	}
+    /**
+     * Code from Stephen's server GUI.
+     */
+    private void setupManagerCloseListener()
+    {
+        mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(WindowEvent winEvt)
+            {
+                // Do Socket clean-up here.
+                server.stopListening();
+                System.exit(0);
+            }
+        });
+    }
+    /**
+     * Code from Stephen's server GUI.
+     */
+    private void setupServer()
+    {
+        server = GGCServer.INSTANCE;
+        server.setMessageSink(new ManagerListener());
+        Thread t = new Thread(server);
+        t.start();
+    }
 
 	class SelectionCardR implements ActionListener
 	{
@@ -342,6 +411,7 @@ public class AppletStart extends Applet implements ActionListener
 			buttons = new ArrayList<JButton>();
 			connectIP();
 			mfContainer.add(pConnectIP, "IP Connection Panel");
+			setupResponderCloseListener();
 			createResponder();
 			mfContainer.add(pResponder, "Responders Panel");
 			pConnectIP.setVisible(true);
@@ -354,6 +424,8 @@ public class AppletStart extends Applet implements ActionListener
 		public void actionPerformed(ActionEvent arg0)
 		{
 			showIP();
+			setupManagerCloseListener();
+			setupServer();
 			mfContainer.add(pShowIP, "IP Panel");
 			createSessionManager();
 			mfContainer.add(pSessionM, "Session Managers Panel");
@@ -392,7 +464,12 @@ public class AppletStart extends Applet implements ActionListener
 			IP[3] = ip[3].getText();
 			if(isValidIP(IP))
 			{
-				//Use changePanel here instead whenever that gets added back.
+				String ipAddress = "";
+				ipAddress += IP[0] + ".";
+				ipAddress += IP[1] + ".";
+				ipAddress += IP[2] + ".";
+				ipAddress += IP[3];
+				setupConnection(ipAddress);
 				pResponder.setVisible(true);
 				pConnectIP.setVisible(false);
 			}
@@ -488,15 +565,18 @@ public class AppletStart extends Applet implements ActionListener
 	 *
 	 */
 
-	public class GGCQuestionListener implements ActionListener{
+	public class ResponderListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			/*
-			 * Checks for multiple choice. If it is, then it checks for a valid number (3-5).
-			 * If it is not it just passes the output for true/false.
-			 */
-
+			if (e.getSource() == sendAnswer)
+			{
+				server.sendMessageToAll("T");
+			}
+			else if (e.getID() == GGCGlobals.INSTANCE.MESSAGE_EVENT_ID)
+			{
+				String message = e.getActionCommand();
+			}
 		}
 
 	}
@@ -509,16 +589,20 @@ public class AppletStart extends Applet implements ActionListener
 	 *
 	 */
 
-	public class GGCAnswerListener implements ActionListener{
+	public class ManagerListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e)
 
 		{
-			/*
-			 * Looks at the selected radio button's INDEX and sends that as output.
-			 */
-
+			if (e.getSource() == sendQuestion)
+			{
+				server.sendMessageToAll("T");
+			}
+			else if (e.getID() == GGCGlobals.INSTANCE.MESSAGE_EVENT_ID)
+			{
+				String message = e.getActionCommand();
+			}
 		}
 
 	}
@@ -556,11 +640,5 @@ public class AppletStart extends Applet implements ActionListener
 			g.setColor(Color.WHITE);
 			g.fill3DRect(20, 20, 120, 120,true);
 		}
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO This must use the action listener code from Steven's GUI's.
-		
 	}
 }

@@ -21,7 +21,7 @@ public class GGCConnection implements Runnable
    private BufferedReader in;
    private PrintWriter out;
 
-   GGCConnection(Socket sock, ActionListener listener)
+   public GGCConnection(Socket sock, ActionListener listener)
    {
        keepConnected = true;
        socket = sock;
