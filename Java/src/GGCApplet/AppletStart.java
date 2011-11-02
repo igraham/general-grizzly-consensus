@@ -116,7 +116,7 @@ public class AppletStart extends Applet
 		 * IP address.
 		 * -Ian Graham
 		 */
-		try
+		/*try
 		{
 			InetAddress iP = InetAddress.getLocalHost();
 			cIP = iP.getHostAddress();
@@ -124,7 +124,10 @@ public class AppletStart extends Applet
 		catch(Exception e) 
 		{
 			e.printStackTrace();
-		}
+		}//*/
+
+		// At this time people are more likely to be using IPv4 addresses instead of IPv6 addresses.
+		cIP = GGCServer.getLikelyIpv4Address().getHostAddress();
 
 		JLabel ipLabel1 = new JLabel("Please have your responders ");
 		JLabel ipLabel2 = new JLabel("connect to this IP: ");
