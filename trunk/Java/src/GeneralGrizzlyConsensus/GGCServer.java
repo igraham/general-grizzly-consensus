@@ -29,7 +29,7 @@ public enum GGCServer implements Runnable
        clients = new Vector<GGCConnection>();
    }
    
-   public InetAddress getLikelyIpv4Address()
+   public static InetAddress getLikelyIpv4Address()
    {
 	   InetAddress[] allIps = {};
 	   ArrayList<InetAddress> likelyAddresses = new ArrayList<InetAddress>();
@@ -75,7 +75,7 @@ public enum GGCServer implements Runnable
 	   }
    }
 
-   public InetAddress getLikelyIpv6Address()
+   public static InetAddress getLikelyIpv6Address()
    {
 	   InetAddress[] allIps = {};
 	   ArrayList<InetAddress> likelyAddresses = new ArrayList<InetAddress>();
