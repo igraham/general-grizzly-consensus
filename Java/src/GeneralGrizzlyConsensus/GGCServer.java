@@ -3,6 +3,7 @@ package GeneralGrizzlyConsensus;
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 
@@ -26,6 +27,98 @@ public enum GGCServer implements Runnable
    {
        keepListening = true;
        clients = new Vector<GGCConnection>();
+   }
+   
+   public InetAddress getLikelyIpv4Address()
+   {
+	   InetAddress[] allIps = {};
+	   ArrayList<InetAddress> likelyAddresses = new ArrayList<InetAddress>();
+	   InetAddress fallbackAddress = null;
+
+	   // Try and get any IPs available on the system.
+       try
+       {
+    	   allIps = InetAddress.getAllByName(InetAddress.getLocalHost().getCanonicalHostName());
+       }
+       catch (UnknownHostException e)
+       {
+       }
+
+	   if (allIps.length < 1)
+		   return null;
+	   else if (allIps.length == 1)
+		   return allIps[0];
+	   else
+	   {
+    	   for (int i = 0; i < allIps.length; i++)
+    	   {
+    		   // Exclude IPv6 Addresses
+    		   if (!allIps[i].getHostAddress().contains(":"))
+    		   {
+    			   // This block is for finding and excluding auto-configured and loop-back addresses
+    			   if (allIps[i].isLinkLocalAddress())
+    			   {
+    				   // Assign auto-configured address as a fall-back only when a preferred global address is not available.
+    				   fallbackAddress = allIps[i];
+    			   }
+    			   else if (!allIps[i].isLoopbackAddress())
+    			   {
+    				   // To get here we know that the address is not an auto-configured address or a local loop-back address.
+    				   likelyAddresses.add(allIps[i]);
+    			   }
+    		   }
+    	   }
+    	   if (likelyAddresses.size() < 1)
+    		   return fallbackAddress;
+    	   else
+    		   return likelyAddresses.get(0);
+	   }
+   }
+
+   public InetAddress getLikelyIpv6Address()
+   {
+	   InetAddress[] allIps = {};
+	   ArrayList<InetAddress> likelyAddresses = new ArrayList<InetAddress>();
+	   InetAddress fallbackAddress = null;
+
+	   // Try and get any IPs available on the system.
+       try
+       {
+    	   allIps = InetAddress.getAllByName(InetAddress.getLocalHost().getCanonicalHostName());
+       }
+       catch (UnknownHostException e)
+       {
+       }
+
+	   if (allIps.length < 1)
+		   return null;
+	   else if (allIps.length == 1)
+		   return allIps[0];
+	   else
+	   {
+    	   for (int i = 0; i < allIps.length; i++)
+    	   {
+    		   // Exclude IPv4 Addresses
+    		   if (allIps[i].getHostAddress().contains(":"))
+    		   {
+    			   // This block is for finding and excluding auto-configured and loop-back addresses
+    			   if (allIps[i].isLinkLocalAddress())
+    			   {
+    				   // Assign auto-configured address as a fall-back only when a preferred global address is not available.
+    				   fallbackAddress = allIps[i];
+    			   }
+    			   else if (!allIps[i].isLoopbackAddress())
+    			   {
+    				   // To get here we know that the address is not an auto-configured address or a local loop-back address.
+    				   likelyAddresses.add(allIps[i]);
+    			   }
+    		   }
+    	   }
+    	   if (likelyAddresses.size() < 1)
+    		   return fallbackAddress;
+    	   else
+    		   return likelyAddresses.get(0);
+	   }
    }
 
    public ServerSocket getRawServerSocket()
