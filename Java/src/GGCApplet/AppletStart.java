@@ -75,15 +75,19 @@ public class AppletStart extends Applet
 
 	public void init()
 	{
-		
-		mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
-		mainFrame.setSize(300, 432);
-		mainFrame.setVisible(true);
-		selectPane();
-		mfContainer = mainFrame.getContentPane();
-		mfContainer.setLayout(new CardLayout());		
-		mfContainer.add(pSelect, "Selection Panel");
-		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Runnable runner = new Runnable() {
+            public void run() {
+            	mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
+        		mainFrame.setSize(300, 432);
+        		mainFrame.setVisible(true);
+        		selectPane();
+        		mfContainer = mainFrame.getContentPane();
+        		mfContainer.setLayout(new CardLayout());		
+        		mfContainer.add(pSelect, "Selection Panel");
+        		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            }
+        };
+        EventQueue.invokeLater(runner);
 	}
 
 	private void selectPane()
