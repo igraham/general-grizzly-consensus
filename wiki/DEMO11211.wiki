@@ -3,7 +3,6 @@
 
 Dr. Lutz specifications from the DEMO on 11/2/11
 
-  * Text in *bold* or _italic_
   * 2-26 needed in the "Number of responses" text field.
   * ??? Text field "Number of responses" convert to slider ???
   * Alternative to the text field "Number of responses".
