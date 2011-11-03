@@ -1,0 +1,21 @@
+#summary One-sentence summary of this page.
+#labels Phase-Requirements
+
+Dr. Lutz specifications from the DEMO on 11/2/11
+
+  * Text in *bold* or _italic_
+  * 2-26 needed in the "Number of responses" text field.
+  * ??? Text field "Number of responses" convert to slider ???
+  * Alternative to the text field "Number of responses".
+  * Create two different applets to be on two different URLs.
+  * Have number of students who have responded to survey.
+  * Number of responses vs. number of people connected people.
+  * ??? Graphic for responses vs. people connected ???
+  * Wants buttons over radio buttons.
+  * CRITICAL: must be able to options between 2-5 responses
+  * Would like an Android/iOS theme for the application.
+  * ??? Make "dummy" student function part of teacher view. ???
+  * Make JLNP manifest for extra baggage "JFreeChart" and "JCommon".
+  * Empty catch blocks need to have something in them to denote what they still catch.
+  * Look into JavaWebStart.
+  * *~*Java FX?*~*
