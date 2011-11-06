@@ -28,17 +28,17 @@ public enum GGCServer implements Runnable
 	protected class ClientCleanUpTask implements Runnable
 	{
 		private boolean continueTask;
-		
+
 		ClientCleanUpTask()
 		{
 			continueTask = true;
 		}
-		
+
 		public synchronized void stopCleanup()
 		{
 			continueTask = false;
 		}
-		
+
 		@Override
 		public void run()
 		{
@@ -48,7 +48,8 @@ public enum GGCServer implements Runnable
 				{
 					for (int i = (clients.size() - 1); i >= 0; i--)
 					{
-						// Remove inactive connections so they don't screw up any connection counts.
+						// Remove inactive connections so they don't screw up
+						// any connection counts.
 						if (clients.get(i).getRawSocket().isClosed())
 							clients.remove(i);
 					}
@@ -60,7 +61,9 @@ public enum GGCServer implements Runnable
 				}
 				catch (InterruptedException e)
 				{
-					// The thread was interrupted, but this really doesn't constitute a problem as we are just doing a wait, but we'll log it anyway.
+					// The thread was interrupted, but this really doesn't
+					// constitute a problem as we are just doing a wait, but
+					// we'll log it anyway.
 					GGCGlobals.INSTANCE.addExceptionToLog(e);
 				}
 			}
@@ -183,6 +186,11 @@ public enum GGCServer implements Runnable
 			else
 				return likelyAddresses.get(0);
 		}
+	}
+
+	public int getNumberOfConnectedClients()
+	{
+		return clients.size();
 	}
 
 	public ServerSocket getRawServerSocket()
