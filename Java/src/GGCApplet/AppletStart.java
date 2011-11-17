@@ -71,13 +71,15 @@ public class AppletStart extends Applet
 	//This is an instance of a connection which will essentially serve as the client. It will be initialized
 	//upon clicking on responder.
 	private GGCConnection client;
-	//This button group is used by the session manager to get the selected button and determine the type of question sent.
+	//This button group is used by the session manager to get the selected button and 
+	//determine the type of question sent.
 	private ArrayList<JRadioButton> managerButtons;
 	private ButtonGroup mGroup;
 	private ButtonGroup rGroup;
 	private ButtonGroup tGroup;
-	//This button group is used by the responder and will be used to both determine which response buttons are on the screen
-	//and which response is sent to the session manager when the sendAnswer button is clicked.
+	//This button group is used by the responder and will be used to both determine which
+	//response buttons are on the screen and which response is sent to the session manager
+	//when the sendAnswer button is clicked.
 	private ArrayList<JRadioButton> responderButtons;
 	//This button group is used specifically for the true and false buttons.
 	private ArrayList<JRadioButton> trueFalseButtons;
@@ -91,7 +93,7 @@ public class AppletStart extends Applet
 		Runnable runner = new Runnable() {
             public void run() {
             	mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
-        		mainFrame.setSize(300, 432);
+        		mainFrame.setSize(500, 432);
         		mainFrame.setVisible(true);
         		selectPane();
         		mfContainer = mainFrame.getContentPane();
@@ -288,6 +290,7 @@ public class AppletStart extends Applet
 		bg.add(numButton);
 		
 		sendQuestion = new JButton("Send Question");
+		sendQuestion.addActionListener(new ManagerListener());
 		lP2.add(tfButton);
 		lP3.add(numButton);
 		lP3.add(numField);
@@ -493,6 +496,9 @@ public class AppletStart extends Applet
 				setupConnection(ipAddress);
 				pResponder.setVisible(true);
 				pConnectIP.setVisible(false);
+				JButton sendAnswer = new JButton("Send Answer");
+				sendAnswer.addActionListener(new ResponderListener());
+				pResponder.add(sendAnswer);
 			}
 		}
 	}
@@ -512,7 +518,8 @@ public class AppletStart extends Applet
 		{
 			if(IP[i].length() == 0)
 			{
-				JOptionPane.showMessageDialog(null, "Please fill out all text boxes before attempting to connect.",
+				JOptionPane.showMessageDialog(null, "Please fill out all text boxes before " +
+						"attempting to connect.",
 						"Invalid IP", JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
@@ -524,7 +531,8 @@ public class AppletStart extends Applet
 					if(num > 254 || num < 1)
 					{
 						showBadIPField(i);
-						JOptionPane.showMessageDialog(null, "Please use numbers between 254 and 1 for the first and last box.",
+						JOptionPane.showMessageDialog(null, "Please use numbers between " +
+								"254 and 1 for the first and last box.",
 								"Invalid IP", JOptionPane.ERROR_MESSAGE);
 						return false;
 					}
@@ -535,7 +543,8 @@ public class AppletStart extends Applet
 					if(num > 254 || num < 0)
 					{
 						showBadIPField(i);
-						JOptionPane.showMessageDialog(null, "Please use numbers between 254 and 0 for the second and third box.",
+						JOptionPane.showMessageDialog(null, "Please use numbers between 254 " +
+								"and 0 for the second and third box.",
 								"Invalid IP", JOptionPane.ERROR_MESSAGE);
 						return false;
 					}
@@ -579,7 +588,6 @@ public class AppletStart extends Applet
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			chartPanel.setVisible(!chartPanel.isVisible());
-
 		}
 
 	}
@@ -597,15 +605,15 @@ public class AppletStart extends Applet
 	{
 		if(num < 2)
 		{
-			//throw an error, someone tried to make a one answer multiple choice, or either entered a negative or zero,
-			//all of which are bad.
+			//throw an error, someone tried to make a one answer multiple choice,
+			//or either entered a negative or zero, all of which are bad.
 		}
 		else if(trueFalse)
 		{
+			showHideButtons(responderButtons, false);
 			if(trueFalseButtons.size() == 2)
 			{
 				showHideButtons(trueFalseButtons, true);
-				showHideButtons(responderButtons, false);
 			}
 			else
 			{
@@ -615,17 +623,23 @@ public class AppletStart extends Applet
 				JRadioButton b2 = new JRadioButton("False");
 				trueFalseButtons.add(b2);
 				tGroup.add(b2);
+				pResponder.add(b1);
+				pResponder.add(b2);
+				pResponder.validate();
 			}
 		}
 		else
 		{
+			showHideButtons(trueFalseButtons, false);
 			if(num > responderButtons.size())
 			{
-				for(int i = 0; i < num; i++)
+            	for(int i = 0; i < num; i++)
 				{
 					JRadioButton r = new JRadioButton(""+i);
 					rGroup.add(r);
 					responderButtons.add(r);
+					pResponder.add(r);
+					pResponder.validate();
 				}
 			}
 			else
@@ -640,7 +654,6 @@ public class AppletStart extends Applet
 					{
 						responderButtons.get(i).setVisible(false);
 					}
-					showHideButtons(trueFalseButtons, false);
 				}
 			}
 		}
@@ -704,7 +717,8 @@ public class AppletStart extends Applet
 			else if (e.getID() == GGCGlobals.INSTANCE.MESSAGE_EVENT_ID)
 			{
 				String message = e.getActionCommand();
-				//This if statement means that it will always be at least one character. Hopefully if it's one, it's a "T"
+				//This if statement means that it will always be at least one character. 
+				//Hopefully if it's one, it's a "T"
 				//It also means if it's multiple choice, that we aren't going to go past double digit buttons.
 				if(message.length() > 0 && message.length() < 4)
 				{
@@ -716,8 +730,8 @@ public class AppletStart extends Applet
 					{
 						try
 						{
-						int num = Integer.parseInt(message.substring(1, message.length()));
-						generateButtons(num, false);
+							int num = Integer.parseInt(message.substring(1, message.length()));
+							generateButtons(num, false);
 						}
 						catch(NumberFormatException exc)
 						{
@@ -741,27 +755,26 @@ public class AppletStart extends Applet
 	 * @author Ian Graham
 	 *
 	 */
-
 	public class ManagerListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e)
-
 		{
 			if (e.getSource() == sendQuestion)
 			{
 				String message = findSelected(managerButtons);
-				if(Integer.parseInt(numField.getText()) < 2)
+				if(message == "True/False")
 				{
-					//throw an error
+					server.sendMessageToAll("T");
 				}
 				else if(message == "Number Responses: ")
 				{
-					client.sendMessage("M"+numField.getText());
+					server.sendMessageToAll("M"+numField.getText());
 				}
 				else
 				{
-					client.sendMessage("T");
+					//throw an error, the number is bad or there is no
+					//selected input.
 				}
 			}
 			else if (e.getID() == GGCGlobals.INSTANCE.MESSAGE_EVENT_ID)
@@ -781,7 +794,6 @@ public class AppletStart extends Applet
 				}
 			}
 		}
-
 	}
 
 	// OLD CODE! Saved for possible use later.
