@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 import javax.swing.*;
 
@@ -84,8 +83,6 @@ public class AppletStart extends Applet
 	private ArrayList<JRadioButton> trueFalseButtons;
 	//This is used for 
 	private JTextField numField;
-	//Make an object of cloneable Radio Buttons for the responder
-	private JRadioButton rButton;
 	//This is the main frame for the whole GUI.
 	private JFrame mainFrame;
 
@@ -218,6 +215,8 @@ public class AppletStart extends Applet
 		//Whatever buttons end up here, add them to the Button group.
 		responderButtons = new ArrayList<JRadioButton>();
 		trueFalseButtons = new ArrayList<JRadioButton>();
+		rGroup = new ButtonGroup();
+		tGroup = new ButtonGroup();
 
 		pResponder.add(lP1);
 	}
@@ -266,6 +265,7 @@ public class AppletStart extends Applet
 		pShowHide = new JButton("Show/Hide");
 		pShowHide.addActionListener(new GGCGraphListener());
 		managerButtons = new ArrayList<JRadioButton>();
+		mGroup = new ButtonGroup();
 		pSessionM.setLayout(new GridLayout(2,1));
 		JPanel lP1 = new JPanel();
 		JPanel lP2 = new JPanel();
