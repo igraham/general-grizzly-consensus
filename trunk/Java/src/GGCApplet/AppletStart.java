@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 import javax.swing.*;
 
@@ -71,8 +72,18 @@ public class AppletStart extends Applet
 	//This is an instance of a connection which will essentially serve as the client. It will be initialized
 	//upon clicking on responder.
 	private GGCConnection client;
-	//This list of buttons will be initialized if the responder button is pressed.
-	private ArrayList<JButton> buttons;
+	//This button group is used by the session manager to get the selected button and determine the type of question sent.
+	private ArrayList<JRadioButton> managerButtons;
+	private ButtonGroup mGroup;
+	private ButtonGroup rGroup;
+	private ButtonGroup tGroup;
+	//This button group is used by the responder and will be used to both determine which response buttons are on the screen
+	//and which response is sent to the session manager when the sendAnswer button is clicked.
+	private ArrayList<JRadioButton> responderButtons;
+	//This button group is used specifically for the true and false buttons.
+	private ArrayList<JRadioButton> trueFalseButtons;
+	//This is used for 
+	private JTextField numField;
 	//Make an object of cloneable Radio Buttons for the responder
 	private JRadioButton rButton;
 	//This is the main frame for the whole GUI.
@@ -203,22 +214,10 @@ public class AppletStart extends Applet
 
 		JPanel lP1 = new JPanel();
 		lP1.setLayout(new GridLayout(3,1));
-		
-		String sPerm = "Test";
-		
-		//Whatever buttons end up here, add them to the ArrayList of buttons.
-		ButtonGroup bg = new ButtonGroup();
-		JRadioButton tRButton = new JRadioButton("True");
-		JRadioButton fRButton = new JRadioButton("False");
-		JRadioButton rButton = new JRadioButton(sPerm);
 
-		bg.add(tRButton);
-		bg.add(fRButton);
-		bg.add(rButton);
-		
-		lP1.add(tRButton);
-		lP1.add(fRButton);
-		lP1.add(rButton);
+		//Whatever buttons end up here, add them to the Button group.
+		responderButtons = new ArrayList<JRadioButton>();
+		trueFalseButtons = new ArrayList<JRadioButton>();
 
 		pResponder.add(lP1);
 	}
@@ -266,21 +265,23 @@ public class AppletStart extends Applet
 		pSessionM.setVisible(true);
 		pShowHide = new JButton("Show/Hide");
 		pShowHide.addActionListener(new GGCGraphListener());
-
+		managerButtons = new ArrayList<JRadioButton>();
 		pSessionM.setLayout(new GridLayout(2,1));
-
 		JPanel lP1 = new JPanel();
 		JPanel lP2 = new JPanel();
 		JPanel lP3 = new JPanel();
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
 		lP2.setLayout(new GridLayout(2,1));
-
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
 		//lP2.setBackground(new Color(255,255,255));
-		JComboBox qType = new JComboBox(types);
+		//JComboBox qType = new JComboBox(types);
 		JRadioButton tfButton = new JRadioButton("True/False");
-		JRadioButton numButton = new JRadioButton("Number Responces: ");
-		JTextField numField = new JTextField(5);
+		JRadioButton numButton = new JRadioButton("Number Responses: ");
+		managerButtons.add(tfButton);
+		managerButtons.add(numButton);
+		mGroup.add(tfButton);
+		mGroup.add(numButton);
+		numField = new JTextField(5);
 		ButtonGroup bg = new ButtonGroup();
 		
 		bg.add(tfButton);
@@ -429,7 +430,6 @@ public class AppletStart extends Applet
 	{
 		public void actionPerformed(ActionEvent arg0)
 		{
-			buttons = new ArrayList<JButton>();
 			connectIP();
 			mfContainer.add(pConnectIP, "IP Connection Panel");
 			setupResponderCloseListener();
@@ -574,7 +574,6 @@ public class AppletStart extends Applet
 	 * @author Ian Graham
 	 *
 	 */
-
 	public class GGCGraphListener implements ActionListener{
 
 		@Override
@@ -583,6 +582,96 @@ public class AppletStart extends Applet
 
 		}
 
+	}
+	
+	/**
+	 * This method will usually only generate/show 3-5 buttons (regularly multiple choice)
+	 * or 2 buttons (regularly true/false), and hide the ones that are not relevant to the
+	 * scope of the button range. It is *planned* to go up to 26, but technically unless
+	 * it is coded out it can do up to 99. I have coded out trying to make a one or two button
+	 * multiple choice or something ridiculous like that.
+	 * @param num - The number of buttons. Two buttons represents true/false. Anything more than
+	 * that is multiple choice.
+	 */
+	private void generateButtons(int num, boolean trueFalse)
+	{
+		if(num < 2)
+		{
+			//throw an error, someone tried to make a one answer multiple choice, or either entered a negative or zero,
+			//all of which are bad.
+		}
+		else if(trueFalse)
+		{
+			if(trueFalseButtons.size() == 2)
+			{
+				showHideButtons(trueFalseButtons, true);
+				showHideButtons(responderButtons, false);
+			}
+			else
+			{
+				JRadioButton b1 = new JRadioButton("True");
+				trueFalseButtons.add(b1);
+				tGroup.add(b1);
+				JRadioButton b2 = new JRadioButton("False");
+				trueFalseButtons.add(b2);
+				tGroup.add(b2);
+			}
+		}
+		else
+		{
+			if(num > responderButtons.size())
+			{
+				for(int i = 0; i < num; i++)
+				{
+					JRadioButton r = new JRadioButton(""+i);
+					rGroup.add(r);
+					responderButtons.add(r);
+				}
+			}
+			else
+			{
+				for(int i = 0; i < responderButtons.size(); i++)
+				{
+					if(i < num)
+					{
+						responderButtons.get(i).setVisible(true);
+					}
+					else
+					{
+						responderButtons.get(i).setVisible(false);
+					}
+					showHideButtons(trueFalseButtons, false);
+				}
+			}
+		}
+	}
+	/**
+	 * Shows or hides the buttons in the specified group.
+	 * @param buttons
+	 * @param state
+	 */
+	private void showHideButtons(ArrayList<JRadioButton> buttons, boolean state)
+	{
+		for(JRadioButton b : buttons)
+		{
+			b.setVisible(state);
+		}
+	}
+	/**
+	 * Given one of the button lists, finds which one is selected.
+	 * @param buttons
+	 * @return returns the text of the selected button.
+	 */
+	private String findSelected(ArrayList<JRadioButton> buttons)
+	{
+		for(int i = 0; i < buttons.size(); i++)
+		{
+			if(buttons.get(i).isSelected())
+			{
+				return buttons.get(i).getText();
+			}
+		}
+		return "";
 	}
 
 	/**
@@ -593,18 +682,53 @@ public class AppletStart extends Applet
 	 * @author Ian Graham
 	 *
 	 */
-
 	public class ResponderListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == sendAnswer)
 			{
-				client.sendMessage("T");
+				String message = findSelected(responderButtons);
+				if(message.length() < 1)
+				{
+					//throw an error, pretty much no button was selected.
+				}
+				else
+				{
+					if(message.equals("True"))
+						client.sendMessage("T");
+					else
+						client.sendMessage("F");
+				}
 			}
 			else if (e.getID() == GGCGlobals.INSTANCE.MESSAGE_EVENT_ID)
 			{
 				String message = e.getActionCommand();
+				//This if statement means that it will always be at least one character. Hopefully if it's one, it's a "T"
+				//It also means if it's multiple choice, that we aren't going to go past double digit buttons.
+				if(message.length() > 0 && message.length() < 4)
+				{
+					if(message.substring(0,1).equals("T") && message.length() == 1)
+					{
+						generateButtons(2, true);
+					}
+					else if(message.substring(0,1).equals("M") && message.length() > 1)
+					{
+						try
+						{
+						int num = Integer.parseInt(message.substring(1, message.length()));
+						generateButtons(num, false);
+						}
+						catch(NumberFormatException exc)
+						{
+							//throw an error, this happens when the text after the "M" is not a number. Ex: MC5
+						}
+					}
+					else
+					{
+						//throw an error, a T or M is not present in the first letter of the message. This is bad.
+					}
+				}
 			}
 		}
 
@@ -626,11 +750,35 @@ public class AppletStart extends Applet
 		{
 			if (e.getSource() == sendQuestion)
 			{
-				server.sendMessageToAll("T");
+				String message = findSelected(managerButtons);
+				if(Integer.parseInt(numField.getText()) < 2)
+				{
+					//throw an error
+				}
+				else if(message == "Number Responses: ")
+				{
+					client.sendMessage("M"+numField.getText());
+				}
+				else
+				{
+					client.sendMessage("T");
+				}
 			}
 			else if (e.getID() == GGCGlobals.INSTANCE.MESSAGE_EVENT_ID)
 			{
 				String message = e.getActionCommand();
+				if(Character.isDigit(message.charAt(0)))
+				{
+					//Numerical Reply.
+				}
+				else if(message.equals("T"))
+				{
+					//Reply of True.
+				}
+				else
+				{
+					//Reply of False.
+				}
 			}
 		}
 
