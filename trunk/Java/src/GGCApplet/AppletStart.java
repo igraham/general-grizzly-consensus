@@ -74,9 +74,8 @@ public class AppletStart extends Applet
 	//This button group is used by the session manager to get the selected button and 
 	//determine the type of question sent.
 	private ArrayList<JRadioButton> managerButtons;
-	private ButtonGroup mGroup;
-	private ButtonGroup rGroup;
-	private ButtonGroup tGroup;
+	//Button groups which organize the buttons used by the session manager and responder.
+	private ButtonGroup mGroup, rGroup, tGroup;
 	//This button group is used by the responder and will be used to both determine which
 	//response buttons are on the screen and which response is sent to the session manager
 	//when the sendAnswer button is clicked.
@@ -87,6 +86,10 @@ public class AppletStart extends Applet
 	private JTextField numField;
 	//This is the main frame for the whole GUI.
 	private JFrame mainFrame;
+	//This is the actual object that holds the data.
+	private static DefaultCategoryDataset barData;
+	//This is the object which will handle the updates of the JFreeChart data.
+	private GraphUpdater updater;
 
 	public void init()
 	{
@@ -236,29 +239,29 @@ public class AppletStart extends Applet
 	       });
 	}
 	/**
-	    * This method is essentially the same as the old setupConnection method but
-	    * it takes in an IP address as a parameter and is public.
-	    * @param IP
-	    */
-	   private void setupConnection(String IP)
-	   {
-		   try
-	       {
-	           client = new GGCConnection(new Socket(IP,
-	                   GGCGlobals.INSTANCE.COMMUNICATION_PORT), new ResponderListener());
-	           Thread t = new Thread(client);
-	           t.start();
-	       }
-	       catch (UnknownHostException e)
-	       {
-	           JOptionPane.showMessageDialog(this, "Unknown host.");
-	       }
-	       catch (IOException e)
-	       {
-	           // JOptionPane.showMessageDialog(this, "Cannot connect to host.");
-	           JOptionPane.showMessageDialog(this, e.getMessage());
-	       }
-	   }
+     * This method is essentially the same as the old setupConnection method but
+     * it takes in an IP address as a parameter and is public.
+     * @param IP
+    */
+	private void setupConnection(String IP)
+	{
+		 try
+	     {
+			 client = new GGCConnection(new Socket(IP,
+	         GGCGlobals.INSTANCE.COMMUNICATION_PORT), new ResponderListener());
+	         Thread t = new Thread(client);
+	         t.start();
+	     }
+	     catch (UnknownHostException e)
+	     {
+	         JOptionPane.showMessageDialog(this, "Unknown host.");
+	     }
+	     catch (IOException e)
+	     {
+	         // JOptionPane.showMessageDialog(this, "Cannot connect to host.");
+	         JOptionPane.showMessageDialog(this, e.getMessage());
+	     }
+	}
 
 	private void createSessionManager()
 	{
@@ -299,13 +302,16 @@ public class AppletStart extends Applet
 		lP1.add(sendQuestion);
 		pSessionM.add(lP1);
 		//TODO Make a UPDATABLE bar graph, maybe a new class that interfaces with it?
+		//Ian - This is probably the best way to go about it, since we're already splitting this class.
 		CategoryDataset dataset = createDataset();
         JFreeChart chart = createChart(dataset);
+        updater = new GraphUpdater(barData);
         chartPanel = new ChartPanel(chart);
         pSessionM.add(new JLabel(cIP));
         pSessionM.add(pShowHide);
 		pSessionM.add(chartPanel);
 	}
+	
 	private static CategoryDataset createDataset()
 	{
 
@@ -322,17 +328,17 @@ public class AppletStart extends Applet
         String categoryR = "Responses";
 
         // create the dataset...
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        barData = new DefaultCategoryDataset();
 
-        dataset.addValue(1.0, seriesT, categoryR);
-        dataset.addValue(4.0, seriesF, categoryR);
-        dataset.addValue(3.0, seriesA, categoryR);
-        dataset.addValue(5.0, seriesB, categoryR);
-        dataset.addValue(6.0, seriesC, categoryR);
-        dataset.addValue(7.0, seriesD, categoryR);
-        dataset.addValue(8.0, seriesE, categoryR);
+        barData.addValue(1.0, seriesT, categoryR);
+        barData.addValue(4.0, seriesF, categoryR);
+        barData.addValue(3.0, seriesA, categoryR);
+        barData.addValue(5.0, seriesB, categoryR);
+        barData.addValue(6.0, seriesC, categoryR);
+        barData.addValue(7.0, seriesD, categoryR);
+        barData.addValue(8.0, seriesE, categoryR);
 
-        return dataset;
+        return barData;
 
     }
 	
@@ -350,28 +356,28 @@ public class AppletStart extends Applet
             true,                     // tooltips?
             false                     // URLs?
         );
-
+        
         /*
          * Code supplied from BarChartDemo1 at:
          * http://www.jfree.org/jfreechart
          * 
          * code edited by Marcus Michalske 
          */
-
+        
         // set the background color for the chart...
         chart.setBackgroundPaint(Color.white);
-
+        
         // get a reference to the plot for further customisation...
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
-
+        
         // set the range axis to display integers only...
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
+        
         // disable bar outlines...
         BarRenderer renderer = (BarRenderer) plot.getRenderer();
         renderer.setDrawBarOutline(false);
-
+        
         // set up gradient paints for series...
         GradientPaint gp0 = new GradientPaint(0.0f, 0.0f, new Color(0, 125, 75),
                 0.0f, 0.0f, new Color(0, 0, 0));
@@ -496,7 +502,7 @@ public class AppletStart extends Applet
 				setupConnection(ipAddress);
 				pResponder.setVisible(true);
 				pConnectIP.setVisible(false);
-				JButton sendAnswer = new JButton("Send Answer");
+				sendAnswer = new JButton("Send Answer");
 				sendAnswer.addActionListener(new ResponderListener());
 				pResponder.add(sendAnswer);
 			}
@@ -596,8 +602,8 @@ public class AppletStart extends Applet
 	 * This method will usually only generate/show 3-5 buttons (regularly multiple choice)
 	 * or 2 buttons (regularly true/false), and hide the ones that are not relevant to the
 	 * scope of the button range. It is *planned* to go up to 26, but technically unless
-	 * it is coded out it can do up to 99. I have coded out trying to make a one or two button
-	 * multiple choice or something ridiculous like that.
+	 * it is coded out it can do up to 99 (tested, it will do up to 99). I have coded out
+	 * trying to make a one or two button multiple choice or something ridiculous like that.
 	 * @param num - The number of buttons. Two buttons represents true/false. Anything more than
 	 * that is multiple choice.
 	 */
@@ -699,19 +705,39 @@ public class AppletStart extends Applet
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			System.out.println(e.getSource().getClass());
 			if (e.getSource() == sendAnswer)
 			{
-				String message = findSelected(responderButtons);
-				if(message.length() < 1)
+				String messageR = findSelected(responderButtons);
+				String messageT = findSelected(trueFalseButtons);
+				System.out.println(messageR);
+				System.out.println(messageT);
+				if(messageR.length() < 1 && messageT.length() < 1)
 				{
 					//throw an error, pretty much no button was selected.
 				}
+				else if(messageR.length() > 0)
+				{
+					client.sendMessage(messageR);
+					sendAnswer.setEnabled(false);
+				}
 				else
 				{
-					if(message.equals("True"))
+					System.out.println("The problem isn't sending.");
+					if(messageT.equals("True"))
+					{
 						client.sendMessage("T");
-					else
+						sendAnswer.setEnabled(false);
+					}
+					else if(messageT.equals("False"))
+					{
 						client.sendMessage("F");
+						sendAnswer.setEnabled(false);
+					}
+					else
+					{
+						//throw an arbitrary error. something went wrong.
+					}
 				}
 			}
 			else if (e.getID() == GGCGlobals.INSTANCE.MESSAGE_EVENT_ID)
@@ -725,6 +751,7 @@ public class AppletStart extends Applet
 					if(message.substring(0,1).equals("T") && message.length() == 1)
 					{
 						generateButtons(2, true);
+						sendAnswer.setEnabled(true);
 					}
 					else if(message.substring(0,1).equals("M") && message.length() > 1)
 					{
@@ -732,6 +759,7 @@ public class AppletStart extends Applet
 						{
 							int num = Integer.parseInt(message.substring(1, message.length()));
 							generateButtons(num, false);
+							sendAnswer.setEnabled(true);
 						}
 						catch(NumberFormatException exc)
 						{
@@ -766,10 +794,22 @@ public class AppletStart extends Applet
 				if(message == "True/False")
 				{
 					server.sendMessageToAll("T");
+					//two is a filler, it doesn't do anything, because the boolean is all
+					//that the program needs to determine what to do.
+					updater.newQuestion(true, 2);
 				}
 				else if(message == "Number Responses: ")
 				{
-					server.sendMessageToAll("M"+numField.getText());
+					try
+					{
+						int num = Integer.parseInt(numField.getText());
+						server.sendMessageToAll("M"+num);
+						updater.newQuestion(false, num);
+					}
+					catch(NumberFormatException err)
+					{
+						//throw an error, the number is bad.
+					}
 				}
 				else
 				{
@@ -780,17 +820,27 @@ public class AppletStart extends Applet
 			else if (e.getID() == GGCGlobals.INSTANCE.MESSAGE_EVENT_ID)
 			{
 				String message = e.getActionCommand();
+				System.out.println(message);
 				if(Character.isDigit(message.charAt(0)))
 				{
-					//Numerical Reply.
+					try
+					{
+						int i = Integer.parseInt(message);
+						updater.incrementData(i);
+					}
+					catch(NumberFormatException err)
+					{
+						//throw an error, maybe the first digit was a zero but the second wasn't
+						//TODO The number of buttons can currently go over 26, make sure it can't.
+					}
 				}
 				else if(message.equals("T"))
 				{
-					//Reply of True.
+					updater.incrementData(0);
 				}
 				else
 				{
-					//Reply of False.
+					updater.incrementData(1);
 				}
 			}
 		}
