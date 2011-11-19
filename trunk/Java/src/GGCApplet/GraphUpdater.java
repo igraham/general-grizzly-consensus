@@ -32,10 +32,6 @@ public class GraphUpdater {
 	 */
 	public void incrementData(int barNumber)
 	{
-		double d = (Double) barData.getValue(barNumber, barNumber);
-		d++;
-		System.out.println(d);
-		System.out.println(barData.getRowKey(barNumber));
 		barData.incrementValue(1.0, barData.getRowKey(barNumber), barData.getColumnKey(barNumber));
 	}
 	

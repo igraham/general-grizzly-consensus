@@ -705,13 +705,10 @@ public class AppletStart extends Applet
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			System.out.println(e.getSource().getClass());
 			if (e.getSource() == sendAnswer)
 			{
 				String messageR = findSelected(responderButtons);
 				String messageT = findSelected(trueFalseButtons);
-				System.out.println(messageR);
-				System.out.println(messageT);
 				if(messageR.length() < 1 && messageT.length() < 1)
 				{
 					//throw an error, pretty much no button was selected.
@@ -723,7 +720,6 @@ public class AppletStart extends Applet
 				}
 				else
 				{
-					System.out.println("The problem isn't sending.");
 					if(messageT.equals("True"))
 					{
 						client.sendMessage("T");
@@ -820,7 +816,6 @@ public class AppletStart extends Applet
 			else if (e.getID() == GGCGlobals.INSTANCE.MESSAGE_EVENT_ID)
 			{
 				String message = e.getActionCommand();
-				System.out.println(message);
 				if(Character.isDigit(message.charAt(0)))
 				{
 					try
