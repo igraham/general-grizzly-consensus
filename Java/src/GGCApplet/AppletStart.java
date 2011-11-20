@@ -73,15 +73,15 @@ public class AppletStart extends Applet
 	private GGCConnection client;
 	//This button group is used by the session manager to get the selected button and 
 	//determine the type of question sent.
-	private ArrayList<JRadioButton> managerButtons;
+	private ArrayList<JToggleButton> managerButtons;
 	//Button groups which organize the buttons used by the session manager and responder.
 	private ButtonGroup mGroup, rGroup, tGroup;
 	//This button group is used by the responder and will be used to both determine which
 	//response buttons are on the screen and which response is sent to the session manager
 	//when the sendAnswer button is clicked.
-	private ArrayList<JRadioButton> responderButtons;
+	private ArrayList<JToggleButton> responderButtons;
 	//This button group is used specifically for the true and false buttons.
-	private ArrayList<JRadioButton> trueFalseButtons;
+	private ArrayList<JToggleButton> trueFalseButtons;
 	//This is used for 
 	private JTextField numField;
 	//This is the main frame for the whole GUI.
@@ -218,8 +218,8 @@ public class AppletStart extends Applet
 		lP1.setLayout(new GridLayout(3,1));
 
 		//Whatever buttons end up here, add them to the Button group.
-		responderButtons = new ArrayList<JRadioButton>();
-		trueFalseButtons = new ArrayList<JRadioButton>();
+		responderButtons = new ArrayList<JToggleButton>();
+		trueFalseButtons = new ArrayList<JToggleButton>();
 		rGroup = new ButtonGroup();
 		tGroup = new ButtonGroup();
 
@@ -269,7 +269,7 @@ public class AppletStart extends Applet
 		pSessionM.setVisible(true);
 		pShowHide = new JButton("Show/Hide");
 		pShowHide.addActionListener(new GGCGraphListener());
-		managerButtons = new ArrayList<JRadioButton>();
+		managerButtons = new ArrayList<JToggleButton>();
 		mGroup = new ButtonGroup();
 		pSessionM.setLayout(new GridLayout(2,1));
 		JPanel lP1 = new JPanel();
@@ -280,8 +280,8 @@ public class AppletStart extends Applet
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
 		//lP2.setBackground(new Color(255,255,255));
 		//JComboBox qType = new JComboBox(types);
-		JRadioButton tfButton = new JRadioButton("True/False");
-		JRadioButton numButton = new JRadioButton("Number Responses: ");
+		JToggleButton tfButton = new JToggleButton("True/False");
+		JToggleButton numButton = new JToggleButton("Number Responses: ");
 		managerButtons.add(tfButton);
 		managerButtons.add(numButton);
 		mGroup.add(tfButton);
@@ -623,10 +623,10 @@ public class AppletStart extends Applet
 			}
 			else
 			{
-				JRadioButton b1 = new JRadioButton("True");
+				JToggleButton b1 = new JToggleButton("True");
 				trueFalseButtons.add(b1);
 				tGroup.add(b1);
-				JRadioButton b2 = new JRadioButton("False");
+				JToggleButton b2 = new JToggleButton("False");
 				trueFalseButtons.add(b2);
 				tGroup.add(b2);
 				pResponder.add(b1);
@@ -641,7 +641,7 @@ public class AppletStart extends Applet
 			{
             	for(int i = 0; i < num; i++)
 				{
-					JRadioButton r = new JRadioButton(""+i);
+					JToggleButton r = new JToggleButton(""+i);
 					rGroup.add(r);
 					responderButtons.add(r);
 					pResponder.add(r);
@@ -669,9 +669,9 @@ public class AppletStart extends Applet
 	 * @param buttons
 	 * @param state
 	 */
-	private void showHideButtons(ArrayList<JRadioButton> buttons, boolean state)
+	private void showHideButtons(ArrayList<JToggleButton> buttons, boolean state)
 	{
-		for(JRadioButton b : buttons)
+		for(JToggleButton b : buttons)
 		{
 			b.setVisible(state);
 		}
@@ -681,7 +681,7 @@ public class AppletStart extends Applet
 	 * @param buttons
 	 * @return returns the text of the selected button.
 	 */
-	private String findSelected(ArrayList<JRadioButton> buttons)
+	private String findSelected(ArrayList<JToggleButton> buttons)
 	{
 		for(int i = 0; i < buttons.size(); i++)
 		{
