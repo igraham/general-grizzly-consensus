@@ -2,11 +2,8 @@
  * Converted to Applet format, need input on how it will pull objects from on end or the other.
  * 
  * @author Marcus Michalske
- * TODO Add more functionality to the different panels.
- * TODO Fix the radio buttons to have functionality along with text field.
- * TODO Add the "Update question button" along with a default "Questions" button with the last number of buttons.
- * TODO Axis on bar graph need to be updated to reflect correct layout.
- * TODO add functionality to bar graph so that updates after it is hidden.
+ * TODO Fix the GUI, everything is completely functional other than that.
+ * TODO Implement the drop-down box in place of the text field on the manager panel.
  */
 package GGCApplet;
 
@@ -132,21 +129,6 @@ public class AppletStart extends Applet
 		pShowIP.setLayout(new GridLayout(4,1));
 		pShowIP.setVisible(false);
 
-		/*
-		 * Finds the current machine's IP address. Faulty code, replace so we can always get the right
-		 * IP address.
-		 * -Ian Graham
-		 */
-		/*try
-		{
-			InetAddress iP = InetAddress.getLocalHost();
-			cIP = iP.getHostAddress();
-		}
-		catch(Exception e) 
-		{
-			e.printStackTrace();
-		}//*/
-
 		// At this time people are more likely to be using IPv4 addresses instead of IPv6 addresses.
 		cIP = GGCServer.getLikelyIpv4Address().getHostAddress();
 
@@ -174,18 +156,26 @@ public class AppletStart extends Applet
 
 		JPanel lP2 = new JPanel();
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
-
-		ip = new JTextField[4];
-		JTextField ip1 = new JTextField();
+		//This is the pattern that captures an IP address. It can't be, "(?:25[0-4]|2[0-4][0-9]|[01]?[1-9][0-9]?)" because 
+		//that discludes 100, and many other non-zero values with a zero in it, from the list of valid IP's.
+		//_254_1 is for the outer two blocks.
+		String _254_1 = "(?:25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]|[1-9])";
+		RegexFormatter ipFormatter1 = new RegexFormatter( _254_1 );
+		//_254_0 is for the inner two blocks.
+		String _254_0 = "(?:25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
+		RegexFormatter ipFormatter2 = new RegexFormatter( _254_0 );
+		
+		ip = new JFormattedTextField[4];
+		JFormattedTextField ip1 = new JFormattedTextField(ipFormatter1);
 		ip1.setColumns(3);
 		ip[0] = ip1;
-		JTextField ip2 = new JTextField();
+		JFormattedTextField ip2 = new JFormattedTextField(ipFormatter2);
 		ip2.setColumns(3);
 		ip[1] = ip2;
-		JTextField ip3 = new JTextField();
+		JFormattedTextField ip3 = new JFormattedTextField(ipFormatter2);
 		ip3.setColumns(3);
 		ip[2] = ip3;
-		JTextField ip4 = new JTextField();
+		JFormattedTextField ip4 = new JFormattedTextField(ipFormatter1);
 		ip4.setColumns(3);
 		ip[3] = ip4;
 
@@ -301,8 +291,6 @@ public class AppletStart extends Applet
 		lP1.add(lP2);
 		lP1.add(sendQuestion);
 		pSessionM.add(lP1);
-		//TODO Make a UPDATABLE bar graph, maybe a new class that interfaces with it?
-		//Ian - This is probably the best way to go about it, since we're already splitting this class.
 		CategoryDataset dataset = createDataset();
         JFreeChart chart = createChart(dataset);
         updater = new GraphUpdater(barData);
@@ -492,97 +480,19 @@ public class AppletStart extends Applet
 			IP[1] = ip[1].getText();
 			IP[2] = ip[2].getText();
 			IP[3] = ip[3].getText();
-			if(isValidIP(IP))
-			{
-				String ipAddress = "";
-				ipAddress += IP[0] + ".";
-				ipAddress += IP[1] + ".";
-				ipAddress += IP[2] + ".";
-				ipAddress += IP[3];
-				setupConnection(ipAddress);
-				pResponder.setVisible(true);
-				pConnectIP.setVisible(false);
-				sendAnswer = new JButton("Send Answer");
-				sendAnswer.addActionListener(new ResponderListener());
-				pResponder.add(sendAnswer);
-			}
+			String ipAddress = "";
+			ipAddress += IP[0] + ".";
+			ipAddress += IP[1] + ".";
+			ipAddress += IP[2] + ".";
+			ipAddress += IP[3];
+			setupConnection(ipAddress);
+			pResponder.setVisible(true);
+			pConnectIP.setVisible(false);
+			sendAnswer = new JButton("Send Answer");
+			sendAnswer.addActionListener(new ResponderListener());
+			pResponder.add(sendAnswer);
 		}
 	}
-	
-	/**
-	 * This method checks to see whether the given String input is a valid IP address.
-	 * This method also pops up error boxes every time bad input is given when connect is pressed.
-	 * As a result, that part can be deleted and it would be fine with me.
-	 * @author Ian Graham
-	 * @param IP
-	 * @return Returns true if it is a valid IP address, and false if it has any deviations
-	 * such as numbers greater than 255 or less than 0, and characters other than numbers.
-	 */
-	private boolean isValidIP(String[] IP)
-	{
-		for(int i = 0; i < IP.length; i++)
-		{
-			if(IP[i].length() == 0)
-			{
-				JOptionPane.showMessageDialog(null, "Please fill out all text boxes before " +
-						"attempting to connect.",
-						"Invalid IP", JOptionPane.ERROR_MESSAGE);
-				return false;
-			}
-			try
-			{
-				int num = Integer.parseInt(IP[i]);
-				if(i == 0 || i == 3)
-				{
-					if(num > 254 || num < 1)
-					{
-						showBadIPField(i);
-						JOptionPane.showMessageDialog(null, "Please use numbers between " +
-								"254 and 1 for the first and last box.",
-								"Invalid IP", JOptionPane.ERROR_MESSAGE);
-						return false;
-					}
-
-				}
-				if(i == 1 || i == 2)
-				{
-					if(num > 254 || num < 0)
-					{
-						showBadIPField(i);
-						JOptionPane.showMessageDialog(null, "Please use numbers between 254 " +
-								"and 0 for the second and third box.",
-								"Invalid IP", JOptionPane.ERROR_MESSAGE);
-						return false;
-					}
-
-				}
-			}
-			catch(NumberFormatException e)
-			{
-				JOptionPane.showMessageDialog(null, "Please use numbers when entering the IP.",
-						"Invalid IP", JOptionPane.ERROR_MESSAGE);
-				return false;
-			}
-		}
-		return true;
-	}
-	/**
-	 * When the user has a bad IP address in a particular field, this method will highlight which one.
-	 * You may or may not wish to use this.
-	 */
-	private void showBadIPField(int i)
-	{
-		ip[i].requestFocus();
-		ip[i].selectAll();
-	}
-	
-	@Deprecated
-	private void changePanel(JPanel jp)
-    {
-        Container container = mainFrame.getContentPane();        
-        jp.setVisible(true);
-        container.add(jp);
-    }
 
 	/**
 	 * This class listens for the graph show/hide button. If it is clicked, it shows or hides the graph.
@@ -768,8 +678,16 @@ public class AppletStart extends Applet
 						try
 						{
 							int num = Integer.parseInt(message.substring(1, message.length()));
+							if(num > 2 && num < 27)
+							{
 							generateButtons(num, false);
 							sendAnswer.setEnabled(true);
+							}
+							else
+							{
+								//Someone did something ridiculous like 2 or less choices or more than 26 choices.
+								//Two is defaulted to true/false, less than two is not a valid question, and more than 26 is unreasonable.
+							}
 						}
 						catch(NumberFormatException exc)
 						{
@@ -810,15 +728,22 @@ public class AppletStart extends Applet
 				}
 				else if(message == "Number Responses: ")
 				{
+label0:
 					try
 					{
 						int num = Integer.parseInt(numField.getText());
-						server.sendMessageToAll("M"+num);
-						updater.newQuestion(false, num);
+						if(num > 2 && num < 27)
+						{
+							server.sendMessageToAll("M"+num);
+							updater.newQuestion(false, num);
+							break label0;
+						}
+						throw new NumberFormatException();
 					}
 					catch(NumberFormatException err)
 					{
 						//throw an error, the number is bad.
+						//Zomg, labels!
 					}
 				}
 				else
@@ -852,41 +777,6 @@ public class AppletStart extends Applet
 					updater.incrementData(1);
 				}
 			}
-		}
-	}
-
-	// OLD CODE! Saved for possible use later.
-	/*class LimitJTextField extends PlainDocument
-	{
-		private int limit;
-
-		public LimitJTextField(int limit)
-		{
-			super();
-			this.limit = limit;
-		}
-
-		@Override
-		public void insertString(int offs, String str, AttributeSet a) throws BadLocationException
-		{
-			if (limit == 0 || getLength() + str.length() <= limit)
-			{
-				for (int i = 0; i < str.length(); i++)
-				{					 
-					if (!Character.isDigit(str.charAt(i)))
-						super.insertString(offs, "", a);
-				}
-				super.insertString(offs, str, a);
-			}
-		}
-	}*/
-
-	class GraphBox extends JComponent
-	{
-		public void paint(Graphics g)
-		{
-			g.setColor(Color.WHITE);
-			g.fill3DRect(20, 20, 120, 120,true);
 		}
 	}
 }
