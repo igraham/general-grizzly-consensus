@@ -230,7 +230,7 @@ public class AppletStart extends Applet
 	}
 	/**
      * This method is essentially the same as the old setupConnection method but
-     * it takes in an IP address as a parameter and is public.
+     * it takes in an IP address as a parameter.
      * @param IP
     */
 	private void setupConnection(String IP)
@@ -241,6 +241,11 @@ public class AppletStart extends Applet
 	         GGCGlobals.INSTANCE.COMMUNICATION_PORT), new ResponderListener());
 	         Thread t = new Thread(client);
 	         t.start();
+	         pResponder.setVisible(true);
+	         pConnectIP.setVisible(false);
+	         sendAnswer = new JButton("Send Answer");
+	         sendAnswer.addActionListener(new ResponderListener());
+	         pResponder.add(sendAnswer);
 	     }
 	     catch (UnknownHostException e)
 	     {
@@ -252,7 +257,7 @@ public class AppletStart extends Applet
 	         JOptionPane.showMessageDialog(this, e.getMessage());
 	     }
 	}
-
+	
 	private void createSessionManager()
 	{
 		pSessionM = new JPanel();
@@ -486,11 +491,6 @@ public class AppletStart extends Applet
 			ipAddress += IP[2] + ".";
 			ipAddress += IP[3];
 			setupConnection(ipAddress);
-			pResponder.setVisible(true);
-			pConnectIP.setVisible(false);
-			sendAnswer = new JButton("Send Answer");
-			sendAnswer.addActionListener(new ResponderListener());
-			pResponder.add(sendAnswer);
 		}
 	}
 
