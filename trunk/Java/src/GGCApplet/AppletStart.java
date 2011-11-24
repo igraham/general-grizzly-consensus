@@ -111,8 +111,8 @@ public class AppletStart extends Applet
 		pSelect.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 200));
 		pSelect.setVisible(true);
 
-		JButton bResponder = new JButton("Responder");
-		JButton bSManager = new JButton("Session Manager");
+		JButton bResponder = new CustomJButton("Responder");
+		JButton bSManager = new CustomJButton("Session Manager");
 
 		ActionListener selectionCardR = new SelectionCardR();
 		ActionListener selectionCardSM = new SelectionCardSM();
@@ -135,7 +135,7 @@ public class AppletStart extends Applet
 		JLabel ipLabel1 = new JLabel("Please have your responders ");
 		JLabel ipLabel2 = new JLabel("connect to this IP: ");
 		JLabel ipLabel3 = new JLabel(cIP);
-		JButton smContorlP = new JButton("Contune");
+		JButton smContorlP = new CustomJButton("Contune");
 
 		ActionListener showIPCard = new ShowIPCard();
 		smContorlP.addActionListener(showIPCard);
@@ -183,7 +183,7 @@ public class AppletStart extends Applet
 		JLabel dot2= new JLabel(".");
 		JLabel dot3= new JLabel(".");
 
-		rContorlP = new JButton("Connect");
+		rContorlP = new CustomJButton("Connect");
 		rContorlP.addActionListener(new GGCConnectListener());
 
 		lP1.add(ip1);
@@ -243,7 +243,7 @@ public class AppletStart extends Applet
 	         t.start();
 	         pResponder.setVisible(true);
 	         pConnectIP.setVisible(false);
-	         sendAnswer = new JButton("Send Answer");
+	         sendAnswer = new CustomJButton("Send Answer");
 	         sendAnswer.addActionListener(new ResponderListener());
 	         pResponder.add(sendAnswer);
 	     }
@@ -262,7 +262,7 @@ public class AppletStart extends Applet
 	{
 		pSessionM = new JPanel();
 		pSessionM.setVisible(true);
-		pShowHide = new JButton("Show/Hide");
+		pShowHide = new CustomJButton("Show/Hide");
 		pShowHide.addActionListener(new GGCGraphListener());
 		managerButtons = new ArrayList<JToggleButton>();
 		mGroup = new ButtonGroup();
@@ -287,7 +287,7 @@ public class AppletStart extends Applet
 		bg.add(tfButton);
 		bg.add(numButton);
 		
-		sendQuestion = new JButton("Send Question");
+		sendQuestion = new CustomJButton("Send Question");
 		sendQuestion.addActionListener(new ManagerListener());
 		lP2.add(tfButton);
 		lP3.add(numButton);
@@ -779,4 +779,55 @@ label0:
 			}
 		}
 	}
+	
+	/**
+	 * This class is to make custom JButton graphics that will be uniform in the whole application.
+	 * The button has three rounded rectangles, the outline is one color, the inner rectangle is a
+	 * gradient of two colors, and the inner most rectangle is a gradient of two colors.
+	 * @author Marcus Michalske
+	 *
+	 */
+	private static final class CustomJButton extends JButton
+    {    	
+        private CustomJButton(String s)
+        {
+            super(s);
+            setContentAreaFilled(false);
+            setFocusPainted(false); // used for demonstration
+            setBorderPainted(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g)
+        {
+            Graphics2D g2 = (Graphics2D) g.create();
+    	    
+    	    //RoundRectangle2D rr1 = new RoundRectangle2D.Double(bX, bY, bWidth, bHeight, 11, 11);
+    	    //RoundRectangle2D rr2 = new RoundRectangle2D.Double(bX+3, bY+3, bWidth-6, bHeight-6, 5, 5);
+            
+    	    g2.setStroke(new BasicStroke(4));
+    	    g2.setPaint(new GradientPaint(new Point(0, 0), Color.DARK_GRAY, new Point(0, getHeight()), Color.WHITE));
+    	    g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
+    	    g2.setPaint(Color.GRAY);
+    	    g2.drawRoundRect(1, 1, getWidth()-2, getHeight()-2, 10, 10);
+    	    g2.setStroke(new BasicStroke(3));
+    	    g2.setPaint(new GradientPaint(new Point(0, 0), Color.DARK_GRAY, new Point(0, getHeight()), Color.GRAY));
+    	    g2.drawRoundRect(4, 4, getWidth()-8, getHeight()-8, 6, 6);
+    	    //g2.setPaint(new GradientPaint(pt1, Color.DARK_GRAY, pt2, Color.GRAY));
+    	    //g2.draw(rr2);
+    	    
+            g2.dispose();
+
+            super.paintComponent(g);
+        }
+    	/**
+    	 * This will create a the custom button with text.
+    	 * @author Marcus Michalske
+    	 *
+    	 */
+        public static final CustomJButton newInstance(String s)
+        {
+            return new CustomJButton(s);
+        }
+    }
 }
