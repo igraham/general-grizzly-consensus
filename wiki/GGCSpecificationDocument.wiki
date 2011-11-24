@@ -1,0 +1,209 @@
+#summary General Grizzly Consensus Specification Document
+#labels GGC,Specification,Document,Phase-Support,Phase-Requirements,Phase-Design
+
+= 1. 0 Introduction =
+This section provides an overview of the entire requirement document. This document describes all data, functional and behavioral requirements for software.
+Ex. The section introduces the system requirements specification (SRS) for the Global Personal Marketplace (GPM) system to its readers.
+Ex. The Global Personal Marketplace (GPM) system will be a global Web-based marketplace bringing together private individuals and small companies to buy and sell all manner of items.
+Our goal is to successfully create an application for staff and student. We also aim to develop a project in such a way that allows for the addition of student users in future
+Contact information/ SRS team members: Our contacts throughout the project will be Dr. Robert Lutz and Dr. Evelyn Brannock of Georgia Gwinnett College.   
+The team members for the duration of the project are as follow:
+  *Rachael Wright
+  *Stephen Kent
+  *Burley Mullins
+  *Turab Babar
+  *Marcus Michalske
+  *Ian Graham
+
+== 1.1 Goals and objectives ==
+The main goal of GGC^2 is to establish a program for ITEC 1001 teachers and students
+Overall goals and software objectives are described.
+Ex. The business goal of the Global Personal Marketplace (GPM) system is to take advantage of the Internet and World Wide Web to radically improve the way private individuals and small companies buy and sell items.
+Ex. The business objectives of the GPM are to provide the following business benefits to its buyers, sellers, and owners.
+Ex. The GPM will:
+·         Provide its buyers with a huge selection of items (and sellers).
+·         Enable its buyers to easily search for, find, and buy the items they want.
+·         Enable buyers to buy items that they could not ordinarily find or afford.
+·         Enable buyers to help set (and thereby minimize) the price of the items they wish to buy (e.g., via auctions and reverse auctions).
+·         Make buying more convenient by allowing buyers to buy items:
+-         Anytime (i.e., 24 hours a day and 7 days a week).
+-         Anywhere the buyers have access to the Internet (e.g., at home, at work, and while traveling).
+·         Minimize risks associated with buying over the Internet.
+The GPM will:
+·         Provide its sellers with a huge customer base of potential buyers.
+·         Enable its sellers to easily target and personalize their marketing to appropriate potential buyers.
+·         Enable its sellers to sell items that they could not otherwise afford to sell (e.g., by minimizing their overhead and transaction costs).
+·         Enable its sellers to determine the market price of their items and set their prices accordingly (e.g., via auctions or direct sales).
+·         Make selling more convenient by allowing sellers to sell items:
+-         Anytime (i.e., 24 hours a day and 7 days a week).
+-         Anywhere the sellers have access to the Internet (e.g., at home, at work, while traveling).
+·         Minimize risks associated with selling over the Internet.
+The GPM will:
+·         Minimize the costs of providing a marketplace (e.g., capital costs, labor costs) compared to a physical marketplace (e.g., a shopping mall) by maximizing automation and thus minimizing labor and facilities costs.
+·         Maximize income by maximizing the number of sellers (i.e., merchants) paying marketplace fees.
+
+= 1.2 Statement of scope =
+A description of the software is presented. Major inputs, processing functionality and outputs are described without regard to implementation detail.
+Inputs:
+4 text boxes: IP address for students
+Radio buttons: True/ False and Multiple Choice
+Radio Buttons: Question Answers
+Text Box: number of multiple choice questions
+Outputs:
+Graph of student scores
+
+== 1.3 Software context ==
+The software is placed in a business or product line context. Strategic issues relevant to context are discussed. The intent is for the reader to understand the 'big picture'.
+Ex.This subsection documents the context of the GPM in terms of the significant externals with which it interacts. As illustrated in the following context diagram, the Global Personal Marketplace (GPM) interfaces with several external actors and systems:
+·         Individuals and small businesses can act as users in either the buyer or seller role.  Buyers buy items sold and shipped by the sellers when those items are bought and sold in the GPM.
+·         Accountants, security officers and user support agents are employees who work for Global Personal Marketing Corporation.  Accountants perform their accounting duties using the GPM.  Security Officers handle security violations of the GPM.  User support agents provide user support for the GPM.
+·         The GPM authorizes credit card purchases of items via the authorization processor gateway.
+[image]
+
+== 1.4 Major constraints ==
+Any business or product line constraints that will impact the manner in which the software is to be specified, designed, implemented or tested are noted here.
+The project will not be tested in an actual classroom because space is limited.
+
+= 2.0 Usage scenario =
+This section provides a usage scenario for the software. It organized information collected during requirements elicitation into use-cases.
+
+== 2.1 User profiles ==
+The profiles of all user categories are described here.
+Teacher: Send questions/ Show hidegraph
+Student: Connect to teacher/ Answer Questions
+
+== 2.2 Use-cases ==
+All use-cases for the software are presented.
+Diagram?
+
+=== 2.2.1 Brief Description ===
+Brief Description use case
+
+=== 2.2.2 Step-by-step description ===
+(see pg 315 for example) Add the diagram of Use case
+
+=== 2.2.3 Priority ===
+Priority
+
+== 2.3 Special usage considerations ==
+Special requirements associated with the use of the software are presented.
+
+= 3.0 Data Model and Description =
+This section describes information domain for the software
+
+== 3.1 Class Diagram ==
+Classes that will be managed/manipulated by the software are described in this section.
+
+=== 3.1.1 Classes ===
+Data objects and their major attributes are described.
+
+=== 3.1.2 Relationships ===
+Relationships among data objects are described.
+
+= 4.0  Dynamic Model and Description =
+dynamic Model and Description
+
+== 4.1 State Diagram/s ==
+(or similar depending on the tool used)
+This section explains the business flow to developer
+
+=== 4.1.1 Description of initial state/final state ===
+initial state/ final state
+
+=== 4.1.2 Description of each state ===
+description of each state
+
+=== 4.1.3 Description of each transition ===
+description of each transition
+
+= 5.0 External Interface Requirements =
+external interface requirements
+
+== 5.1 User interfaces ==
+An overview of any human interfaces to be designed for the software is presented. Provide mockups.
+Perhaps the Powerpoint version here? A couple of minor design changes have happened, like ip has become box.box.box.box
+
+== 5.2 Hardware interfaces ==
+Interfaces to other machines (computers or devices) are described.
+
+== 5.3 Software interfaces ==
+Interfaces to other systems, and products are described.
+
+== 5.4 Communication protocols and interface ==
+Interfaces to networks are described.
+
+= 6.0 Nonfunctional  =
+nonfunctional requirements
+
+== 6.1 Performance requirements ==
+performance requirements  
+
+== 6.2 Safety requirements ==
+safety requirements
+
+== 6.3 Security requirements ==
+security requirements  
+
+== 6.4 Software quality attributes ==
+software quality attributes  
+
+== 6.5 Project documentation ==
+project documentation  
+
+== 6.6 User documentation ==
+user documentation - R will provide
+
+= 7.0 Design Rationale =
+design rationale
+
+== 7.1 Physical Architecture ==
+(graphic required )
+physical architecture   
+
+== 7.2 Technology Platform ==
+technology platform - Java?
+
+=== 7.2.1 Language ==
+language - Java.
+
+=== 7.2.2 Development tools ===
+(such as CASE tool used)
+development tools - Eclipse    
+
+=== 7.2.3 Run-time requirements ===
+(differentiate between the client requirements and the server requirements)
+
+=== 7.2.3.1 Browser ===
+browser
+
+=== 7.2.3.2 Web Server ===
+web server
+
+=== 7.2.3.3 JRE version ===
+???                      JRE 6
+
+=== 7.2.3.4 Messaging system ===
+messaging system                       
+
+=== 7.2.3.4 etc. ===
+etc
+
+== 7.3 Design Pattern Utilized ==
+design pattern utilized
+
+= 8.0 Other Requirements =
+Other Requirements
+
+= Appendix A: Terminology/Glossary/Definitions list =
+Appendix A  
+
+= Appendix B: As Needed =
+Appendix B
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
