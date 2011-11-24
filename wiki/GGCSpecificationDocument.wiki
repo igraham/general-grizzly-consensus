@@ -1,5 +1,5 @@
 #summary General Grizzly Consensus Specification Document
-#labels GGC,Specification,Document,Phase-Support,Phase-Requirements,Phase-Design
+#labels GGC,Specification,Document,Phase-Support,Phase-Requirements,Phase-Design,Featured
 
 = 1. 0 Introduction =
 This section provides an overview of the entire requirement document. This document describes all data, functional and behavioral requirements for software.
