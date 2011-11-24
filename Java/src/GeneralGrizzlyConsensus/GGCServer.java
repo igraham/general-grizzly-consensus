@@ -27,6 +27,10 @@ public enum GGCServer implements Runnable
 
 	protected class ClientCleanUpTask implements Runnable
 	{
+		private Object lock = new Object(); // This is purely for the wait
+											// command as the monitor for
+											// Thread() is somewhat
+											// unpredictable.
 		private boolean continueTask;
 
 		ClientCleanUpTask()
@@ -57,7 +61,10 @@ public enum GGCServer implements Runnable
 				try
 				{
 					// This way we only try to cleanup our list once a second.
-					this.wait(1000);
+					synchronized (lock)
+					{
+						lock.wait(1000);
+					}
 				}
 				catch (InterruptedException e)
 				{
