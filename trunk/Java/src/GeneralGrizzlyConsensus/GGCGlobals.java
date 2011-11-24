@@ -31,7 +31,6 @@ public enum GGCGlobals
 		if (exceptionLog == null)
 			exceptionLog = new ArrayList<Exception>();
 
-		e.fillInStackTrace();
 		exceptionLog.add(e);
 	}
 
