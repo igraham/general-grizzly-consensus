@@ -8,12 +8,12 @@ Ex. The Global Personal Marketplace (GPM) system will be a global Web-based mark
 Our goal is to successfully create an application for staff and student. We also aim to develop a project in such a way that allows for the addition of student users in future
 Contact information/ SRS team members: Our contacts throughout the project will be Dr. Robert Lutz and Dr. Evelyn Brannock of Georgia Gwinnett College.   
 The team members for the duration of the project are as follow:
-  *Rachael Wright
-  *Stephen Kent
-  *Burley Mullins
-  *Turab Babar
-  *Marcus Michalske
-  *Ian Graham
+  * Rachael Wright
+  * Stephen Kent
+  * Burley Mullins
+  * Turab Babar
+  * Marcus Michalske
+  * Ian Graham
 
 == 1.1 Goals and objectives ==
 The main goal of GGC^2 is to establish a program for ITEC 1001 teachers and students
@@ -199,11 +199,3 @@ Appendix A
 
 = Appendix B: As Needed =
 Appendix B
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
