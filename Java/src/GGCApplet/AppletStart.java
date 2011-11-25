@@ -87,9 +87,17 @@ public class AppletStart extends Applet
 	private static DefaultCategoryDataset barData;
 	//This is the object which will handle the updates of the JFreeChart data.
 	private GraphUpdater updater;
-
+	
 	public void init()
 	{
+		// Get our parameter from the HTML tag.
+		int loadProfessor = -1;
+		String param = this.getParameter("loadProfessor");
+		if (param != null)
+		{
+			// Parameter exists so parse to int (if properly set in HTML should only be 1 or 0).
+			loadProfessor = Integer.parseInt(param);
+		}
 		Runnable runner = new Runnable() {
             public void run() {
             	mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");

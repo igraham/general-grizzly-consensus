@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="GGC_GeneralGrizzlyConsensus" default="dist" basedir=".">
+	<description>
+		This script will build the General Grizzly Consensus Applet and package it for distribution.
+	</description>
+
+	<property name="src" location="src" />
+	<property name="inc" location="Includes" />
+	<property name="lib" location="Libraries" />
+	<property name="build" location="build" />
+	<property name="build.classes" location="${build}/classes" />
+	<property name="build.dist" location="${build}/dist" />
+	<property name="build.dist.lib" location="${build}/dist/lib" />
+	<property name="build.jar" location="${build}/ggc2applet.jar" />
+	<property name="build.zip" location="${build}/ggc2applet.zip" />
+
+	<path id="classpath">
+		<fileset dir="${lib}">
+			<include name="jcommon-1.0.16.jar" />
+			<include name="jfreechart-1.0.13.jar" />
+		</fileset>
+	</path>
+
+	<!-- The project does not use or require ScriptContext, but it is a good way to make the buildfile require Java 6 or better. -->
+	<target name="verifyRequirements" description="Checks if the necessary requirements for building GGC^2 are fulfilled">
+		<available classname="javax.script.ScriptContext" property="JDK6.present" />
+		<fail unless="JDK6.present" message="JDK 6 or greater is required." />
+	</target>
+
+	<target name="clean" description="Remove previously built files.">
+		<delete dir="${build}" />
+	</target>
+
+	<target name="init" depends="clean, verifyRequirements" description="Initializes the directories for the build.">
+		<mkdir dir="${build}" />
+		<mkdir dir="${build.classes}" />
+		<mkdir dir="${build.dist}" />
+		<mkdir dir="${build.dist.lib}" />
+	</target>
+
+	<target name="compile" depends="init" description="Compile the source.">
+		<javac destdir="${build.classes}" optimize="on" source="1.6" target="1.6" includeantruntime="false">
+			<src path="${src}" />
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile" description="Create the jar file.">
+		<jar destfile="${build.jar}">
+			<fileset dir="${build.classes}" />
+		</jar>
+	</target>
+
+	<target name="dist" depends="jar" description="Package for distribution.">
+		<copy todir="${build.dist}">
+			<fileset dir="${build}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${inc}">
+				<include name="*.html"/>
+			</fileset>
+		</copy>
+		<copy todir="${build.dist.lib}">
+			<fileset dir="${lib}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		<zip destfile="${build.zip}" basedir="${build.dist}" />
+	</target>
+</project>
