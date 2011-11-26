@@ -1,87 +1,66 @@
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.event.WindowEvent;
+package GGCApplet;
+
+import java.applet.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
+import javax.swing.*;
 
-import AppletStart.GGCConnectListener;
-import AppletStart.ResponderListener;
-import GeneralGrizzlyConsensus.GGCConnection;
-import GeneralGrizzlyConsensus.GGCGlobals;
-import GeneralGrizzlyConsensus.GGCServer;
-
+import GeneralGrizzlyConsensus.*;
 
 public class GeneralGrizzlyConsensusStudent extends Applet
 {
-	//The panel will display the current IP of the computer in the network.
-	private JPanel pShowIP;
+	//I added this because the client/server GUI's had it.
+	private static final long serialVersionUID = 1L;
+	//The container to hold the layout of the main frame of the Applet.
+	private Container mfContainer;
 	//Will allow the responder to connect to an IP of a session manager.
 	private JPanel pConnectIP;
 	//The responders response pad with "True/False" and "A-E" buttons.
 	private JPanel pResponder;
-	//The session managers query type and graph.
-	private JPanel pSessionM;
 	//This is the button for the responder to connect to the IP.
 	private JButton rContorlP;
-	//This is the button which shows and hides the graph.
-	private JButton pShowHide;
-	//This button is the Session Manager's way of sending questions to the students.
-	private JButton sendQuestion;
 	//This button is the Responder's way of sending an answer to the professor.
 	private JButton sendAnswer;
-	//The panel which contains the graph which displays the results of the question.
-	private ChartPanel chartPanel;
-	//The IP of the computer
-	private String cIP = "000.000.0.0";
-	//The type of queries to be polled upon.
-	private String[] types = new String[26];
 	//This is to tell that all the IP numbers have been filled in.
 	private JTextField[] ip;
-	//This is the instance of the server that, should it need to be used, will be initialized.
-	private GGCServer server;
 	//This is an instance of a connection which will essentially serve as the client. It will be initialized
 	//upon clicking on responder.
 	private GGCConnection client;
-	//This list of buttons will be initialized if the responder button is pressed.
-	private ArrayList<JButton> buttons;
-	//Make an object of cloneable Radio Buttons for the responder
-	private JRadioButton rButton;
+	//Button groups which organize the buttons used by the session manager and responder.
+	private ButtonGroup rGroup, tGroup;
+	//This button group is used by the responder and will be used to both determine which
+	//response buttons are on the screen and which response is sent to the session manager
+	//when the sendAnswer button is clicked.
+	private ArrayList<JToggleButton> responderButtons;
+	//This button group is used specifically for the true and false buttons.
+	private ArrayList<JToggleButton> trueFalseButtons;
 	//This is the main frame for the whole GUI.
 	private JFrame mainFrame;
 
-	
 	public void init()
 	{
 		Runnable runner = new Runnable() {
-            public void run() {
-            	mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
-        		mainFrame.setSize(300, 432);
-        		mainFrame.setVisible(true);
-        		selectPane();
-        		mfContainer = mainFrame.getContentPane();
-        		mfContainer.setLayout(new CardLayout());		
-        		mfContainer.add(pSelect, "Selection Panel");
-        		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            }
-        };
-        EventQueue.invokeLater(runner);
+			public void run() {
+				mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
+				mainFrame.setSize(500, 432);
+				mainFrame.setVisible(true);
+				mfContainer = mainFrame.getContentPane();
+				mfContainer.setLayout(new CardLayout());
+				connectIP();
+				mfContainer.add(pConnectIP, "IP Connection Panel");
+				setupResponderCloseListener();
+				createResponder();
+				mfContainer.add(pResponder, "Responders Panel");
+				pConnectIP.setVisible(true);
+				mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			}
+		};
+		EventQueue.invokeLater(runner);
 	}
 
 	private void connectIP()
@@ -94,18 +73,26 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 
 		JPanel lP2 = new JPanel();
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
+		//This is the pattern that captures an IP address. It can't be, "(?:25[0-4]|2[0-4][0-9]|[01]?[1-9][0-9]?)" because 
+		//that discludes 100, and many other non-zero values with a zero in it, from the list of valid IP's.
+		//_254_1 is for the outer two blocks.
+		String _254_1 = "(?:25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]|[1-9])";
+		RegexFormatter ipFormatter1 = new RegexFormatter( _254_1 );
+		//_254_0 is for the inner two blocks.
+		String _254_0 = "(?:25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
+		RegexFormatter ipFormatter2 = new RegexFormatter( _254_0 );
 
-		ip = new JTextField[4];
-		JTextField ip1 = new JTextField();
+		ip = new JFormattedTextField[4];
+		JFormattedTextField ip1 = new JFormattedTextField(ipFormatter1);
 		ip1.setColumns(3);
 		ip[0] = ip1;
-		JTextField ip2 = new JTextField();
+		JFormattedTextField ip2 = new JFormattedTextField(ipFormatter2);
 		ip2.setColumns(3);
 		ip[1] = ip2;
-		JTextField ip3 = new JTextField();
+		JFormattedTextField ip3 = new JFormattedTextField(ipFormatter2);
 		ip3.setColumns(3);
 		ip[2] = ip3;
-		JTextField ip4 = new JTextField();
+		JFormattedTextField ip4 = new JFormattedTextField(ipFormatter1);
 		ip4.setColumns(3);
 		ip[3] = ip4;
 
@@ -113,7 +100,7 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 		JLabel dot2= new JLabel(".");
 		JLabel dot3= new JLabel(".");
 
-		rContorlP = new JButton("Connect");
+		rContorlP = new CustomJButton("Connect");
 		rContorlP.addActionListener(new GGCConnectListener());
 
 		lP1.add(ip1);
@@ -132,138 +119,286 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 	private void createResponder()
 	{
 		pResponder = new JPanel();
+		pResponder.setLayout(new BorderLayout());
 		pResponder.setVisible(false);
 
 		JPanel lP1 = new JPanel();
 		lP1.setLayout(new GridLayout(3,1));
-		
-		String sPerm = "Test";
-		
-		//Whatever buttons end up here, add them to the ArrayList of buttons.
-		ButtonGroup bg = new ButtonGroup();
-		JRadioButton tRButton = new JRadioButton("True");
-		JRadioButton fRButton = new JRadioButton("False");
-		JRadioButton rButton = new JRadioButton(sPerm);
 
-		bg.add(tRButton);
-		bg.add(fRButton);
-		bg.add(rButton);
-		
-		lP1.add(tRButton);
-		lP1.add(fRButton);
-		lP1.add(rButton);
+		//Whatever buttons end up here, add them to the Button group.
+		responderButtons = new ArrayList<JToggleButton>();
+		trueFalseButtons = new ArrayList<JToggleButton>();
+		rGroup = new ButtonGroup();
+		tGroup = new ButtonGroup();
 
-		pResponder.add(lP1);
+		//pResponder.add(lP1,BorderLayout.CENTER);
 	}
 	private void setupResponderCloseListener()
 	{
-	       mainFrame.addWindowListener(new java.awt.event.WindowAdapter() 
-	       {
-	           public void windowClosing(WindowEvent winEvt)
-	           {
-	               // Do Socket clean-up here.
-	               if (client != null)
-	                   client.closeConnection();
-	               System.exit(0);
-	           }
-	       });
+		mainFrame.addWindowListener(new java.awt.event.WindowAdapter() 
+		{
+			public void windowClosing(WindowEvent winEvt)
+			{
+				// Do Socket clean-up here.
+				if (client != null)
+					client.closeConnection();
+				System.exit(0);
+			}
+		});
 	}
 	/**
-	    * This method is essentially the same as the old setupConnection method but
-	    * it takes in an IP address as a parameter and is public.
-	    * @param IP
-	    */
-	   private void setupConnection(String IP)
-	   {
-		   try
-	       {
-	           client = new GGCConnection(new Socket(IP,
-	                   GGCGlobals.INSTANCE.COMMUNICATION_PORT), new ResponderListener());
-	           Thread t = new Thread(client);
-	           t.start();
-	       }
-	       catch (UnknownHostException e)
-	       {
-	           JOptionPane.showMessageDialog(this, "Unknown host.");
-	       }
-	       catch (IOException e)
-	       {
-	           // JOptionPane.showMessageDialog(this, "Cannot connect to host.");
-	           JOptionPane.showMessageDialog(this, e.getMessage());
-	       }
-	   }
-		/**
-		 * This method checks to see whether the given String input is a valid IP address.
-		 * This method also pops up error boxes every time bad input is given when connect is pressed.
-		 * As a result, that part can be deleted and it would be fine with me.
-		 * @author Ian Graham
-		 * @param IP
-		 * @return Returns true if it is a valid IP address, and false if it has any deviations
-		 * such as numbers greater than 255 or less than 0, and characters other than numbers.
-		 */
-		private boolean isValidIP(String[] IP)
+	 * This method is essentially the same as the old setupConnection method but
+	 * it takes in an IP address as a parameter.
+	 * @param IP
+	 */
+	private void setupConnection(String IP)
+	{
+		try
 		{
-			for(int i = 0; i < IP.length; i++)
+			client = new GGCConnection(new Socket(IP,
+					GGCGlobals.INSTANCE.COMMUNICATION_PORT), new ResponderListener());
+			Thread t = new Thread(client);
+			JPanel sa = new JPanel();
+			t.start();
+			pResponder.setVisible(true);
+			pConnectIP.setVisible(false);
+			sendAnswer = new CustomJButton("Send Answer");
+			sendAnswer.addActionListener(new ResponderListener());
+			sa.add(sendAnswer);
+			pResponder.add(sa, BorderLayout.PAGE_END);
+		}
+		catch (UnknownHostException e)
+		{
+			JOptionPane.showMessageDialog(this, "Unknown host.");
+		}
+		catch (IOException e)
+		{
+			// JOptionPane.showMessageDialog(this, "Cannot connect to host.");
+			JOptionPane.showMessageDialog(this, e.getMessage());
+		}
+	}
+
+	/**
+	 * This listener will be attached to the button in the student screen.
+	 * This class can be used by GGCConnection to test the connection to the specified IP address.
+	 * This class will handle user input for a student connecting to the professor
+	 * AND CONNECT.
+	 * @author Ian Graham
+	 *
+	 */
+	public class GGCConnectListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e) 
+		{
+			String[] IP = new String[4];
+			IP[0] = ip[0].getText();
+			IP[1] = ip[1].getText();
+			IP[2] = ip[2].getText();
+			IP[3] = ip[3].getText();
+			String ipAddress = "";
+			ipAddress += IP[0] + ".";
+			ipAddress += IP[1] + ".";
+			ipAddress += IP[2] + ".";
+			ipAddress += IP[3];
+			setupConnection(ipAddress);
+		}
+	}
+
+	/**
+	 * This method will usually only generate/show 3-5 buttons (regularly multiple choice)
+	 * or 2 buttons (regularly true/false), and hide the ones that are not relevant to the
+	 * scope of the button range. It is *planned* to go up to 26, but technically unless
+	 * it is coded out it can do up to 99 (tested, it will do up to 99). I have coded out
+	 * trying to make a one or two button multiple choice or something ridiculous like that.
+	 * @param num - The number of buttons. Two buttons represents true/false. Anything more than
+	 * that is multiple choice.
+	 */
+	private void generateButtons(int num, boolean trueFalse)
+	{		
+		if(num < 2)
+		{
+			//throw an error, someone tried to make a one answer multiple choice,
+			//or either entered a negative or zero, all of which are bad.
+		}
+		else if(trueFalse)
+		{
+			showHideButtons(responderButtons, false);
+			if(trueFalseButtons.size() == 2)
 			{
-				if(IP[i].length() == 0)
-				{
-					JOptionPane.showMessageDialog(null, "Please fill out all text boxes before attempting to connect.",
-							"Invalid IP", JOptionPane.ERROR_MESSAGE);
-					return false;
-				}
-				try
-				{
-					int num = Integer.parseInt(IP[i]);
-					if(i == 0 || i == 3)
-					{
-						if(num > 254 || num < 1)
-						{
-							showBadIPField(i);
-							JOptionPane.showMessageDialog(null, "Please use numbers between 254 and 1 for the first and last box.",
-									"Invalid IP", JOptionPane.ERROR_MESSAGE);
-							return false;
-						}
+				showHideButtons(trueFalseButtons, true);
+			}
+			else
+			{
+				JPanel tfPanel = new JPanel();
+				JPanel tfPanelBuff = new JPanel();
+				tfPanelBuff.setLayout(new BoxLayout(tfPanelBuff, BoxLayout.PAGE_AXIS));
+				tfPanelBuff.add(Box.createVerticalGlue());
+				tfPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+				JToggleButton b1 = new CustomJToggleButton("True");
+				trueFalseButtons.add(b1);
+				tGroup.add(b1);
 
-					}
-					if(i == 1 || i == 2)
-					{
-						if(num > 254 || num < 0)
-						{
-							showBadIPField(i);
-							JOptionPane.showMessageDialog(null, "Please use numbers between 254 and 0 for the second and third box.",
-									"Invalid IP", JOptionPane.ERROR_MESSAGE);
-							return false;
-						}
-
-					}
-				}
-				catch(NumberFormatException e)
+				JToggleButton b2 = new CustomJToggleButton("False");
+				trueFalseButtons.add(b2);
+				tGroup.add(b2);
+				
+				tfPanel.add(b1);
+				tfPanel.add(b2);
+				tfPanelBuff.add(tfPanel);
+				pResponder.add(tfPanelBuff, BorderLayout.CENTER);
+				pResponder.validate();
+			}
+		}
+		else
+		{
+			JPanel ownPanel = new JPanel();
+			JPanel numPanelBuff = new JPanel();
+			numPanelBuff.setLayout(new BoxLayout(numPanelBuff, BoxLayout.PAGE_AXIS));
+			numPanelBuff.add(Box.createVerticalGlue());
+			ownPanel.setLayout(new GridLayout(10,3));
+			showHideButtons(trueFalseButtons, false);
+			if(num > responderButtons.size())
+			{
+				for(int i = 0; i < num; i++)
 				{
-					JOptionPane.showMessageDialog(null, "Please use numbers when entering the IP.",
-							"Invalid IP", JOptionPane.ERROR_MESSAGE);
-					return false;
+					JToggleButton r = new CustomJToggleButton(""+i);
+					rGroup.add(r);
+					responderButtons.add(r);
+					ownPanel.add(r);
+					numPanelBuff.add(ownPanel);
+					pResponder.add(numPanelBuff);
+					pResponder.validate();
 				}
 			}
-			return true;
-		}
-		/**
-		 * When the user has a bad IP address in a particular field, this method will highlight which one.
-		 * You may or may not wish to use this.
-		 */
-		private void showBadIPField(int i)
-		{
-			ip[i].requestFocus();
-			ip[i].selectAll();
-		}
-		
-
-		class GraphBox extends JComponent
-		{
-			public void paint(Graphics g)
+			else
 			{
-				g.setColor(Color.WHITE);
-				g.fill3DRect(20, 20, 120, 120,true);
+				for(int i = 0; i < responderButtons.size(); i++)
+				{
+					if(i < num)
+					{
+						responderButtons.get(i).setVisible(true);
+					}
+					else
+					{
+						responderButtons.get(i).setVisible(false);
+					}
+				}
 			}
 		}
+	}
+	/**
+	 * Shows or hides the buttons in the specified group.
+	 * @param buttons
+	 * @param state
+	 */
+	private void showHideButtons(ArrayList<JToggleButton> buttons, boolean state)
+	{
+		for(JToggleButton b : buttons)
+		{
+			b.setVisible(state);
+		}
+	}
+	/**
+	 * Given one of the button lists, finds which one is selected.
+	 * @param buttons
+	 * @return returns the text of the selected button.
+	 */
+	private String findSelected(ArrayList<JToggleButton> buttons)
+	{
+		for(int i = 0; i < buttons.size(); i++)
+		{
+			if(buttons.get(i).isSelected())
+			{
+				return buttons.get(i).getText();
+			}
+		}
+		return "";
+	}
 
+	/**
+	 * This class listens for when the professor clicks the send question button.
+	 * It will send some sort of text to the student/client (maybe just T for true
+	 * or false and M# for multiple choice where # is a number between 3 and 5) and
+	 * will check for valid output on multiple choice.
+	 * @author Ian Graham
+	 *
+	 */
+	public class ResponderListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (e.getSource() == sendAnswer)
+			{
+				String messageR = findSelected(responderButtons);
+				String messageT = findSelected(trueFalseButtons);
+				if(messageR.length() < 1 && messageT.length() < 1)
+				{
+					//throw an error, pretty much no button was selected.
+				}
+				else if(messageR.length() > 0)
+				{
+					client.sendMessage(messageR);
+					sendAnswer.setEnabled(false);
+				}
+				else
+				{
+					if(messageT.equals("True"))
+					{
+						client.sendMessage("T");
+						sendAnswer.setEnabled(false);
+					}
+					else if(messageT.equals("False"))
+					{
+						client.sendMessage("F");
+						sendAnswer.setEnabled(false);
+					}
+					else
+					{
+						//throw an arbitrary error. something went wrong.
+					}
+				}
+			}
+			else if (e.getID() == GGCGlobals.INSTANCE.MESSAGE_EVENT_ID)
+			{
+				String message = e.getActionCommand();
+				//This if statement means that it will always be at least one character. 
+				//Hopefully if it's one, it's a "T"
+				//It also means if it's multiple choice, that we aren't going to go past double digit buttons.
+				if(message.length() > 0 && message.length() < 4)
+				{
+					if(message.substring(0,1).equals("T") && message.length() == 1)
+					{
+						generateButtons(2, true);
+						sendAnswer.setEnabled(true);
+					}
+					else if(message.substring(0,1).equals("M") && message.length() > 1)
+					{
+						try
+						{
+							int num = Integer.parseInt(message.substring(1, message.length()));
+							if(num > 2 && num < 27)
+							{
+								generateButtons(num, false);
+								sendAnswer.setEnabled(true);
+							}
+							else
+							{
+								//Someone did something ridiculous like 2 or less choices or more than 26 choices.
+								//Two is defaulted to true/false, less than two is not a valid question, and more than 26 is unreasonable.
+							}
+						}
+						catch(NumberFormatException exc)
+						{
+							//throw an error, this happens when the text after the "M" is not a number. Ex: MC5
+						}
+					}
+					else
+					{
+						//throw an error, a T or M is not present in the first letter of the message. This is bad.
+					}
+				}
+			}
+		}
+	}
 }

@@ -63,8 +63,16 @@ public class AppletStart extends Applet
 	private ChartPanel chartPanel;
 	//The IP of the computer
 	private String cIP = "000.000.0.0";
-	//The type of queries to be polled upon.
-	private String[] types = {"True/False", "A-C", "A-D", "A-E"};
+	/**
+	 * This is the input for the JComboBox of multiple choice options.
+	 */
+	private String[] types = {"A-C", "A-D", "A-E", "A-F", "A-G", "A-H", "A-I", "A-J", "A-K", "A-L", "A-M", 
+			"A-N", "A-O", "A-P", "A-Q", "A-R", "A-S", "A-T", "A-U", "A-V", "A-W", "A-X", "A-Y", "A-Z"};
+	/**
+	 * This is the replacement for the number text field in the previous GUI. It is a drop-down list which
+	 * uses the array of strings "types" as input.
+	 */
+	private JComboBox multipleChoice;
 	//This is to tell that all the IP numbers have been filled in.
 	private JTextField[] ip;
 	//This is the instance of the server that, should it need to be used, will be initialized.
@@ -83,8 +91,6 @@ public class AppletStart extends Applet
 	private ArrayList<JToggleButton> responderButtons;
 	//This button group is used specifically for the true and false buttons.
 	private ArrayList<JToggleButton> trueFalseButtons;
-	//This is used for 
-	private JTextField numField;
 	//This is the main frame for the whole GUI.
 	private JFrame mainFrame;
 	//This is the actual object that holds the data.
@@ -306,7 +312,8 @@ public class AppletStart extends Applet
 		managerButtons.add(numButton);
 		mGroup.add(tfButton);
 		mGroup.add(numButton);
-		numField = new JTextField(5);
+		multipleChoice = new JComboBox(types);
+		multipleChoice.setMaximumRowCount(5);
 		ButtonGroup bg = new ButtonGroup();
 
 		bg.add(tfButton);
@@ -316,7 +323,7 @@ public class AppletStart extends Applet
 		sendQuestion.addActionListener(new ManagerListener());
 		tfPanel.add(tfButton);
 		numPanel.add(numButton);
-		numPanel.add(numField);
+		numPanel.add(multipleChoice);
 		
 		qPanel.add(tfButton);
 		qPanel.add(numPanel);
@@ -770,7 +777,7 @@ public class AppletStart extends Applet
 					label0:
 						try
 				{
-							int num = Integer.parseInt(numField.getText());
+							int num = multipleChoice.getSelectedIndex()+3;
 							if(num > 2 && num < 27)
 							{
 								server.sendMessageToAll("M"+num);
