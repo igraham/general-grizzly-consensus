@@ -64,6 +64,12 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 	private static DefaultCategoryDataset barData;
 	//This is the object which will handle the updates of the JFreeChart data.
 	private GraphUpdater updater;
+	//Displays the number of connections in the server.
+	private JLabel connected;
+	//Displays the answers received.
+	private JLabel ans;
+	//Counts the number of answers received for a question.
+	private int numAnswered;
 
 	public void init()
 	{
@@ -75,9 +81,9 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 				mfContainer = mainFrame.getContentPane();
 				mfContainer.setLayout(new CardLayout());		
 				mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				createSessionManager();
 				setupManagerCloseListener();
 				setupServer();
+				createSessionManager();
 				mfContainer.add(pSessionM, "Session Managers Panel");
 				pSessionM.setVisible(true);
 			}
@@ -87,17 +93,33 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 
 	private void createSessionManager()
 	{
+		numAnswered = 0;
 		pSessionM = new JPanel();
 		pSessionM.setVisible(true);
 		pSessionM.setLayout(new BorderLayout());
 		
 		JPanel cPanel = new JPanel();
-		cPanel.setBorder(BorderFactory.createTitledBorder("Your Contorl Panel"));
+		cPanel.setBorder(BorderFactory.createTitledBorder("Your Control Panel"));
 		pShowHide = new CustomJButton("Show/Hide");
 		pShowHide.addActionListener(new GGCGraphListener());
 		cPanel.add(pShowHide);
-		
-		
+		connected = new JLabel("Connected: 0");
+		Thread t = new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				while(true)
+				{
+					connected.setText("Connected: "+server.getNumberOfConnectedClients());
+				}
+			}
+			
+		});
+		t.start();
+		ans = new JLabel("Answered: 0");
+		cPanel.add(connected);
+		cPanel.add(ans);
+		connected.setText("Connected: "+server.getNumberOfConnectedClients());
 		JPanel qPanel = new JPanel();
 		JPanel tfPanel = new JPanel();
 		JPanel numPanel = new JPanel();
@@ -139,20 +161,34 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 		graph = createChart(dataset);
 		updater = new GraphUpdater(barData, graph);
 		chartPanel = new ChartPanel(graph);
-		chartPanel.setPreferredSize(new Dimension(500, 200));
-		JScrollPane scrollChart = new JScrollPane(chartPanel);
+		
+		//JScrollPane scrollChart = new JScrollPane(chartPanel);
+		//chartPanel.setPreferredSize(new Dimension(500, 250));
+		chartPanel.setMinimumSize(new Dimension(400, 450));
+		chartPanel.setMaximumSize(new Dimension(500, 350));
 		
 		JPanel ipPanel = new JPanel();
+		JPanel panel = new JPanel();
+		BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
+		panel.setLayout(layout);
+		panel.add(chartPanel);
+		
 		ipPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		JLabel myIP = new JLabel("Your IP: ");
+		// At this time people are more likely to be using IPv4 addresses instead of IPv6 addresses.
+		cIP = GGCServer.getLikelyIpv4Address().getHostAddress();
 		JLabel myIP1 = new JLabel(cIP);
 		ipPanel.add(myIP);
 		ipPanel.add(myIP1);
 		
-		pSessionM.add(qPanel, BorderLayout.WEST);
+		
+		JPanel buttonPanel = new JPanel(new BorderLayout());
+		buttonPanel.add(qPanel, BorderLayout.WEST);
+		buttonPanel.add(cPanel, BorderLayout.EAST);
+		
+		pSessionM.add(buttonPanel, BorderLayout.SOUTH);
 		pSessionM.add(ipPanel, BorderLayout.PAGE_START);
-		pSessionM.add(cPanel, BorderLayout.EAST);
-		pSessionM.add(scrollChart, BorderLayout.SOUTH);
+		pSessionM.add(panel, BorderLayout.CENTER);
 	}
 
 	private static CategoryDataset createDataset()
@@ -332,6 +368,8 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 		{
 			if (e.getSource() == sendQuestion)
 			{
+				numAnswered = 0;
+				ans.setText("Answered: 0");
 				String message = findSelected(managerButtons);
 				if(message == "True/False")
 				{
@@ -374,19 +412,26 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 					try
 					{
 						int i = Integer.parseInt(message);
+						numAnswered++;
+						ans.setText("Answered: "+numAnswered);
 						updater.incrementData(i);
 					}
 					catch(NumberFormatException err)
 					{
 						//throw an error, maybe the first digit was a zero but the second wasn't
+						//TODO The number of buttons can currently go over 26, make sure it can't.
 					}
 				}
 				else if(message.equals("T"))
 				{
+					numAnswered++;
+					ans.setText("Answered: "+numAnswered);
 					updater.incrementData(0);
 				}
 				else
 				{
+					numAnswered++;
+					ans.setText("Answered: "+numAnswered);
 					updater.incrementData(1);
 				}
 			}
