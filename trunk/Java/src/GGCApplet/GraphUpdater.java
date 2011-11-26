@@ -77,8 +77,7 @@ public class GraphUpdater {
 		{
 			for(int i = 0; i < numBars; i++)
 			{
-				char c = (char)('A' + i);
-				String letter = "" + c;
+				String letter = "" + (char)('A' + i);
 				barData.addValue(0.0, letter, letter);
 				if(i % 2 == 0){renderer.setSeriesPaint(i, green);}
 				else{renderer.setSeriesPaint(i, silver);}
