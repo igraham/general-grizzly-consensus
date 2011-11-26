@@ -9,17 +9,13 @@ package GGCApplet;
 
 import java.applet.*;
 import java.awt.*;
-import java.awt.MultipleGradientPaint.CycleMethod;
 import java.awt.event.*;
-import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import GeneralGrizzlyConsensus.*;
 
@@ -93,6 +89,8 @@ public class AppletStart extends Applet
 	private ArrayList<JToggleButton> trueFalseButtons;
 	//This is the main frame for the whole GUI.
 	private JFrame mainFrame;
+	//This is the bar graph which is used to change the colors on the graph.
+	private JFreeChart graph;
 	//This is the actual object that holds the data.
 	private static DefaultCategoryDataset barData;
 	//This is the object which will handle the updates of the JFreeChart data.
@@ -330,23 +328,35 @@ public class AppletStart extends Applet
 		qPanel.add(sendQuestion);
 		
 		CategoryDataset dataset = createDataset();
-		JFreeChart chart = createChart(dataset);
-		updater = new GraphUpdater(barData);
-		chartPanel = new ChartPanel(chart);
-		chartPanel.setPreferredSize(new Dimension(500, 200));
-		JScrollPane scrollChart = new JScrollPane(chartPanel);
+		graph = createChart(dataset);
+		updater = new GraphUpdater(barData, graph);
+		chartPanel = new ChartPanel(graph);
+		
+		//JScrollPane scrollChart = new JScrollPane(chartPanel);
+		//chartPanel.setPreferredSize(new Dimension(500, 250));
+		chartPanel.setMinimumSize(new Dimension(400, 450));
+		chartPanel.setMaximumSize(new Dimension(500, 350));
 		
 		JPanel ipPanel = new JPanel();
+		JPanel panel = new JPanel();
+		BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
+		panel.setLayout(layout);
+		panel.add(chartPanel);
+		
 		ipPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		JLabel myIP = new JLabel("Your IP: ");
 		JLabel myIP1 = new JLabel(cIP);
 		ipPanel.add(myIP);
 		ipPanel.add(myIP1);
 		
-		pSessionM.add(qPanel, BorderLayout.WEST);
+		
+		JPanel buttonPanel = new JPanel(new BorderLayout());
+		buttonPanel.add(qPanel, BorderLayout.WEST);
+		buttonPanel.add(cPanel, BorderLayout.EAST);
+		
+		pSessionM.add(buttonPanel, BorderLayout.CENTER);
 		pSessionM.add(ipPanel, BorderLayout.PAGE_START);
-		pSessionM.add(cPanel, BorderLayout.EAST);
-		pSessionM.add(scrollChart, BorderLayout.SOUTH);
+		pSessionM.add(panel, BorderLayout.SOUTH);
 	}
 
 	private static CategoryDataset createDataset()
@@ -822,218 +832,6 @@ public class AppletStart extends Applet
 				{
 					updater.incrementData(1);
 				}
-			}
-		}
-	}
-
-	/**
-	 * This class is to make custom JButton graphics that will be uniform in the whole application.
-	 * The button has three rounded rectangles, the outline is one color, the inner rectangle is a
-	 * gradient of two colors, and the inner most rectangle is a gradient of two colors.
-	 * @author Marcus Michalske
-	 *
-	 */
-	private static final class CustomJButton extends JButton implements MouseListener, MouseMotionListener
-	{    	
-		int state = 1;
-		int inactive=0;
-
-		private CustomJButton(String s)
-		{
-			super(s);
-			setHorizontalAlignment(SwingConstants.CENTER);
-			setContentAreaFilled(false);
-			setFocusPainted(false);
-			setBorderPainted(false);
-			this.addMouseListener(this);
-			this.addMouseMotionListener(this);
-		}
-
-		@Override
-		protected void paintComponent(Graphics g)
-		{
-			Graphics2D g2 = (Graphics2D) g.create();
-			Graphics2D g3 = (Graphics2D) g.create();
-
-			AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f);
-			g3.setComposite(newComposite);
-
-			g2.setPaint(Color.LIGHT_GRAY);
-			g2.setStroke(new BasicStroke(1));
-			//g2.setPaint(new GradientPaint(new Point(0, 0), Color.DARK_GRAY, new Point(0, getHeight()), Color.WHITE));
-			g2.fillRoundRect(0, 0, getWidth()-1, getHeight(), 10, 10);
-			g2.setPaint(Color.GRAY);
-			g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 10, 10);
-
-			Point2D center = new Point2D.Float(getWidth()/2, getHeight()/2);
-			float radius = getWidth();
-			float[] dist = {0.0f, 1.0f};
-			Color[] colors = {Color.WHITE, new Color(0,0,0,0)};
-			RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors, CycleMethod.NO_CYCLE);
-
-			g3.setPaint( p );
-			g3.fillRoundRect(1, 1, getWidth()-2, getHeight()-2, 5, 5);
-
-			if(inactive==1)
-			{
-				//Dummy Space
-			}
-			if(state==3)
-			{
-				colors[0] = Color.DARK_GRAY;
-				colors[1] = Color.WHITE;
-				p = new RadialGradientPaint(center, radius-10, dist, colors, CycleMethod.NO_CYCLE);
-				g3.setPaint( p );
-				g3.fillRoundRect(1, 1, getWidth()-2, getHeight()-2, 10, 10);
-			}
-
-			g2.dispose();
-			g3.dispose();
-
-			super.paintComponent(g);
-		}
-
-		public void mouseClicked(MouseEvent e)
-		{ 
-
-			//System.out.println("Clicked");
-			state=2;
-			repaint(); 
-
-		} 
-
-		public void mousePressed(MouseEvent e)
-		{ 
-
-			//System.out.println("Pressed");
-			state=3;
-			repaint();
-		} 
-
-		public void mouseReleased(MouseEvent e)
-		{ 
-
-
-			//System.out.println("Release");
-			state=2;
-			repaint();
-		} 
-
-		public void mouseEntered(MouseEvent e)
-		{ 
-
-			//System.out.println("Entered");
-			state=2;
-			repaint();
-		} 
-
-		public void mouseExited(MouseEvent e)
-		{ 
-
-			//System.out.println("Exited");
-			state=1;
-			repaint(); 
-
-		}
-
-		public void mouseDragged(MouseEvent e)
-		{
-			// Do what ever you want
-		} 
-
-		public void mouseMoved(MouseEvent e)
-		{
-			//Do what ever you want
-		}
-	}
-
-	/**
-	 * This class is to make custom JButton graphics that will be uniform in the whole application.
-	 * The button has three rounded rectangles, the outline is one color, the inner rectangle is a
-	 * gradient of two colors, and the inner most rectangle is a gradient of two colors.
-	 * @author Marcus Michalske
-	 *
-	 */
-	private static final class CustomJToggleButton extends JToggleButton implements ChangeListener
-	{
-		int state = 1;
-		int inactive=0;
-
-		private CustomJToggleButton(String s)
-		{
-			super(s);
-			setHorizontalAlignment(SwingConstants.CENTER);
-			setContentAreaFilled(false);
-			setFocusPainted(false);
-			setBorderPainted(false);
-			this.addChangeListener(this);
-		}
-
-		@Override
-		protected void paintComponent(Graphics g)
-		{
-			Graphics2D g2 = (Graphics2D) g.create();
-			Graphics2D g3 = (Graphics2D) g.create();
-
-			AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f);
-			g3.setComposite(newComposite);
-
-			g2.setPaint(Color.LIGHT_GRAY);
-			g2.setStroke(new BasicStroke(1));
-			//g2.setPaint(new GradientPaint(new Point(0, 0), Color.DARK_GRAY, new Point(0, getHeight()), Color.WHITE));
-			g2.fillRoundRect(0, 0, getWidth()-1, getHeight(), 10, 10);
-			g2.setPaint(Color.GRAY);
-			g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 10, 10);
-
-			Point2D center = new Point2D.Float(getWidth()/2, getHeight()/2);
-			float radius = getWidth();
-			float[] dist = {0.0f, 1.0f};
-			Color[] colors = {Color.WHITE, new Color(0,0,0,0)};
-			RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors, CycleMethod.NO_CYCLE);
-
-			g3.setPaint( p );
-			g3.fillRoundRect(1, 1, getWidth()-2, getHeight()-2, 5, 5);
-
-			if(inactive==1)
-			{
-				//Dummy space
-			}
-			if(state==3)
-			{
-				colors[0] = Color.DARK_GRAY;
-				colors[1] = Color.WHITE;
-				p = new RadialGradientPaint(center, radius-10, dist, colors, CycleMethod.NO_CYCLE);
-				g3.setPaint( p );
-				g3.fillRoundRect(1, 1, getWidth()-2, getHeight()-2, 10, 10);
-			}
-
-			g2.dispose();
-			g3.dispose();
-
-			super.paintComponent(g);
-		}
-		@Override
-		public void stateChanged(ChangeEvent arg0)
-		{
-			AbstractButton abstractButton = (AbstractButton) changeEvent.getSource();
-			ButtonModel buttonModel = abstractButton.getModel();
-			boolean armed = buttonModel.isArmed();
-			boolean pressed = buttonModel.isPressed();
-			boolean selected = buttonModel.isSelected();
-			if(selected)
-			{
-				state=3;
-				repaint();
-			}
-			else if(pressed)
-			{
-				state=3;
-				repaint();
-			}
-			else
-			{
-				state=2;
-				repaint();
 			}
 		}
 	}
