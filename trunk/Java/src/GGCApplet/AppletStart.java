@@ -273,6 +273,18 @@ public class AppletStart extends Applet
 		pShowHide.addActionListener(new GGCGraphListener());
 		cPanel.add(pShowHide);
 		connected = new JLabel("Connected: 0");
+		Thread t = new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				while(true)
+				{
+					connected.setText("Connected: "+server.getNumberOfConnectedClients());
+				}
+			}
+			
+		});
+		t.start();
 		ans = new JLabel("Answered: 0");
 		cPanel.add(connected);
 		cPanel.add(ans);
