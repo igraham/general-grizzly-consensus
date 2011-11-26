@@ -1,5 +1,11 @@
 package GGCApplet;
 
+import java.awt.Color;
+import java.awt.GradientPaint;
+
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
@@ -14,6 +20,20 @@ public class GraphUpdater {
 	 * This is the actual object that holds the data.
 	 */
 	private DefaultCategoryDataset barData;
+	/**
+	 * Very descriptive names. These are the colors for the barGraph.
+	 */
+	private GradientPaint green = new GradientPaint(0.0f, 0.0f, new Color(0, 125, 75),
+			0.0f, 0.0f, new Color(0, 0, 0));
+	/**
+	 * Very descriptive names. These are the colors for the barGraph.
+	 */
+	private GradientPaint silver = new GradientPaint(0.0f, 0.0f, Color.white,
+			0.0f, 0.0f, Color.darkGray);
+	/**
+	 * This allows us to change the colors of the graph.
+	 */
+	private BarRenderer renderer;
 	
 	/**
 	 * Pass in the object reference to the data, and the methods of GraphUpdater will handle everything
@@ -21,9 +41,11 @@ public class GraphUpdater {
 	 * is not the job of the updater. Its job is to set up and modify the data.
 	 * @param chartData
 	 */
-	public GraphUpdater(DefaultCategoryDataset chartData)
+	public GraphUpdater(DefaultCategoryDataset chartData, JFreeChart chart)
 	{
 		barData = chartData;
+		CategoryPlot plot = (CategoryPlot) chart.getPlot();
+		renderer = (BarRenderer) plot.getRenderer();
 	}
 	
 	/**
@@ -32,10 +54,6 @@ public class GraphUpdater {
 	 */
 	public void incrementData(int barNumber)
 	{
-		double d = (Double) barData.getValue(barNumber, barNumber);
-		d++;
-		System.out.println(d);
-		System.out.println(barData.getRowKey(barNumber));
 		barData.incrementValue(1.0, barData.getRowKey(barNumber), barData.getColumnKey(barNumber));
 	}
 	
@@ -62,6 +80,8 @@ public class GraphUpdater {
 				char c = (char)('A' + i);
 				String letter = "" + c;
 				barData.addValue(0.0, letter, letter);
+				if(i % 2 == 0){renderer.setSeriesPaint(i, green);}
+				else{renderer.setSeriesPaint(i, silver);}
 			}
 		}
 	}
