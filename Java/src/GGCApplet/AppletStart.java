@@ -39,8 +39,6 @@ public class AppletStart extends Applet
 	private Container mfContainer;
 	//The panel that will hold the selection between a responder or session manager.
 	private JPanel pSelect;
-	//The panel will display the current IP of the computer in the network.
-	private JPanel pShowIP;
 	//Will allow the responder to connect to an IP of a session manager.
 	private JPanel pConnectIP;
 	//The responders response pad with "True/False" and "A-E" buttons.
@@ -95,6 +93,14 @@ public class AppletStart extends Applet
 	private static DefaultCategoryDataset barData;
 	//This is the object which will handle the updates of the JFreeChart data.
 	private GraphUpdater updater;
+	//Displays the number of connections in the server.
+	private JLabel connected;
+	//Displays the answers received.
+	private JLabel ans;
+	//Counts the number of answers received for a question.
+	private int numAnswered;
+	//This boolean is a temporary fix to an issue when switching between multiple choice and T/F
+	private boolean rtf;
 
 	public void init()
 	{
@@ -137,29 +143,6 @@ public class AppletStart extends Applet
 
 		pSelect.add(bResponder);
 		pSelect.add(bSManager);
-	}
-
-	private void showIP()
-	{
-		pShowIP = new JPanel();
-		pShowIP.setLayout(new GridLayout(4,1));
-		pShowIP.setVisible(false);
-
-		// At this time people are more likely to be using IPv4 addresses instead of IPv6 addresses.
-		cIP = GGCServer.getLikelyIpv4Address().getHostAddress();
-
-		JLabel ipLabel1 = new JLabel("Please have your responders ");
-		JLabel ipLabel2 = new JLabel("connect to this IP: ");
-		JLabel ipLabel3 = new JLabel(cIP);
-		JButton smContorlP = new CustomJButton("Contune");
-
-		ActionListener showIPCard = new ShowIPCard();
-		smContorlP.addActionListener(showIPCard);
-
-		pShowIP.add(ipLabel1);
-		pShowIP.add(ipLabel2);
-		pShowIP.add(ipLabel3);
-		pShowIP.add(smContorlP);
 	}
 
 	private void connectIP()
@@ -279,17 +262,21 @@ public class AppletStart extends Applet
 
 	private void createSessionManager()
 	{
+		numAnswered = 0;
 		pSessionM = new JPanel();
 		pSessionM.setVisible(true);
 		pSessionM.setLayout(new BorderLayout());
 		
 		JPanel cPanel = new JPanel();
-		cPanel.setBorder(BorderFactory.createTitledBorder("Your Contorl Panel"));
+		cPanel.setBorder(BorderFactory.createTitledBorder("Your Control Panel"));
 		pShowHide = new CustomJButton("Show/Hide");
 		pShowHide.addActionListener(new GGCGraphListener());
 		cPanel.add(pShowHide);
-		
-		
+		connected = new JLabel("Connected: 0");
+		ans = new JLabel("Answered: 0");
+		cPanel.add(connected);
+		cPanel.add(ans);
+		connected.setText("Connected: "+server.getNumberOfConnectedClients());
 		JPanel qPanel = new JPanel();
 		JPanel tfPanel = new JPanel();
 		JPanel numPanel = new JPanel();
@@ -345,6 +332,8 @@ public class AppletStart extends Applet
 		
 		ipPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		JLabel myIP = new JLabel("Your IP: ");
+		// At this time people are more likely to be using IPv4 addresses instead of IPv6 addresses.
+		cIP = GGCServer.getLikelyIpv4Address().getHostAddress();
 		JLabel myIP1 = new JLabel(cIP);
 		ipPanel.add(myIP);
 		ipPanel.add(myIP1);
@@ -354,9 +343,9 @@ public class AppletStart extends Applet
 		buttonPanel.add(qPanel, BorderLayout.WEST);
 		buttonPanel.add(cPanel, BorderLayout.EAST);
 		
-		pSessionM.add(buttonPanel, BorderLayout.CENTER);
+		pSessionM.add(buttonPanel, BorderLayout.SOUTH);
 		pSessionM.add(ipPanel, BorderLayout.PAGE_START);
-		pSessionM.add(panel, BorderLayout.SOUTH);
+		pSessionM.add(panel, BorderLayout.CENTER);
 	}
 
 	private static CategoryDataset createDataset()
@@ -500,24 +489,12 @@ public class AppletStart extends Applet
 	{
 		public void actionPerformed(ActionEvent arg0)
 		{
-			showIP();
 			setupManagerCloseListener();
 			setupServer();
-			//mfContainer.add(pShowIP, "IP Panel");
 			createSessionManager();
 			mfContainer.add(pSessionM, "Session Managers Panel");
 			pSessionM.setVisible(true);
 			pSelect.setVisible(false);
-		}
-	}
-
-	class ShowIPCard implements ActionListener
-	{
-		public void actionPerformed(ActionEvent arg0)
-		{
-			pSessionM.setVisible(true);
-			pShowIP.setVisible(false);
-
 		}
 	}
 
@@ -632,6 +609,7 @@ public class AppletStart extends Applet
 			{
 				for(int i = 0; i < responderButtons.size(); i++)
 				{
+					responderButtons.get(i).setSelected(false);
 					if(i < num)
 					{
 						responderButtons.get(i).setVisible(true);
@@ -654,6 +632,7 @@ public class AppletStart extends Applet
 		for(JToggleButton b : buttons)
 		{
 			b.setVisible(state);
+			b.setSelected(false);
 		}
 	}
 	/**
@@ -693,7 +672,7 @@ public class AppletStart extends Applet
 				{
 					//throw an error, pretty much no button was selected.
 				}
-				else if(messageR.length() > 0)
+				else if(messageR.length() > 0 && rtf)
 				{
 					client.sendMessage(messageR);
 					sendAnswer.setEnabled(false);
@@ -726,6 +705,7 @@ public class AppletStart extends Applet
 				{
 					if(message.substring(0,1).equals("T") && message.length() == 1)
 					{
+						rtf = false;
 						generateButtons(2, true);
 						sendAnswer.setEnabled(true);
 					}
@@ -733,6 +713,7 @@ public class AppletStart extends Applet
 					{
 						try
 						{
+							rtf = true;
 							int num = Integer.parseInt(message.substring(1, message.length()));
 							if(num > 2 && num < 27)
 							{
@@ -774,6 +755,8 @@ public class AppletStart extends Applet
 		{
 			if (e.getSource() == sendQuestion)
 			{
+				numAnswered = 0;
+				ans.setText("Answered: 0");
 				String message = findSelected(managerButtons);
 				if(message == "True/False")
 				{
@@ -816,6 +799,8 @@ public class AppletStart extends Applet
 					try
 					{
 						int i = Integer.parseInt(message);
+						numAnswered++;
+						ans.setText("Answered: "+numAnswered);
 						updater.incrementData(i);
 					}
 					catch(NumberFormatException err)
@@ -826,10 +811,14 @@ public class AppletStart extends Applet
 				}
 				else if(message.equals("T"))
 				{
+					numAnswered++;
+					ans.setText("Answered: "+numAnswered);
 					updater.incrementData(0);
 				}
 				else
 				{
+					numAnswered++;
+					ans.setText("Answered: "+numAnswered);
 					updater.incrementData(1);
 				}
 			}

@@ -41,6 +41,8 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 	private ArrayList<JToggleButton> trueFalseButtons;
 	//This is the main frame for the whole GUI.
 	private JFrame mainFrame;
+	//This is a temporary fix to the error caused when switching from multiple choice to T/F.
+	private boolean rtf;
 
 	public void init()
 	{
@@ -336,8 +338,9 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 				{
 					//throw an error, pretty much no button was selected.
 				}
-				else if(messageR.length() > 0)
+				else if(messageR.length() > 0 && rtf)
 				{
+					
 					client.sendMessage(messageR);
 					sendAnswer.setEnabled(false);
 				}
@@ -369,6 +372,7 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 				{
 					if(message.substring(0,1).equals("T") && message.length() == 1)
 					{
+						rtf = false;
 						generateButtons(2, true);
 						sendAnswer.setEnabled(true);
 					}
@@ -376,6 +380,7 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 					{
 						try
 						{
+							rtf = true;
 							int num = Integer.parseInt(message.substring(1, message.length()));
 							if(num > 2 && num < 27)
 							{
