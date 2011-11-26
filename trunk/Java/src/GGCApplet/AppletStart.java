@@ -9,13 +9,17 @@ package GGCApplet;
 
 import java.applet.*;
 import java.awt.*;
+import java.awt.MultipleGradientPaint.CycleMethod;
 import java.awt.event.*;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import GeneralGrizzlyConsensus.*;
 
@@ -87,7 +91,7 @@ public class AppletStart extends Applet
 	private static DefaultCategoryDataset barData;
 	//This is the object which will handle the updates of the JFreeChart data.
 	private GraphUpdater updater;
-	
+
 	public void init()
 	{
 		// Get our parameter from the HTML tag.
@@ -99,18 +103,18 @@ public class AppletStart extends Applet
 			loadProfessor = Integer.parseInt(param);
 		}
 		Runnable runner = new Runnable() {
-            public void run() {
-            	mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
-        		mainFrame.setSize(500, 432);
-        		mainFrame.setVisible(true);
-        		selectPane();
-        		mfContainer = mainFrame.getContentPane();
-        		mfContainer.setLayout(new CardLayout());		
-        		mfContainer.add(pSelect, "Selection Panel");
-        		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            }
-        };
-        EventQueue.invokeLater(runner);
+			public void run() {
+				mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
+				mainFrame.setSize(500, 432);
+				mainFrame.setVisible(true);
+				selectPane();
+				mfContainer = mainFrame.getContentPane();
+				mfContainer.setLayout(new CardLayout());		
+				mfContainer.add(pSelect, "Selection Panel");
+				mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			}
+		};
+		EventQueue.invokeLater(runner);
 	}
 
 	private void selectPane()
@@ -172,7 +176,7 @@ public class AppletStart extends Applet
 		//_254_0 is for the inner two blocks.
 		String _254_0 = "(?:25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
 		RegexFormatter ipFormatter2 = new RegexFormatter( _254_0 );
-		
+
 		ip = new JFormattedTextField[4];
 		JFormattedTextField ip1 = new JFormattedTextField(ipFormatter1);
 		ip1.setColumns(3);
@@ -210,6 +214,7 @@ public class AppletStart extends Applet
 	private void createResponder()
 	{
 		pResponder = new JPanel();
+		pResponder.setLayout(new BorderLayout());
 		pResponder.setVisible(false);
 
 		JPanel lP1 = new JPanel();
@@ -221,51 +226,53 @@ public class AppletStart extends Applet
 		rGroup = new ButtonGroup();
 		tGroup = new ButtonGroup();
 
-		pResponder.add(lP1);
+		//pResponder.add(lP1,BorderLayout.CENTER);
 	}
 	private void setupResponderCloseListener()
 	{
-	       mainFrame.addWindowListener(new java.awt.event.WindowAdapter() 
-	       {
-	           public void windowClosing(WindowEvent winEvt)
-	           {
-	               // Do Socket clean-up here.
-	               if (client != null)
-	                   client.closeConnection();
-	               System.exit(0);
-	           }
-	       });
+		mainFrame.addWindowListener(new java.awt.event.WindowAdapter() 
+		{
+			public void windowClosing(WindowEvent winEvt)
+			{
+				// Do Socket clean-up here.
+				if (client != null)
+					client.closeConnection();
+				System.exit(0);
+			}
+		});
 	}
 	/**
-     * This method is essentially the same as the old setupConnection method but
-     * it takes in an IP address as a parameter.
-     * @param IP
-    */
+	 * This method is essentially the same as the old setupConnection method but
+	 * it takes in an IP address as a parameter.
+	 * @param IP
+	 */
 	private void setupConnection(String IP)
 	{
-		 try
-	     {
-			 client = new GGCConnection(new Socket(IP,
-	         GGCGlobals.INSTANCE.COMMUNICATION_PORT), new ResponderListener());
-	         Thread t = new Thread(client);
-	         t.start();
-	         pResponder.setVisible(true);
-	         pConnectIP.setVisible(false);
-	         sendAnswer = new CustomJButton("Send Answer");
-	         sendAnswer.addActionListener(new ResponderListener());
-	         pResponder.add(sendAnswer);
-	     }
-	     catch (UnknownHostException e)
-	     {
-	         JOptionPane.showMessageDialog(this, "Unknown host.");
-	     }
-	     catch (IOException e)
-	     {
-	         // JOptionPane.showMessageDialog(this, "Cannot connect to host.");
-	         JOptionPane.showMessageDialog(this, e.getMessage());
-	     }
+		try
+		{
+			client = new GGCConnection(new Socket(IP,
+					GGCGlobals.INSTANCE.COMMUNICATION_PORT), new ResponderListener());
+			Thread t = new Thread(client);
+			JPanel sa = new JPanel();
+			t.start();
+			pResponder.setVisible(true);
+			pConnectIP.setVisible(false);
+			sendAnswer = new CustomJButton("Send Answer");
+			sendAnswer.addActionListener(new ResponderListener());
+			sa.add(sendAnswer);
+			pResponder.add(sa, BorderLayout.PAGE_END);
+		}
+		catch (UnknownHostException e)
+		{
+			JOptionPane.showMessageDialog(this, "Unknown host.");
+		}
+		catch (IOException e)
+		{
+			// JOptionPane.showMessageDialog(this, "Cannot connect to host.");
+			JOptionPane.showMessageDialog(this, e.getMessage());
+		}
 	}
-	
+
 	private void createSessionManager()
 	{
 		pSessionM = new JPanel();
@@ -283,18 +290,18 @@ public class AppletStart extends Applet
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
 		//lP2.setBackground(new Color(255,255,255));
 		//JComboBox qType = new JComboBox(types);
-		JToggleButton tfButton = new JToggleButton("True/False");
-		JToggleButton numButton = new JToggleButton("Number Responses: ");
+		JToggleButton tfButton = new CustomJToggleButton("True/False");
+		JToggleButton numButton = new CustomJToggleButton("Number Responses: ");
 		managerButtons.add(tfButton);
 		managerButtons.add(numButton);
 		mGroup.add(tfButton);
 		mGroup.add(numButton);
 		numField = new JTextField(5);
 		ButtonGroup bg = new ButtonGroup();
-		
+
 		bg.add(tfButton);
 		bg.add(numButton);
-		
+
 		sendQuestion = new CustomJButton("Send Question");
 		sendQuestion.addActionListener(new ManagerListener());
 		lP2.add(tfButton);
@@ -305,136 +312,136 @@ public class AppletStart extends Applet
 		lP1.add(sendQuestion);
 		pSessionM.add(lP1);
 		CategoryDataset dataset = createDataset();
-        JFreeChart chart = createChart(dataset);
-        updater = new GraphUpdater(barData);
-        chartPanel = new ChartPanel(chart);
-        pSessionM.add(new JLabel(cIP));
-        pSessionM.add(pShowHide);
+		JFreeChart chart = createChart(dataset);
+		updater = new GraphUpdater(barData);
+		chartPanel = new ChartPanel(chart);
+		pSessionM.add(new JLabel(cIP));
+		pSessionM.add(pShowHide);
 		pSessionM.add(chartPanel);
 	}
-	
+
 	private static CategoryDataset createDataset()
 	{
 
-        // row keys...
-        String seriesT = "True";
-        String seriesF = "False";
-        String seriesA = "A";
-        String seriesB = "B";
-        String seriesC = "C";
-        String seriesD = "D";
-        String seriesE = "E";
+		// row keys...
+		String seriesT = "True";
+		String seriesF = "False";
+		String seriesA = "A";
+		String seriesB = "B";
+		String seriesC = "C";
+		String seriesD = "D";
+		String seriesE = "E";
 
-        // column keys...
-        String categoryR = "Responses";
+		// column keys...
+		String categoryR = "Responses";
 
-        // create the dataset...
-        barData = new DefaultCategoryDataset();
+		// create the dataset...
+		barData = new DefaultCategoryDataset();
 
-        barData.addValue(1.0, seriesT, categoryR);
-        barData.addValue(4.0, seriesF, categoryR);
-        barData.addValue(3.0, seriesA, categoryR);
-        barData.addValue(5.0, seriesB, categoryR);
-        barData.addValue(6.0, seriesC, categoryR);
-        barData.addValue(7.0, seriesD, categoryR);
-        barData.addValue(8.0, seriesE, categoryR);
+		barData.addValue(1.0, seriesT, categoryR);
+		barData.addValue(4.0, seriesF, categoryR);
+		barData.addValue(3.0, seriesA, categoryR);
+		barData.addValue(5.0, seriesB, categoryR);
+		barData.addValue(6.0, seriesC, categoryR);
+		barData.addValue(7.0, seriesD, categoryR);
+		barData.addValue(8.0, seriesE, categoryR);
 
-        return barData;
+		return barData;
 
-    }
-	
-    private static JFreeChart createChart(CategoryDataset dataset)
-    {
+	}
 
-        // create the chart...
-        JFreeChart chart = ChartFactory.createBarChart(
-            "Number of Responses",       // chart title
-            "Response type",               // domain axis label
-            "Number of Responses",                  // range axis label
-            dataset,                  // data
-            PlotOrientation.VERTICAL, // orientation
-            true,                     // include legend
-            true,                     // tooltips?
-            false                     // URLs?
-        );
-        
-        /*
-         * Code supplied from BarChartDemo1 at:
-         * http://www.jfree.org/jfreechart
-         * 
-         * code edited by Marcus Michalske 
-         */
-        
-        // set the background color for the chart...
-        chart.setBackgroundPaint(Color.white);
-        
-        // get a reference to the plot for further customisation...
-        CategoryPlot plot = (CategoryPlot) chart.getPlot();
-        
-        // set the range axis to display integers only...
-        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        
-        // disable bar outlines...
-        BarRenderer renderer = (BarRenderer) plot.getRenderer();
-        renderer.setDrawBarOutline(false);
-        
-        // set up gradient paints for series...
-        GradientPaint gp0 = new GradientPaint(0.0f, 0.0f, new Color(0, 125, 75),
-                0.0f, 0.0f, new Color(0, 0, 0));
-        GradientPaint gp1 = new GradientPaint(0.0f, 0.0f, Color.white,
-                0.0f, 0.0f, Color.darkGray);
-        GradientPaint gp2 = new GradientPaint(0.0f, 0.0f, new Color(0, 125, 75),
-                0.0f, 0.0f, new Color(0, 0, 0));
-        GradientPaint gp3 = new GradientPaint(0.0f, 0.0f, Color.white,
-                0.0f, 0.0f, Color.darkGray);
-        GradientPaint gp4 = new GradientPaint(0.0f, 0.0f, new Color(0, 125, 75),
-                0.0f, 0.0f, new Color(0, 0, 0));
-        GradientPaint gp5 = new GradientPaint(0.0f, 0.0f, Color.white,
-                0.0f, 0.0f, Color.darkGray);
-        GradientPaint gp6 = new GradientPaint(0.0f, 0.0f, new Color(0, 125, 75),
-                0.0f, 0.0f, new Color(0, 0, 0));
-        renderer.setSeriesPaint(0, gp0);
-        renderer.setSeriesPaint(1, gp1);
-        renderer.setSeriesPaint(2, gp2);
-        renderer.setSeriesPaint(3, gp3);
-        renderer.setSeriesPaint(4, gp4);
-        renderer.setSeriesPaint(5, gp5);
-        renderer.setSeriesPaint(6, gp6);
+	private static JFreeChart createChart(CategoryDataset dataset)
+	{
 
-        CategoryAxis domainAxis = plot.getDomainAxis();
-        domainAxis.setCategoryLabelPositions(
-                CategoryLabelPositions.createUpRotationLabelPositions(
-                        Math.PI / 6.0));
-        // OPTIONAL CUSTOMISATION COMPLETED.
+		// create the chart...
+		JFreeChart chart = ChartFactory.createBarChart(
+				"Number of Responses",       // chart title
+				"Response type",               // domain axis label
+				"Number of Responses",                  // range axis label
+				dataset,                  // data
+				PlotOrientation.VERTICAL, // orientation
+				true,                     // include legend
+				true,                     // tooltips?
+				false                     // URLs?
+				);
 
-        return chart;
+		/*
+		 * Code supplied from BarChartDemo1 at:
+		 * http://www.jfree.org/jfreechart
+		 * 
+		 * code edited by Marcus Michalske 
+		 */
 
-    }
-    /**
-     * Code from Stephen's server GUI.
-     */
-    private void setupManagerCloseListener()
-    {
-        mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(WindowEvent winEvt)
-            {
-                // Do Socket clean-up here.
-                server.stopListening();
-                System.exit(0);
-            }
-        });
-    }
-    /**
-     * Code from Stephen's server GUI.
-     */
-    private void setupServer()
-    {
-        server = GGCServer.INSTANCE;
-        server.setMessageSink(new ManagerListener());
-        Thread t = new Thread(server);
-        t.start();
-    }
+		// set the background color for the chart...
+		chart.setBackgroundPaint(Color.white);
+
+		// get a reference to the plot for further customisation...
+		CategoryPlot plot = (CategoryPlot) chart.getPlot();
+
+		// set the range axis to display integers only...
+		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+		// disable bar outlines...
+		BarRenderer renderer = (BarRenderer) plot.getRenderer();
+		renderer.setDrawBarOutline(false);
+
+		// set up gradient paints for series...
+		GradientPaint gp0 = new GradientPaint(0.0f, 0.0f, new Color(0, 125, 75),
+				0.0f, 0.0f, new Color(0, 0, 0));
+		GradientPaint gp1 = new GradientPaint(0.0f, 0.0f, Color.white,
+				0.0f, 0.0f, Color.darkGray);
+		GradientPaint gp2 = new GradientPaint(0.0f, 0.0f, new Color(0, 125, 75),
+				0.0f, 0.0f, new Color(0, 0, 0));
+		GradientPaint gp3 = new GradientPaint(0.0f, 0.0f, Color.white,
+				0.0f, 0.0f, Color.darkGray);
+		GradientPaint gp4 = new GradientPaint(0.0f, 0.0f, new Color(0, 125, 75),
+				0.0f, 0.0f, new Color(0, 0, 0));
+		GradientPaint gp5 = new GradientPaint(0.0f, 0.0f, Color.white,
+				0.0f, 0.0f, Color.darkGray);
+		GradientPaint gp6 = new GradientPaint(0.0f, 0.0f, new Color(0, 125, 75),
+				0.0f, 0.0f, new Color(0, 0, 0));
+		renderer.setSeriesPaint(0, gp0);
+		renderer.setSeriesPaint(1, gp1);
+		renderer.setSeriesPaint(2, gp2);
+		renderer.setSeriesPaint(3, gp3);
+		renderer.setSeriesPaint(4, gp4);
+		renderer.setSeriesPaint(5, gp5);
+		renderer.setSeriesPaint(6, gp6);
+
+		CategoryAxis domainAxis = plot.getDomainAxis();
+		domainAxis.setCategoryLabelPositions(
+				CategoryLabelPositions.createUpRotationLabelPositions(
+						Math.PI / 6.0));
+		// OPTIONAL CUSTOMISATION COMPLETED.
+
+		return chart;
+
+	}
+	/**
+	 * Code from Stephen's server GUI.
+	 */
+	private void setupManagerCloseListener()
+	{
+		mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+			public void windowClosing(WindowEvent winEvt)
+			{
+				// Do Socket clean-up here.
+				server.stopListening();
+				System.exit(0);
+			}
+		});
+	}
+	/**
+	 * Code from Stephen's server GUI.
+	 */
+	private void setupServer()
+	{
+		server = GGCServer.INSTANCE;
+		server.setMessageSink(new ManagerListener());
+		Thread t = new Thread(server);
+		t.start();
+	}
 
 	class SelectionCardR implements ActionListener
 	{
@@ -457,10 +464,10 @@ public class AppletStart extends Applet
 			showIP();
 			setupManagerCloseListener();
 			setupServer();
-			mfContainer.add(pShowIP, "IP Panel");
+			//mfContainer.add(pShowIP, "IP Panel");
 			createSessionManager();
 			mfContainer.add(pSessionM, "Session Managers Panel");
-			pShowIP.setVisible(true);
+			pSessionM.setVisible(true);
 			pSelect.setVisible(false);
 		}
 	}
@@ -471,7 +478,7 @@ public class AppletStart extends Applet
 		{
 			pSessionM.setVisible(true);
 			pShowIP.setVisible(false);
-			
+
 		}
 	}
 
@@ -515,7 +522,7 @@ public class AppletStart extends Applet
 		}
 
 	}
-	
+
 	/**
 	 * This method will usually only generate/show 3-5 buttons (regularly multiple choice)
 	 * or 2 buttons (regularly true/false), and hide the ones that are not relevant to the
@@ -526,10 +533,7 @@ public class AppletStart extends Applet
 	 * that is multiple choice.
 	 */
 	private void generateButtons(int num, boolean trueFalse)
-	{
-		ImageIcon defaultButton = new ImageIcon("DefaultButton.png");
-		//Image tempImg = defaultButtonImage.getImage(); 
-		
+	{		
 		if(num < 2)
 		{
 			//throw an error, someone tried to make a one answer multiple choice,
@@ -544,39 +548,44 @@ public class AppletStart extends Applet
 			}
 			else
 			{
-				JToggleButton b1 = new JToggleButton("True");
-				//TODO Get image to scale to button.
-				//Image newimg = tempImg.getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH);  
-				//ImageIcon defaultButton = new ImageIcon(newimg);
-				//System.out.print("W: "+b1.getWidth() + "H: " + b1.getHeight());
-				b1.setIcon(defaultButton);
-				b1.setHorizontalTextPosition(SwingConstants.CENTER);
-				b1.setBorderPainted(false);
-				b1.setContentAreaFilled(false); 
-				b1.setFocusPainted(false); 
-				b1.setOpaque(false);
+				JPanel tfPanel = new JPanel();
+				JPanel tfPanelBuff = new JPanel();
+				tfPanelBuff.setLayout(new BoxLayout(tfPanelBuff, BoxLayout.PAGE_AXIS));
+				tfPanelBuff.add(Box.createVerticalGlue());
+				tfPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+				JToggleButton b1 = new CustomJToggleButton("True");
 				trueFalseButtons.add(b1);
 				tGroup.add(b1);
-				
-				JToggleButton b2 = new JToggleButton("False");
+
+				JToggleButton b2 = new CustomJToggleButton("False");
 				trueFalseButtons.add(b2);
 				tGroup.add(b2);
-				pResponder.add(b1);
-				pResponder.add(b2);
+				
+				tfPanel.add(b1);
+				tfPanel.add(b2);
+				tfPanelBuff.add(tfPanel);
+				pResponder.add(tfPanelBuff, BorderLayout.CENTER);
 				pResponder.validate();
 			}
 		}
 		else
 		{
+			JPanel ownPanel = new JPanel();
+			JPanel numPanelBuff = new JPanel();
+			numPanelBuff.setLayout(new BoxLayout(numPanelBuff, BoxLayout.PAGE_AXIS));
+			numPanelBuff.add(Box.createVerticalGlue());
+			ownPanel.setLayout(new GridLayout(10,3));
 			showHideButtons(trueFalseButtons, false);
 			if(num > responderButtons.size())
 			{
-            	for(int i = 0; i < num; i++)
+				for(int i = 0; i < num; i++)
 				{
-					JToggleButton r = new JToggleButton(""+i);
+					JToggleButton r = new CustomJToggleButton(""+i);
 					rGroup.add(r);
 					responderButtons.add(r);
-					pResponder.add(r);
+					ownPanel.add(r);
+					numPanelBuff.add(ownPanel);
+					pResponder.add(numPanelBuff);
 					pResponder.validate();
 				}
 			}
@@ -688,8 +697,8 @@ public class AppletStart extends Applet
 							int num = Integer.parseInt(message.substring(1, message.length()));
 							if(num > 2 && num < 27)
 							{
-							generateButtons(num, false);
-							sendAnswer.setEnabled(true);
+								generateButtons(num, false);
+								sendAnswer.setEnabled(true);
 							}
 							else
 							{
@@ -736,23 +745,23 @@ public class AppletStart extends Applet
 				}
 				else if(message == "Number Responses: ")
 				{
-label0:
-					try
-					{
-						int num = Integer.parseInt(numField.getText());
-						if(num > 2 && num < 27)
-						{
-							server.sendMessageToAll("M"+num);
-							updater.newQuestion(false, num);
-							break label0;
-						}
-						throw new NumberFormatException();
-					}
-					catch(NumberFormatException err)
-					{
-						//throw an error, the number is bad.
-						//Zomg, labels!
-					}
+					label0:
+						try
+				{
+							int num = Integer.parseInt(numField.getText());
+							if(num > 2 && num < 27)
+							{
+								server.sendMessageToAll("M"+num);
+								updater.newQuestion(false, num);
+								break label0;
+							}
+							throw new NumberFormatException();
+				}
+				catch(NumberFormatException err)
+				{
+					//throw an error, the number is bad.
+					//Zomg, labels!
+				}
 				}
 				else
 				{
@@ -787,7 +796,7 @@ label0:
 			}
 		}
 	}
-	
+
 	/**
 	 * This class is to make custom JButton graphics that will be uniform in the whole application.
 	 * The button has three rounded rectangles, the outline is one color, the inner rectangle is a
@@ -795,47 +804,208 @@ label0:
 	 * @author Marcus Michalske
 	 *
 	 */
-	private static final class CustomJButton extends JButton
-    {    	
-        private CustomJButton(String s)
-        {
-            super(s);
-            setContentAreaFilled(false);
-            setFocusPainted(false); // used for demonstration
-            setBorderPainted(false);
-        }
+	private static final class CustomJButton extends JButton implements MouseListener, MouseMotionListener
+	{    	
+		int state = 1;
+		int inactive=0;
 
-        @Override
-        protected void paintComponent(Graphics g)
-        {
-            Graphics2D g2 = (Graphics2D) g.create();
-    	    
-    	    //RoundRectangle2D rr1 = new RoundRectangle2D.Double(bX, bY, bWidth, bHeight, 11, 11);
-    	    //RoundRectangle2D rr2 = new RoundRectangle2D.Double(bX+3, bY+3, bWidth-6, bHeight-6, 5, 5);
-            
-    	    g2.setStroke(new BasicStroke(4));
-    	    g2.setPaint(new GradientPaint(new Point(0, 0), Color.DARK_GRAY, new Point(0, getHeight()), Color.WHITE));
-    	    g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
-    	    g2.setPaint(Color.GRAY);
-    	    g2.drawRoundRect(1, 1, getWidth()-2, getHeight()-2, 10, 10);
-    	    g2.setStroke(new BasicStroke(3));
-    	    g2.setPaint(new GradientPaint(new Point(0, 0), Color.DARK_GRAY, new Point(0, getHeight()), Color.GRAY));
-    	    g2.drawRoundRect(4, 4, getWidth()-8, getHeight()-8, 6, 6);
-    	    //g2.setPaint(new GradientPaint(pt1, Color.DARK_GRAY, pt2, Color.GRAY));
-    	    //g2.draw(rr2);
-    	    
-            g2.dispose();
+		private CustomJButton(String s)
+		{
+			super(s);
+			setHorizontalAlignment(SwingConstants.CENTER);
+			setContentAreaFilled(false);
+			setFocusPainted(false);
+			setBorderPainted(false);
+			this.addMouseListener(this);
+			this.addMouseMotionListener(this);
+		}
 
-            super.paintComponent(g);
-        }
-    	/**
-    	 * This will create a the custom button with text.
-    	 * @author Marcus Michalske
-    	 *
-    	 */
-        public static final CustomJButton newInstance(String s)
-        {
-            return new CustomJButton(s);
-        }
-    }
+		@Override
+		protected void paintComponent(Graphics g)
+		{
+			Graphics2D g2 = (Graphics2D) g.create();
+			Graphics2D g3 = (Graphics2D) g.create();
+
+			AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f);
+			g3.setComposite(newComposite);
+
+			g2.setPaint(Color.LIGHT_GRAY);
+			g2.setStroke(new BasicStroke(1));
+			//g2.setPaint(new GradientPaint(new Point(0, 0), Color.DARK_GRAY, new Point(0, getHeight()), Color.WHITE));
+			g2.fillRoundRect(0, 0, getWidth()-1, getHeight(), 10, 10);
+			g2.setPaint(Color.GRAY);
+			g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 10, 10);
+
+			Point2D center = new Point2D.Float(getWidth()/2, getHeight()/2);
+			float radius = getWidth();
+			float[] dist = {0.0f, 1.0f};
+			Color[] colors = {Color.WHITE, new Color(0,0,0,0)};
+			RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors, CycleMethod.NO_CYCLE);
+
+			g3.setPaint( p );
+			g3.fillRoundRect(1, 1, getWidth()-2, getHeight()-2, 5, 5);
+
+			if(inactive==1)
+			{
+				//Dummy Space
+			}
+			if(state==3)
+			{
+				colors[0] = Color.DARK_GRAY;
+				colors[1] = Color.WHITE;
+				p = new RadialGradientPaint(center, radius-10, dist, colors, CycleMethod.NO_CYCLE);
+				g3.setPaint( p );
+				g3.fillRoundRect(1, 1, getWidth()-2, getHeight()-2, 10, 10);
+			}
+
+			g2.dispose();
+			g3.dispose();
+
+			super.paintComponent(g);
+		}
+
+		public void mouseClicked(MouseEvent e)
+		{ 
+
+			//System.out.println("Clicked");
+			state=2;
+			repaint(); 
+
+		} 
+
+		public void mousePressed(MouseEvent e)
+		{ 
+
+			//System.out.println("Pressed");
+			state=3;
+			repaint();
+		} 
+
+		public void mouseReleased(MouseEvent e)
+		{ 
+
+
+			//System.out.println("Release");
+			state=2;
+			repaint();
+		} 
+
+		public void mouseEntered(MouseEvent e)
+		{ 
+
+			//System.out.println("Entered");
+			state=2;
+			repaint();
+		} 
+
+		public void mouseExited(MouseEvent e)
+		{ 
+
+			//System.out.println("Exited");
+			state=1;
+			repaint(); 
+
+		}
+
+		public void mouseDragged(MouseEvent e)
+		{
+			// Do what ever you want
+		} 
+
+		public void mouseMoved(MouseEvent e)
+		{
+			//Do what ever you want
+		}
+	}
+
+	/**
+	 * This class is to make custom JButton graphics that will be uniform in the whole application.
+	 * The button has three rounded rectangles, the outline is one color, the inner rectangle is a
+	 * gradient of two colors, and the inner most rectangle is a gradient of two colors.
+	 * @author Marcus Michalske
+	 *
+	 */
+	private static final class CustomJToggleButton extends JToggleButton implements ChangeListener
+	{
+		int state = 1;
+		int inactive=0;
+
+		private CustomJToggleButton(String s)
+		{
+			super(s);
+			setHorizontalAlignment(SwingConstants.CENTER);
+			setContentAreaFilled(false);
+			setFocusPainted(false);
+			setBorderPainted(false);
+			this.addChangeListener(this);
+		}
+
+		@Override
+		protected void paintComponent(Graphics g)
+		{
+			Graphics2D g2 = (Graphics2D) g.create();
+			Graphics2D g3 = (Graphics2D) g.create();
+
+			AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f);
+			g3.setComposite(newComposite);
+
+			g2.setPaint(Color.LIGHT_GRAY);
+			g2.setStroke(new BasicStroke(1));
+			//g2.setPaint(new GradientPaint(new Point(0, 0), Color.DARK_GRAY, new Point(0, getHeight()), Color.WHITE));
+			g2.fillRoundRect(0, 0, getWidth()-1, getHeight(), 10, 10);
+			g2.setPaint(Color.GRAY);
+			g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 10, 10);
+
+			Point2D center = new Point2D.Float(getWidth()/2, getHeight()/2);
+			float radius = getWidth();
+			float[] dist = {0.0f, 1.0f};
+			Color[] colors = {Color.WHITE, new Color(0,0,0,0)};
+			RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors, CycleMethod.NO_CYCLE);
+
+			g3.setPaint( p );
+			g3.fillRoundRect(1, 1, getWidth()-2, getHeight()-2, 5, 5);
+
+			if(inactive==1)
+			{
+				//Dummy space
+			}
+			if(state==3)
+			{
+				colors[0] = Color.DARK_GRAY;
+				colors[1] = Color.WHITE;
+				p = new RadialGradientPaint(center, radius-10, dist, colors, CycleMethod.NO_CYCLE);
+				g3.setPaint( p );
+				g3.fillRoundRect(1, 1, getWidth()-2, getHeight()-2, 10, 10);
+			}
+
+			g2.dispose();
+			g3.dispose();
+
+			super.paintComponent(g);
+		}
+		@Override
+		public void stateChanged(ChangeEvent arg0)
+		{
+			AbstractButton abstractButton = (AbstractButton) changeEvent.getSource();
+			ButtonModel buttonModel = abstractButton.getModel();
+			boolean armed = buttonModel.isArmed();
+			boolean pressed = buttonModel.isPressed();
+			boolean selected = buttonModel.isSelected();
+			if(selected)
+			{
+				state=3;
+				repaint();
+			}
+			else if(pressed)
+			{
+				state=3;
+				repaint();
+			}
+			else
+			{
+				state=2;
+				repaint();
+			}
+		}
+	}
 }
