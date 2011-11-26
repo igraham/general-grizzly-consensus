@@ -277,19 +277,29 @@ public class AppletStart extends Applet
 	{
 		pSessionM = new JPanel();
 		pSessionM.setVisible(true);
+		pSessionM.setLayout(new BorderLayout());
+		
+		JPanel cPanel = new JPanel();
+		cPanel.setBorder(BorderFactory.createTitledBorder("Your Contorl Panel"));
 		pShowHide = new CustomJButton("Show/Hide");
 		pShowHide.addActionListener(new GGCGraphListener());
+		cPanel.add(pShowHide);
+		
+		
+		JPanel qPanel = new JPanel();
+		JPanel tfPanel = new JPanel();
+		JPanel numPanel = new JPanel();
+		
+		qPanel.setLayout(new GridLayout(3,1));
+		//qPanel.add(Box.createVerticalGlue());
+		tfPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		//numPanel.setLayout(new GridLayout(1,2));
+		
+		qPanel.setBorder(BorderFactory.createTitledBorder("Question Type"));
+		
 		managerButtons = new ArrayList<JToggleButton>();
 		mGroup = new ButtonGroup();
-		pSessionM.setLayout(new GridLayout(2,1));
-		JPanel lP1 = new JPanel();
-		JPanel lP2 = new JPanel();
-		JPanel lP3 = new JPanel();
-		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
-		lP2.setLayout(new GridLayout(2,1));
-		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
-		//lP2.setBackground(new Color(255,255,255));
-		//JComboBox qType = new JComboBox(types);
+		
 		JToggleButton tfButton = new CustomJToggleButton("True/False");
 		JToggleButton numButton = new CustomJToggleButton("Number Responses: ");
 		managerButtons.add(tfButton);
@@ -304,20 +314,32 @@ public class AppletStart extends Applet
 
 		sendQuestion = new CustomJButton("Send Question");
 		sendQuestion.addActionListener(new ManagerListener());
-		lP2.add(tfButton);
-		lP3.add(numButton);
-		lP3.add(numField);
-		lP2.add(lP3);
-		lP1.add(lP2);
-		lP1.add(sendQuestion);
-		pSessionM.add(lP1);
+		tfPanel.add(tfButton);
+		numPanel.add(numButton);
+		numPanel.add(numField);
+		
+		qPanel.add(tfButton);
+		qPanel.add(numPanel);
+		qPanel.add(sendQuestion);
+		
 		CategoryDataset dataset = createDataset();
 		JFreeChart chart = createChart(dataset);
 		updater = new GraphUpdater(barData);
 		chartPanel = new ChartPanel(chart);
-		pSessionM.add(new JLabel(cIP));
-		pSessionM.add(pShowHide);
-		pSessionM.add(chartPanel);
+		chartPanel.setPreferredSize(new Dimension(500, 200));
+		JScrollPane scrollChart = new JScrollPane(chartPanel);
+		
+		JPanel ipPanel = new JPanel();
+		ipPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		JLabel myIP = new JLabel("Your IP: ");
+		JLabel myIP1 = new JLabel(cIP);
+		ipPanel.add(myIP);
+		ipPanel.add(myIP1);
+		
+		pSessionM.add(qPanel, BorderLayout.WEST);
+		pSessionM.add(ipPanel, BorderLayout.PAGE_START);
+		pSessionM.add(cPanel, BorderLayout.EAST);
+		pSessionM.add(scrollChart, BorderLayout.SOUTH);
 	}
 
 	private static CategoryDataset createDataset()
