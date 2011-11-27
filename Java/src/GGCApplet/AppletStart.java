@@ -132,8 +132,10 @@ public class AppletStart extends Applet
 				}
 
 				mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
-				mainFrame.setSize(500, 432);				
+				mainFrame.setSize(400, 482);			
 				mainFrame.setUndecorated(true);
+				//Please keep setResizable to false till resize bug is fixed
+				mainFrame.setResizable(false);
 				//The color is GGC EverGreen Green
 				mainFrame.getContentPane().setBackground(new Color(0, 125, 75));
 				AWTUtilities.setWindowShape(mainFrame, new RoundRectangle2D.Float(0, 0,mainFrame.getWidth(), mainFrame.getHeight(), 30, 30));
@@ -214,6 +216,7 @@ public class AppletStart extends Applet
 		pSelect.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 200));
 		pSelect.setVisible(true);
 		pSelect.setBackground(new Color(0, 125, 75));
+		pSelect.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
 
 		JButton bResponder = new CustomJButton("Responder");
 		JButton bSManager = new CustomJButton("Session Manager");
@@ -230,16 +233,23 @@ public class AppletStart extends Applet
 	private void connectIP()
 	{
 		pConnectIP = new JPanel();
-		pConnectIP.setLayout(new GridLayout(2,1));
+		pConnectIP.setLayout(new BorderLayout());
 		pConnectIP.setVisible(false);
 		pConnectIP.setBackground(new Color(0, 125, 75));
+		pConnectIP.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
+		
 		JPanel lP1 = new JPanel();
 		lP1.setBackground(new Color(0, 125, 75));
-		lP1.setLayout(new FlowLayout(FlowLayout.TRAILING));
+		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
 
 		JPanel lP2 = new JPanel();
 		lP2.setBackground(new Color(0, 125, 75));
-		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
+		lP2.setLayout(new FlowLayout(FlowLayout.CENTER));
+		
+		JPanel lP3 = new JPanel();
+		lP3.setBackground(new Color(0, 125, 75));
+		lP3.setLayout(new FlowLayout(FlowLayout.CENTER));
+		
 		//This is the pattern that captures an IP address. It can't be, "(?:25[0-4]|2[0-4][0-9]|[01]?[1-9][0-9]?)" because 
 		//that discludes 100, and many other non-zero values with a zero in it, from the list of valid IP's.
 		//_254_1 is for the outer two blocks.
@@ -269,6 +279,9 @@ public class AppletStart extends Applet
 
 		rContorlP = new CustomJButton("Connect");
 		rContorlP.addActionListener(new GGCConnectListener());
+		
+		JLabel ipText = new JLabel("Please enter your instructors IP Here: ");
+		lP3.add(ipText);
 
 		lP1.add(ip1);
 		lP1.add(dot1);
@@ -279,8 +292,9 @@ public class AppletStart extends Applet
 		lP1.add(ip4);
 		lP2.add(rContorlP);
 
-		pConnectIP.add(lP1);
-		pConnectIP.add(lP2);
+		pConnectIP.add(lP1, BorderLayout.CENTER);
+		pConnectIP.add(lP2, BorderLayout.PAGE_END);
+		pConnectIP.add(lP3, BorderLayout.NORTH);
 	}
 
 	private void createResponder()
@@ -289,23 +303,28 @@ public class AppletStart extends Applet
 		pResponder.setLayout(new BorderLayout());
 		pResponder.setVisible(false);
 		pResponder.setBackground(new Color(0, 125, 75));
+		pResponder.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
+		
 		tfPanel = new JPanel();
 		tfPanel.setBackground(new Color(0, 125, 75));
 		tfPanelBuff = new JPanel();
 		tfPanelBuff.setBackground(new Color(0, 125, 75));
 		tfPanelBuff.setLayout(new BoxLayout(tfPanelBuff, BoxLayout.PAGE_AXIS));
 		tfPanelBuff.add(Box.createVerticalGlue());
-		tfPanel.setLayout(new GridLayout(10,3));
+		tfPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		
 		ownPanel = new JPanel();
 		ownPanel.setBackground(new Color(0, 125, 75));
 		numPanelBuff = new JPanel();
 		numPanelBuff.setBackground(new Color(0, 125, 75));
 		numPanelBuff.setLayout(new BoxLayout(numPanelBuff, BoxLayout.PAGE_AXIS));
 		numPanelBuff.add(Box.createVerticalGlue());
-		ownPanel.setLayout(new GridLayout(10,3));
+		//ownPanel.setLayout(new GridLayout(10,3));
 		numPanelBuff.add(ownPanel);
+		
 		pResponder.add(numPanelBuff);
 		pResponder.add(tfPanelBuff);
+		
 		JPanel lP1 = new JPanel();
 		lP1.setBackground(new Color(0, 125, 75));
 		lP1.setLayout(new GridLayout(3,1));
@@ -368,8 +387,11 @@ public class AppletStart extends Applet
 		pSessionM.setVisible(true);
 		pSessionM.setLayout(new BorderLayout());
 		pSessionM.setBackground(new Color(0, 125, 75));
+		pSessionM.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 
 		JPanel cPanel = new JPanel();
+		cPanel.setLayout(new BoxLayout(cPanel, BoxLayout.Y_AXIS));
+		cPanel.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
 		cPanel.setBackground(new Color(0, 125, 75));
 		cPanel.setBorder(BorderFactory.createTitledBorder("Your Control Panel"));
 		pShowHide = new CustomJButton("Show/Hide");
@@ -438,8 +460,8 @@ public class AppletStart extends Applet
 		chartPanel = new ChartPanel(graph);
 
 		//JScrollPane scrollChart = new JScrollPane(chartPanel);
-		chartPanel.setMinimumSize(new Dimension(400, 450));
-		chartPanel.setMaximumSize(new Dimension(500, 350));
+		chartPanel.setMinimumSize(new Dimension(350, 250));
+		chartPanel.setMaximumSize(new Dimension(500, 450));
 
 		JPanel ipPanel = new JPanel();
 		JPanel panel = new JPanel();
@@ -461,7 +483,7 @@ public class AppletStart extends Applet
 		JPanel buttonPanel = new JPanel(new BorderLayout());
 		buttonPanel.setBackground(new Color(0, 125, 75));
 		buttonPanel.add(qPanel, BorderLayout.WEST);
-		buttonPanel.add(cPanel, BorderLayout.EAST);
+		buttonPanel.add(cPanel, BorderLayout.CENTER);
 
 		pSessionM.add(buttonPanel, BorderLayout.SOUTH);
 		pSessionM.add(ipPanel, BorderLayout.PAGE_START);
@@ -697,6 +719,8 @@ public class AppletStart extends Applet
 
 				tfPanel.add(b1);
 				tfPanel.add(b2);
+				
+				tfPanelBuff.add(tfPanel);
 				
 				pResponder.validate();
 			}
