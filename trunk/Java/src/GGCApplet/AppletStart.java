@@ -10,6 +10,7 @@ package GGCApplet;
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.RoundRectangle2D;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -30,6 +31,8 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+
+import com.sun.awt.AWTUtilities;
 
 public class AppletStart extends Applet
 {
@@ -101,6 +104,10 @@ public class AppletStart extends Applet
 	private int numAnswered;
 	//This boolean is a temporary fix to an issue when switching between multiple choice and T/F
 	private boolean rtf;
+	//This Point is used to keep track of where the JFrame Window is for dragging while in undecorated mode.
+	private Point point = new Point();
+	//This boolean is used to tell when the mouse has left or entered the JFrame at least once.
+	private boolean currentIn = true;
 
 	public void init()
 	{
@@ -113,17 +120,89 @@ public class AppletStart extends Applet
 			loadProfessor = Integer.parseInt(param);
 		}
 		Runnable runner = new Runnable() {
-			public void run() {
+			public void run()
+			{
+				// ATWUtilities is a restricted API to Eclipes and need to be set up so it does not throw an error
+				// Window -> Preferences -> Java -> Compiler -> Error/Warnings -> Depicted/Restricted API -> Forbidden Access -> Set to Warning
+				if (!AWTUtilities.isTranslucencySupported(AWTUtilities.Translucency.TRANSLUCENT))
+				{
+					System.out.print("You do not support AWTUtilities Translucency.");
+				}
+
 				mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
-				mainFrame.setSize(500, 432);
+				mainFrame.setSize(500, 432);				
+				mainFrame.setUndecorated(true);
+				//The color is GGC EverGreen Green
+				mainFrame.getContentPane().setBackground(new Color(0, 125, 75));
+				AWTUtilities.setWindowShape(mainFrame, new RoundRectangle2D.Float(0, 0,mainFrame.getWidth(), mainFrame.getHeight(), 30, 30));
 				mainFrame.setVisible(true);
+
+				final CustomGlass glass = new CustomGlass(mainFrame);
+				mainFrame.setGlassPane(glass);
+				glass.setFocusable(false);
+				glass.setEnabled(false);
+				glass.setVisible(true);
+
 				selectPane();
 				mfContainer = mainFrame.getContentPane();
 				mfContainer.setLayout(new CardLayout());		
 				mfContainer.add(pSelect, "Selection Panel");
 				mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+				// This get the point location of where the mouse is pressed to save it location for moving.
+				mainFrame.addMouseListener(new MouseAdapter() {
+					public void mousePressed(MouseEvent e) {
+						point.x = e.getX();
+						point.y = e.getY();
+					}
+				});
+
+				// This is what drags the JFrame when the frame is undecorated.
+				mainFrame.addMouseMotionListener(new MouseMotionAdapter() {
+					public void mouseDragged(MouseEvent e) {
+						Point p = mainFrame.getLocation();
+						mainFrame.setLocation(p.x + e.getX() - point.x, p.y + e.getY() - point.y);
+					}
+				});
+
+				// When the mouse leaves the JFrame it disposes of the frame and redraws the decorated boarder
+				mainFrame.addMouseListener(new MouseAdapter() {
+					public void mouseExited(MouseEvent e) {
+
+						//This is the get the bounding box of the where the JFrame is on the screen.
+						Dimension bD = new Dimension(mainFrame.getWidth(), mainFrame.getHeight());
+						Rectangle bR = new Rectangle(mainFrame.getLocation(),bD);
+
+						if(!bR.contains(e.getLocationOnScreen()))
+						{
+							//System.out.println(bR.contains(e.getLocationOnScreen()));
+							//System.out.println("Out");
+							mainFrame.dispose();
+							mainFrame.setUndecorated(false);
+							//frame.setBounds(frame.getGraphicsConfiguration().getBounds());
+							mainFrame.setVisible(true);
+							currentIn = false;
+						}
+					}
+				});
+
+				// When the mouse enters the JFrame it disposes of the frame and redraws the undecorated boarder
+				mainFrame.addMouseListener(new MouseAdapter() {
+					public void mouseEntered(MouseEvent e) {
+						if(!currentIn)
+						{
+							//System.out.println("In");
+							mainFrame.dispose();
+							mainFrame.setUndecorated(true);
+							AWTUtilities.setWindowShape(mainFrame, new RoundRectangle2D.Float(0, 0,mainFrame.getWidth(), mainFrame.getHeight(), 30, 30));
+							currentIn = true;
+							mainFrame.setVisible(true);
+						}
+					}
+				});
 			}
 		};
+
 		EventQueue.invokeLater(runner);
 	}
 
@@ -132,6 +211,7 @@ public class AppletStart extends Applet
 		pSelect = new JPanel();
 		pSelect.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 200));
 		pSelect.setVisible(true);
+		pSelect.setBackground(new Color(0, 125, 75));
 
 		JButton bResponder = new CustomJButton("Responder");
 		JButton bSManager = new CustomJButton("Session Manager");
@@ -150,10 +230,13 @@ public class AppletStart extends Applet
 		pConnectIP = new JPanel();
 		pConnectIP.setLayout(new GridLayout(2,1));
 		pConnectIP.setVisible(false);
+		pConnectIP.setBackground(new Color(0, 125, 75));
 		JPanel lP1 = new JPanel();
+		lP1.setBackground(new Color(0, 125, 75));
 		lP1.setLayout(new FlowLayout(FlowLayout.TRAILING));
 
 		JPanel lP2 = new JPanel();
+		lP2.setBackground(new Color(0, 125, 75));
 		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
 		//This is the pattern that captures an IP address. It can't be, "(?:25[0-4]|2[0-4][0-9]|[01]?[1-9][0-9]?)" because 
 		//that discludes 100, and many other non-zero values with a zero in it, from the list of valid IP's.
@@ -203,8 +286,10 @@ public class AppletStart extends Applet
 		pResponder = new JPanel();
 		pResponder.setLayout(new BorderLayout());
 		pResponder.setVisible(false);
+		pResponder.setBackground(new Color(0, 125, 75));
 
 		JPanel lP1 = new JPanel();
+		lP1.setBackground(new Color(0, 125, 75));
 		lP1.setLayout(new GridLayout(3,1));
 
 		//Whatever buttons end up here, add them to the Button group.
@@ -241,6 +326,7 @@ public class AppletStart extends Applet
 					GGCGlobals.INSTANCE.COMMUNICATION_PORT), new ResponderListener());
 			Thread t = new Thread(client);
 			JPanel sa = new JPanel();
+			sa.setBackground(new Color(0, 125, 75));
 			t.start();
 			pResponder.setVisible(true);
 			pConnectIP.setVisible(false);
@@ -266,8 +352,10 @@ public class AppletStart extends Applet
 		pSessionM = new JPanel();
 		pSessionM.setVisible(true);
 		pSessionM.setLayout(new BorderLayout());
-		
+		pSessionM.setBackground(new Color(0, 125, 75));
+
 		JPanel cPanel = new JPanel();
+		cPanel.setBackground(new Color(0, 125, 75));
 		cPanel.setBorder(BorderFactory.createTitledBorder("Your Control Panel"));
 		pShowHide = new CustomJButton("Show/Hide");
 		pShowHide.addActionListener(new GGCGraphListener());
@@ -282,7 +370,7 @@ public class AppletStart extends Applet
 					connected.setText("Connected: "+server.getNumberOfConnectedClients());
 				}
 			}
-			
+
 		});
 		t.start();
 		ans = new JLabel("Answered: 0");
@@ -292,17 +380,20 @@ public class AppletStart extends Applet
 		JPanel qPanel = new JPanel();
 		JPanel tfPanel = new JPanel();
 		JPanel numPanel = new JPanel();
-		
+		qPanel.setBackground(new Color(0, 125, 75));
+		tfPanel.setBackground(new Color(0, 125, 75));
+		numPanel.setBackground(new Color(0, 125, 75));
+
 		qPanel.setLayout(new GridLayout(3,1));
 		//qPanel.add(Box.createVerticalGlue());
 		tfPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		//numPanel.setLayout(new GridLayout(1,2));
-		
+
 		qPanel.setBorder(BorderFactory.createTitledBorder("Question Type"));
-		
+
 		managerButtons = new ArrayList<JToggleButton>();
 		mGroup = new ButtonGroup();
-		
+
 		JToggleButton tfButton = new CustomJToggleButton("True/False");
 		JToggleButton numButton = new CustomJToggleButton("Number Responses: ");
 		managerButtons.add(tfButton);
@@ -321,27 +412,29 @@ public class AppletStart extends Applet
 		tfPanel.add(tfButton);
 		numPanel.add(numButton);
 		numPanel.add(multipleChoice);
-		
+
 		qPanel.add(tfButton);
 		qPanel.add(numPanel);
 		qPanel.add(sendQuestion);
-		
+
 		CategoryDataset dataset = createDataset();
 		graph = createChart(dataset);
 		updater = new GraphUpdater(barData, graph);
 		chartPanel = new ChartPanel(graph);
-		
+
 		//JScrollPane scrollChart = new JScrollPane(chartPanel);
 		//chartPanel.setPreferredSize(new Dimension(500, 250));
 		chartPanel.setMinimumSize(new Dimension(400, 450));
 		chartPanel.setMaximumSize(new Dimension(500, 350));
-		
+
 		JPanel ipPanel = new JPanel();
 		JPanel panel = new JPanel();
+		ipPanel.setBackground(new Color(0, 125, 75));
+		panel.setBackground(new Color(0, 125, 75));
 		BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
 		panel.setLayout(layout);
 		panel.add(chartPanel);
-		
+
 		ipPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		JLabel myIP = new JLabel("Your IP: ");
 		// At this time people are more likely to be using IPv4 addresses instead of IPv6 addresses.
@@ -349,12 +442,13 @@ public class AppletStart extends Applet
 		JLabel myIP1 = new JLabel(cIP);
 		ipPanel.add(myIP);
 		ipPanel.add(myIP1);
-		
-		
+
+
 		JPanel buttonPanel = new JPanel(new BorderLayout());
+		buttonPanel.setBackground(new Color(0, 125, 75));
 		buttonPanel.add(qPanel, BorderLayout.WEST);
 		buttonPanel.add(cPanel, BorderLayout.EAST);
-		
+
 		pSessionM.add(buttonPanel, BorderLayout.SOUTH);
 		pSessionM.add(ipPanel, BorderLayout.PAGE_START);
 		pSessionM.add(panel, BorderLayout.CENTER);
@@ -578,6 +672,8 @@ public class AppletStart extends Applet
 			{
 				JPanel tfPanel = new JPanel();
 				JPanel tfPanelBuff = new JPanel();
+				tfPanel.setBackground(new Color(0, 125, 75));
+				tfPanelBuff.setBackground(new Color(0, 125, 75));
 				tfPanelBuff.setLayout(new BoxLayout(tfPanelBuff, BoxLayout.PAGE_AXIS));
 				tfPanelBuff.add(Box.createVerticalGlue());
 				tfPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -588,7 +684,7 @@ public class AppletStart extends Applet
 				JToggleButton b2 = new CustomJToggleButton("False");
 				trueFalseButtons.add(b2);
 				tGroup.add(b2);
-				
+
 				tfPanel.add(b1);
 				tfPanel.add(b2);
 				tfPanelBuff.add(tfPanel);
@@ -599,7 +695,9 @@ public class AppletStart extends Applet
 		else
 		{
 			JPanel ownPanel = new JPanel();
+			ownPanel.setBackground(new Color(0, 125, 75));
 			JPanel numPanelBuff = new JPanel();
+			numPanelBuff.setBackground(new Color(0, 125, 75));
 			numPanelBuff.setLayout(new BoxLayout(numPanelBuff, BoxLayout.PAGE_AXIS));
 			numPanelBuff.add(Box.createVerticalGlue());
 			ownPanel.setLayout(new GridLayout(10,3));
