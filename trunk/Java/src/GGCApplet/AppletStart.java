@@ -108,6 +108,8 @@ public class AppletStart extends Applet
 	private Point point = new Point();
 	//This boolean is used to tell when the mouse has left or entered the JFrame at least once.
 	private boolean currentIn = true;
+	//JPanels
+	private JPanel tfPanel, tfPanelBuff, ownPanel, numPanelBuff;
 
 	public void init()
 	{
@@ -287,18 +289,31 @@ public class AppletStart extends Applet
 		pResponder.setLayout(new BorderLayout());
 		pResponder.setVisible(false);
 		pResponder.setBackground(new Color(0, 125, 75));
-
+		tfPanel = new JPanel();
+		tfPanel.setBackground(new Color(0, 125, 75));
+		tfPanelBuff = new JPanel();
+		tfPanelBuff.setBackground(new Color(0, 125, 75));
+		tfPanelBuff.setLayout(new BoxLayout(tfPanelBuff, BoxLayout.PAGE_AXIS));
+		tfPanelBuff.add(Box.createVerticalGlue());
+		tfPanel.setLayout(new GridLayout(10,3));
+		ownPanel = new JPanel();
+		ownPanel.setBackground(new Color(0, 125, 75));
+		numPanelBuff = new JPanel();
+		numPanelBuff.setBackground(new Color(0, 125, 75));
+		numPanelBuff.setLayout(new BoxLayout(numPanelBuff, BoxLayout.PAGE_AXIS));
+		numPanelBuff.add(Box.createVerticalGlue());
+		ownPanel.setLayout(new GridLayout(10,3));
+		numPanelBuff.add(ownPanel);
+		pResponder.add(numPanelBuff);
+		pResponder.add(tfPanelBuff);
 		JPanel lP1 = new JPanel();
 		lP1.setBackground(new Color(0, 125, 75));
 		lP1.setLayout(new GridLayout(3,1));
 
-		//Whatever buttons end up here, add them to the Button group.
 		responderButtons = new ArrayList<JToggleButton>();
 		trueFalseButtons = new ArrayList<JToggleButton>();
 		rGroup = new ButtonGroup();
 		tGroup = new ButtonGroup();
-
-		//pResponder.add(lP1,BorderLayout.CENTER);
 	}
 	private void setupResponderCloseListener()
 	{
@@ -423,7 +438,6 @@ public class AppletStart extends Applet
 		chartPanel = new ChartPanel(graph);
 
 		//JScrollPane scrollChart = new JScrollPane(chartPanel);
-		//chartPanel.setPreferredSize(new Dimension(500, 250));
 		chartPanel.setMinimumSize(new Dimension(400, 450));
 		chartPanel.setMaximumSize(new Dimension(500, 350));
 
@@ -664,19 +678,15 @@ public class AppletStart extends Applet
 		else if(trueFalse)
 		{
 			showHideButtons(responderButtons, false);
+			pResponder.remove(numPanelBuff);
+			pResponder.remove(tfPanelBuff);
+			pResponder.add(tfPanelBuff);
 			if(trueFalseButtons.size() == 2)
 			{
 				showHideButtons(trueFalseButtons, true);
 			}
 			else
 			{
-				JPanel tfPanel = new JPanel();
-				JPanel tfPanelBuff = new JPanel();
-				tfPanel.setBackground(new Color(0, 125, 75));
-				tfPanelBuff.setBackground(new Color(0, 125, 75));
-				tfPanelBuff.setLayout(new BoxLayout(tfPanelBuff, BoxLayout.PAGE_AXIS));
-				tfPanelBuff.add(Box.createVerticalGlue());
-				tfPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 				JToggleButton b1 = new CustomJToggleButton("True");
 				trueFalseButtons.add(b1);
 				tGroup.add(b1);
@@ -687,31 +697,26 @@ public class AppletStart extends Applet
 
 				tfPanel.add(b1);
 				tfPanel.add(b2);
-				tfPanelBuff.add(tfPanel);
-				pResponder.add(tfPanelBuff, BorderLayout.CENTER);
+				
 				pResponder.validate();
 			}
 		}
 		else
 		{
-			JPanel ownPanel = new JPanel();
-			ownPanel.setBackground(new Color(0, 125, 75));
-			JPanel numPanelBuff = new JPanel();
-			numPanelBuff.setBackground(new Color(0, 125, 75));
-			numPanelBuff.setLayout(new BoxLayout(numPanelBuff, BoxLayout.PAGE_AXIS));
-			numPanelBuff.add(Box.createVerticalGlue());
-			ownPanel.setLayout(new GridLayout(10,3));
 			showHideButtons(trueFalseButtons, false);
+			
+			pResponder.remove(numPanelBuff);
+			pResponder.remove(tfPanelBuff);
+			pResponder.add(numPanelBuff);
 			if(num > responderButtons.size())
 			{
-				for(int i = 0; i < num; i++)
+				showHideButtons(responderButtons,true);
+				for(int i = responderButtons.size(); i < num; i++)
 				{
 					JToggleButton r = new CustomJToggleButton(""+i);
 					rGroup.add(r);
 					responderButtons.add(r);
 					ownPanel.add(r);
-					numPanelBuff.add(ownPanel);
-					pResponder.add(numPanelBuff);
 					pResponder.validate();
 				}
 			}
@@ -742,7 +747,6 @@ public class AppletStart extends Applet
 		for(JToggleButton b : buttons)
 		{
 			b.setVisible(state);
-			b.setSelected(false);
 		}
 	}
 	/**
