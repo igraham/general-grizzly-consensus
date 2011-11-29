@@ -737,7 +737,7 @@ public class AppletStart extends Applet
 				showHideButtons(responderButtons,true);
 				for(int i = responderButtons.size(); i < num; i++)
 				{
-					JToggleButton r = new CustomJToggleButton(""+i);
+					JToggleButton r = new CustomJToggleButton(""+(char)('A'+i));
 					rGroup.add(r);
 					responderButtons.add(r);
 					ownPanel.add(r);
@@ -748,7 +748,6 @@ public class AppletStart extends Applet
 			{
 				for(int i = 0; i < responderButtons.size(); i++)
 				{
-					responderButtons.get(i).setSelected(false);
 					if(i < num)
 					{
 						responderButtons.get(i).setVisible(true);
@@ -804,7 +803,14 @@ public class AppletStart extends Applet
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == sendAnswer)
 			{
-				String messageR = findSelected(responderButtons);
+				String messageR = "";
+				for(int i = 0; i < responderButtons.size(); i++)
+				{
+					if(responderButtons.get(i).isSelected())
+					{
+						messageR = ""+i;
+					}
+				}
 				String messageT = findSelected(trueFalseButtons);
 				if(messageR.length() < 1 && messageT.length() < 1)
 				{
