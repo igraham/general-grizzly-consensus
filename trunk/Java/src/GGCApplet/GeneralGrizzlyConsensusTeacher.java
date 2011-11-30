@@ -3,6 +3,7 @@ package GGCApplet;
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -20,6 +21,8 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+
+import com.sun.awt.AWTUtilities;
 
 public class GeneralGrizzlyConsensusTeacher extends Applet
 {
@@ -70,14 +73,39 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 	private JLabel ans;
 	//Counts the number of answers received for a question.
 	private int numAnswered;
+	//This Point is used to keep track of where the JFrame Window is for dragging while in undecorated mode.
+	private Point point = new Point();
+	//This boolean is used to tell when the mouse has left or entered the JFrame at least once.
+	private boolean currentIn = true;
+	//Exit button
+	private CustomJButton exit;
 
 	public void init()
 	{
 		Runnable runner = new Runnable() {
 			public void run() {
+				// ATWUtilities is a restricted API to Eclipes and need to be set up so it does not throw an error
+				// Window -> Preferences -> Java -> Compiler -> Error/Warnings -> Depicted/Restricted API -> Forbidden Access -> Set to Warning
+				if (!AWTUtilities.isTranslucencySupported(AWTUtilities.Translucency.TRANSLUCENT))
+				{
+					System.out.print("You do not support AWTUtilities Translucency.");
+				}
+
 				mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
-				mainFrame.setSize(500, 432);
+				mainFrame.setSize(400, 482);			
+				mainFrame.setUndecorated(true);
+				//Please keep setResizable to false till resize bug is fixed
+				mainFrame.setResizable(false);
+				//The color is GGC EverGreen Green
+				mainFrame.getContentPane().setBackground(new Color(0, 125, 75));
+				AWTUtilities.setWindowShape(mainFrame, new RoundRectangle2D.Float(0, 0,mainFrame.getWidth(), mainFrame.getHeight(), 30, 30));
 				mainFrame.setVisible(true);
+
+				final CustomGlass glass = new CustomGlass(mainFrame);
+				mainFrame.setGlassPane(glass);
+				glass.setFocusable(false);
+				glass.setEnabled(false);
+				glass.setVisible(true);
 				mfContainer = mainFrame.getContentPane();
 				mfContainer.setLayout(new CardLayout());		
 				mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -86,9 +114,81 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 				createSessionManager();
 				mfContainer.add(pSessionM, "Session Managers Panel");
 				pSessionM.setVisible(true);
+				
+				// This get the point location of where the mouse is pressed to save it location for moving.
+				mainFrame.addMouseListener(new MouseAdapter() {
+					public void mousePressed(MouseEvent e) {
+						point.x = e.getX();
+						point.y = e.getY();
+					}
+				});
+
+				// This is what drags the JFrame when the frame is undecorated.
+				mainFrame.addMouseMotionListener(new MouseMotionAdapter() {
+					public void mouseDragged(MouseEvent e) {
+						Point p = mainFrame.getLocation();
+						mainFrame.setLocation(p.x + e.getX() - point.x, p.y + e.getY() - point.y);
+					}
+				});
+
+				// When the mouse leaves the JFrame it disposes of the frame and redraws the decorated boarder
+				mainFrame.addMouseListener(new MouseAdapter() {
+					public void mouseExited(MouseEvent e) {
+						/*
+						//This is the get the bounding box of the where the JFrame is on the screen.
+						Dimension bD = new Dimension(mainFrame.getWidth(), mainFrame.getHeight());
+						Rectangle bR = new Rectangle(mainFrame.getLocation(),bD);
+
+						if(!bR.contains(e.getLocationOnScreen()))
+						{
+							//System.out.println(bR.contains(e.getLocationOnScreen()));
+							//System.out.println("Out");
+							mainFrame.dispose();
+							mainFrame.setUndecorated(false);
+							//frame.setBounds(frame.getGraphicsConfiguration().getBounds());
+							mainFrame.setVisible(true);
+							currentIn = false;
+						}*/
+					}
+				});
+
+				// When the mouse enters the JFrame it disposes of the frame and redraws the undecorated boarder
+				mainFrame.addMouseListener(new MouseAdapter() {
+					public void mouseEntered(MouseEvent e) {
+						if(!currentIn)
+						{
+							/*//System.out.println("In");
+							mainFrame.dispose();
+							mainFrame.setUndecorated(true);
+							AWTUtilities.setWindowShape(mainFrame, new RoundRectangle2D.Float(0, 0,mainFrame.getWidth(), mainFrame.getHeight(), 30, 30));
+							currentIn = true;
+							mainFrame.setVisible(true);*/
+						}
+					}
+				});
+				mfContainer.validate();
 			}
 		};
 		EventQueue.invokeLater(runner);
+	}
+	
+	/**
+	 * This listener is used as an alternative to switching the state of the window border to allow for an exit button to appear. Instead, an exit button
+	 * is placed in the appropriate place in the interface.
+	 * @author Ian Graham
+	 *
+	 */
+	class ExitButtonListener implements ActionListener
+	{
+
+		public void actionPerformed(ActionEvent e)
+		{
+			if(e.getSource() == exit)
+			{
+				System.exit(0);
+			}
+		}
+		
 	}
 
 	private void createSessionManager()
@@ -97,8 +197,16 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 		pSessionM = new JPanel();
 		pSessionM.setVisible(true);
 		pSessionM.setLayout(new BorderLayout());
+		pSessionM.setBackground(new Color(0, 125, 75));
+		pSessionM.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 		
+		exit = new CustomJButton("Exit");
+		exit.addActionListener(new ExitButtonListener());
+
 		JPanel cPanel = new JPanel();
+		cPanel.setLayout(new BoxLayout(cPanel, BoxLayout.Y_AXIS));
+		cPanel.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
+		cPanel.setBackground(new Color(0, 125, 75));
 		cPanel.setBorder(BorderFactory.createTitledBorder("Your Control Panel"));
 		pShowHide = new CustomJButton("Show/Hide");
 		pShowHide.addActionListener(new GGCGraphListener());
@@ -113,7 +221,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 					connected.setText("Connected: "+server.getNumberOfConnectedClients());
 				}
 			}
-			
+
 		});
 		t.start();
 		ans = new JLabel("Answered: 0");
@@ -123,17 +231,17 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 		JPanel qPanel = new JPanel();
 		JPanel tfPanel = new JPanel();
 		JPanel numPanel = new JPanel();
-		
+		qPanel.setBackground(new Color(0, 125, 75));
+		tfPanel.setBackground(new Color(0, 125, 75));
+		numPanel.setBackground(new Color(0, 125, 75));
+
 		qPanel.setLayout(new GridLayout(3,1));
-		//qPanel.add(Box.createVerticalGlue());
 		tfPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-		//numPanel.setLayout(new GridLayout(1,2));
-		
 		qPanel.setBorder(BorderFactory.createTitledBorder("Question Type"));
-		
+
 		managerButtons = new ArrayList<JToggleButton>();
 		mGroup = new ButtonGroup();
-		
+
 		JToggleButton tfButton = new CustomJToggleButton("True/False");
 		JToggleButton numButton = new CustomJToggleButton("Number Responses: ");
 		managerButtons.add(tfButton);
@@ -152,27 +260,31 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 		tfPanel.add(tfButton);
 		numPanel.add(numButton);
 		numPanel.add(multipleChoice);
-		
+
 		qPanel.add(tfButton);
 		qPanel.add(numPanel);
 		qPanel.add(sendQuestion);
-		
+
 		CategoryDataset dataset = createDataset();
 		graph = createChart(dataset);
 		updater = new GraphUpdater(barData, graph);
 		chartPanel = new ChartPanel(graph);
-		
-		//JScrollPane scrollChart = new JScrollPane(chartPanel);
-		//chartPanel.setPreferredSize(new Dimension(500, 250));
-		chartPanel.setMinimumSize(new Dimension(400, 450));
-		chartPanel.setMaximumSize(new Dimension(500, 350));
+
+		chartPanel.setMinimumSize(new Dimension(350, 250));
+		chartPanel.setMaximumSize(new Dimension(500, 450));
+
+		JPanel exitPanel = new JPanel(new BorderLayout());
+		exitPanel.setBackground(new Color(0, 125, 75));
+		exitPanel.add(exit, BorderLayout.EAST);
 		
 		JPanel ipPanel = new JPanel();
 		JPanel panel = new JPanel();
+		ipPanel.setBackground(new Color(0, 125, 75));
+		panel.setBackground(new Color(0, 125, 75));
 		BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
 		panel.setLayout(layout);
 		panel.add(chartPanel);
-		
+
 		ipPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		JLabel myIP = new JLabel("Your IP: ");
 		// At this time people are more likely to be using IPv4 addresses instead of IPv6 addresses.
@@ -180,14 +292,16 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 		JLabel myIP1 = new JLabel(cIP);
 		ipPanel.add(myIP);
 		ipPanel.add(myIP1);
-		
-		
+		exitPanel.add(ipPanel, BorderLayout.CENTER);
+
+
 		JPanel buttonPanel = new JPanel(new BorderLayout());
+		buttonPanel.setBackground(new Color(0, 125, 75));
 		buttonPanel.add(qPanel, BorderLayout.WEST);
-		buttonPanel.add(cPanel, BorderLayout.EAST);
-		
+		buttonPanel.add(cPanel, BorderLayout.CENTER);
+
 		pSessionM.add(buttonPanel, BorderLayout.SOUTH);
-		pSessionM.add(ipPanel, BorderLayout.PAGE_START);
+		pSessionM.add(exitPanel, BorderLayout.PAGE_START);
 		pSessionM.add(panel, BorderLayout.CENTER);
 	}
 
