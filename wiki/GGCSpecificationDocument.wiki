@@ -33,19 +33,15 @@ Text of connected students, and students that have responded
 Professor IP Address
 
 == 1.3 Software context ==
-The software is placed in a business or product line context. Strategic issues relevant to context are discussed. The intent is for the reader to understand the 'big picture'.
-Flavor Text - A teacher opens an instance of... the teacher then opens the graph and briefly examines student results
+The professor gives the HTML Link for the student GGC^2, and the class then connects to the the professors IP Address. The professor then shows a word document to the students and asks the students to give a response by clicking there choice displayed on there GGC^2 applet. Once the professor has waited for a set time, he then un-hides the graph to display the results of the poll. Once the professor is ready for the next question he then selects the a new question type and hits "Send Question".
 
 == 1.4 Major constraints ==
-Any business or product line constraints that will impact the manner in which the software is to be specified, designed, implemented or tested are noted here.
-The project will not be tested in an actual classroom because space is limited.
+Due to the how Georgia Gwinnett College network is set up it would be difficult to establish a connection to other computers. We have tested this product on internal networks and other outside networks then Georgia Gwinnett College.
 
 = 2.0 Usage scenario =
-This section provides a usage scenario for the software. It organized information collected during requirements elicitation into use-cases.
 
 == 2.1 User profiles ==
-The profiles of all user categories are described here.
-Teacher: Send questions/ Show hidegraph
+Professor: Send questions, show/hide graph, provides IP Address
 Student: Connect to teacher/ Answer Questions
 
 == 2.2 Use-cases ==
@@ -57,16 +53,29 @@ Use-case Interaction:
 http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/GGCUseCase2.PNG
 
 === 2.2.1 Brief Description ===
-Brief Description use case
+The professor connects to his side of the GGC^2 applet which then provides the IP address, graph, and question types. The student connects to his side of the GGC^2 applet which allows them to connect to the professor to receive and send responses.
 
 === 2.2.2 Step-by-step description ===
-(see pg 315 for example) Add the diagram of Use case
+1. Professor connect to HTML page.
+1.1 The IP address is then shared to the class.
+1.2 The professor hides the graph if so desired.
+1.3 The professor selects a question type to send to the class.
+
+2. Student connects to the HTML page.
+2.1 The student connects with the IP Address professor supplied.
+2.2 Student waits for first question type.
+
+3. Student responds to question type.
+3.1 The professor receives response.
+3.2 The professors graph updates received responses.
+
+4. Professor continues to send new questions.
 
 === 2.2.3 Priority ===
-Priority
+The professor must establish his side of the connection first before the student can connect to him.
 
 == 2.3 Special usage considerations ==
-Special requirements associated with the use of the software are presented.
+Both professor and student must have JAVA 1.6 JRE install to see the applet. Also the the browser of choice must be able to support a JAVA Applet.
 
 = 3.0 Data Model and Description =
 This section describes information domain for the software
