@@ -16,7 +16,7 @@
 
 	<!-- Path -->
 	<property name="key.dir" value="${build}/security" />
-	<property name="jarsigner" value="C:\Program Files\Java\jdk1.6.0_27\bin\jarsigner.exe" />
+	<property name="jarsigner" value="C:\Program Files\Java\jdk1.6.0_29\bin\jarsigner.exe" />
 
 	<!-- generateKey config-->
 	<!-- Service config -->

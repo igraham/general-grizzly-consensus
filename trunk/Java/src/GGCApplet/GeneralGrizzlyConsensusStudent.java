@@ -15,46 +15,91 @@ import com.sun.awt.AWTUtilities;
 
 import GeneralGrizzlyConsensus.*;
 
+/**
+ * This is the Student view of the GGC^2 program. The initial screen is the connection screen where students
+ * must enter an IP address in order to connect to the professor's program.
+ * @author Ian Graham
+ *
+ */
 public class GeneralGrizzlyConsensusStudent extends Applet implements ActionListener
 {
-	//I added this because the client/server GUI's had it.
+	/**
+	 * I added this because the client/server GUI's had it.
+	 */
 	private static final long serialVersionUID = 1L;
-	//The container to hold the layout of the main frame of the Applet.
+	/**
+	 * The container to hold the layout of the main frame of the Applet.
+	 */
 	private Container mfContainer;
-	//Will allow the responder to connect to an IP of a session manager.
+	/**
+	 * Will allow the responder to connect to an IP of a session manager.
+	 */
 	private JPanel pConnectIP;
-	//The responders response pad with "True/False" and "A-E" buttons.
+	/**
+	 * The responders response pad with "True/False" and "A-E" buttons.
+	 */
 	private JPanel pResponder;
-	//This is the button for the responder to connect to the IP.
+	/**
+	 * This is the button for the responder to connect to the IP.
+	 */
 	private JButton rContorlP;
-	//This button is the Responder's way of sending an answer to the professor.
+	/**
+	 * This button is the Responder's way of sending an answer to the professor.
+	 */
 	private JButton sendAnswer;
-	//This is to tell that all the IP numbers have been filled in.
+	/**
+	 * This is to tell that all the IP numbers have been filled in.
+	 */
 	private JTextField[] ip;
-	//This is an instance of a connection which will essentially serve as the client. It will be initialized
-	//upon clicking on responder.
+	/**
+	 * This is an instance of a connection which will essentially serve as the client. It will be 
+	 * initialized upon clicking on responder.
+	 */
 	private GGCConnection client;
-	//Button groups which organize the buttons used by the session manager and responder.
+	/**
+	 * Button groups which organize the buttons used by the session manager and responder.
+	 */
 	private ButtonGroup rGroup, tGroup;
-	//This button group is used by the responder and will be used to both determine which
-	//response buttons are on the screen and which response is sent to the session manager
-	//when the sendAnswer button is clicked.
+	/**
+	 * This button group is used by the responder and will be used to both determine which response 
+	 * buttons are on the screen and which response is sent to the session manager when the sendAnswer 
+	 * button is clicked.
+	 */
 	private ArrayList<JToggleButton> responderButtons;
-	//This button group is used specifically for the true and false buttons.
+	/**
+	 * This button group is used specifically for the true and false buttons.
+	 */
 	private ArrayList<JToggleButton> trueFalseButtons;
-	//This is the main frame for the whole GUI.
+	/**
+	 * This is the main frame for the whole GUI.
+	 */
 	private JFrame mainFrame;
-	//This is a temporary fix to the error caused when switching from multiple choice to T/F.
+	/**
+	 * This is a temporary fix to the error caused when switching from multiple choice to T/F.
+	 */
 	private boolean rtf;
-	//This Point is used to keep track of where the JFrame Window is for dragging while in undecorated mode.
+	/**
+	 * This Point is used to keep track of where the JFrame Window is for dragging while in undecorated mode.
+	 */
 	private Point point = new Point();
-	//This boolean is used to tell when the mouse has left or entered the JFrame at least once.
+	/**
+	 * This boolean is used to tell when the mouse has left or entered the JFrame at least once.
+	 */
 	private boolean currentIn = true;
-	//JPanels
+	/**
+	 * JPanels, true/false, and multiple choice, and their buffer panel to make them center and organize nicely
+	 * in the GUI.
+	 */
 	private JPanel tfPanel, tfPanelBuff, ownPanel, numPanelBuff;
-	//Exit buttons
+	/**
+	 * Exit buttons, one for the connection panel, one for the answer panel.
+	 */
 	private CustomJButton exit1, exit2;
 
+	/**
+	 * This is the initialization method for the applet. It's essentially the constructor. The code is surrounded by an
+	 * EventQueue runnable because swing has threading issues.
+	 */
 	public void init()
 	{
 		Runnable runner = new Runnable() {
@@ -110,36 +155,14 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 				// When the mouse leaves the JFrame it disposes of the frame and redraws the decorated boarder
 				mainFrame.addMouseListener(new MouseAdapter() {
 					public void mouseExited(MouseEvent e) {
-						/*
-						//This is the get the bounding box of the where the JFrame is on the screen.
-						Dimension bD = new Dimension(mainFrame.getWidth(), mainFrame.getHeight());
-						Rectangle bR = new Rectangle(mainFrame.getLocation(),bD);
-
-						if(!bR.contains(e.getLocationOnScreen()))
-						{
-							//System.out.println(bR.contains(e.getLocationOnScreen()));
-							//System.out.println("Out");
-							mainFrame.dispose();
-							mainFrame.setUndecorated(false);
-							//frame.setBounds(frame.getGraphicsConfiguration().getBounds());
-							mainFrame.setVisible(true);
-							currentIn = false;
-						}*/
+						
 					}
 				});
 
 				// When the mouse enters the JFrame it disposes of the frame and redraws the undecorated boarder
 				mainFrame.addMouseListener(new MouseAdapter() {
 					public void mouseEntered(MouseEvent e) {
-						if(!currentIn)
-						{
-							/*//System.out.println("In");
-							mainFrame.dispose();
-							mainFrame.setUndecorated(true);
-							AWTUtilities.setWindowShape(mainFrame, new RoundRectangle2D.Float(0, 0,mainFrame.getWidth(), mainFrame.getHeight(), 30, 30));
-							currentIn = true;
-							mainFrame.setVisible(true);*/
-						}
+						
 					}
 				});
 				mfContainer.validate();
@@ -148,6 +171,12 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 		EventQueue.invokeLater(runner);
 	}
 
+	/**
+	 * This is the method that sets up the IP address connection panel, and the JFormattedTextFields which
+	 * regulate what kinds of IP addresses students try to connect to. There are two separate patterns, one for
+	 * the outer IP address blocks (1-254), and one for the inner IP address blocks (0-254). Anything entered
+	 * other than that range of numbers in those fields will be edited out when selecting a different text field.
+	 */
 	private void connectIP()
 	{
 		pConnectIP = new JPanel();
@@ -227,6 +256,10 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 		pConnectIP.add(lP3, BorderLayout.NORTH);
 	}
 
+	/**
+	 * This is the method that sets up the GUI elements which allow a student to respond to questions sent
+	 * by the professor. It is initially empty.
+	 */
 	private void createResponder()
 	{
 		pResponder = new JPanel();
@@ -268,6 +301,9 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 		rGroup = new ButtonGroup();
 		tGroup = new ButtonGroup();
 	}
+	/**
+	 * Stephen's code.
+	 */
 	private void setupResponderCloseListener()
 	{
 		mainFrame.addWindowListener(new java.awt.event.WindowAdapter() 
@@ -318,7 +354,7 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 	 * This listener will be attached to the button in the student screen.
 	 * This class can be used by GGCConnection to test the connection to the specified IP address.
 	 * This class will handle user input for a student connecting to the professor
-	 * AND CONNECT.
+	 * and connect.
 	 * @author Ian Graham
 	 *
 	 */
@@ -346,7 +382,8 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 	 * or 2 buttons (regularly true/false), and hide the ones that are not relevant to the
 	 * scope of the button range. It is *planned* to go up to 26, but technically unless
 	 * it is coded out it can do up to 99 (tested, it will do up to 99). I have coded out
-	 * trying to make a one or two button multiple choice or something ridiculous like that.
+	 * trying to make a one or two or more than 26 button multiple choice or something 
+	 * ridiculous like that.
 	 * @param num - The number of buttons. Two buttons represents true/false. Anything more than
 	 * that is multiple choice.
 	 */
@@ -451,9 +488,12 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 
 	/**
 	 * This class listens for when the professor clicks the send question button.
-	 * It will send some sort of text to the student/client (maybe just T for true
-	 * or false and M# for multiple choice where # is a number between 3 and 5) and
-	 * will check for valid output on multiple choice.
+	 * When receiving from the professor, a response of T tells the responder to
+	 * make or show true/false buttons and when a response of M# is received
+	 * (where # is a number between 3 and 26) it's multiple choice and generates
+	 * or shows/hides the number of buttons specified.
+	 * 
+	 * When sending, the response is either "True", "False", or a number (0-25).
 	 * @author Ian Graham
 	 *
 	 */

@@ -11,7 +11,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 /**
  * The purpose of this class is to be able to increment data and set up the graph for a new
  * question, I.E. a new data set.
- * @author Administrator
+ * @author Ian Graham
  *
  */
 public class GraphUpdater {

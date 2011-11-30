@@ -77,6 +77,10 @@ public enum GGCServer implements Runnable
 		}
 	}
 
+	/**
+	 * The constructor instantiates the list of clients and starts the clean-up thread. It also initializes
+	 * the last sent message and sets the connection acceptor condition to true.
+	 */
 	GGCServer()
 	{
 		keepListening = true;
@@ -87,6 +91,10 @@ public enum GGCServer implements Runnable
 		t.start();
 	}
 
+	/**
+	 * Looks through the list of IPv4 addresses and attempts to locate the most likely one.
+	 * @return Returns the first found likely IPv4 address.
+	 */
 	public static InetAddress getLikelyIpv4Address()
 	{
 		InetAddress[] allIps = {};
@@ -141,6 +149,10 @@ public enum GGCServer implements Runnable
 		}
 	}
 
+	/**
+	 * Looks through the list of IPv6 addresses and attempts to locate the most likely one.
+	 * @return Returns the first found likely IPv6 address.
+	 */
 	public static InetAddress getLikelyIpv6Address()
 	{
 		InetAddress[] allIps = {};
@@ -195,11 +207,18 @@ public enum GGCServer implements Runnable
 		}
 	}
 
+	/**
+	 * Returns the current amount of clients stored in the clients list.
+	 * @return Returns the size of the clients list.
+	 */
 	public int getNumberOfConnectedClients()
 	{
 		return clients.size();
 	}
-
+	/**
+	 * Gets the server socket so that connections can be made.
+	 * @return Returns the reference to the server socket.
+	 */
 	public ServerSocket getRawServerSocket()
 	{
 		return server;
@@ -262,6 +281,11 @@ public enum GGCServer implements Runnable
 		}
 	}
 
+	/**
+	 * Sends the specified message to all connected clients, and also sets the last sent message
+	 * to the message in case new client.
+	 * @param msg
+	 */
 	public void sendMessageToAll(String msg)
 	{
 		lastSentMessage = msg;
