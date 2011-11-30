@@ -2,7 +2,7 @@
 #labels GGC,Specification,Document,Phase-Support,Phase-Requirements,Phase-Design,Featured
 
 = 1. 0 Introduction =
-The General Grizzly Consensus is a program that allows both professor and student to interact by means of a completely anonymous poll of answers to be used with a third party program to display questions. I.E. Microsoft Word, PowerPoint, website, and or text editor.
+The General Grizzly Consensus is a program that allows both professor and student to interact by means of a completely anonymous poll of answers to be used with a third party program to display questions. I.E. Microsoft Word, Power Point, website, and or text editor.
 
 Contact information/ SRS team members: Our contacts throughout the project will be Dr. Robert Lutz and Dr. Evelyn Brannock of Georgia Gwinnett College.   
 The team members for the duration of the project are as follow:
@@ -20,20 +20,20 @@ Our goal is to successfully create an application for staff and student of GGC w
 A description of the software is presented. Major inputs, processing functionality and outputs are described without regard to implementation detail.
 
 Inputs:
-4 JFormattedText boxes: IP address for students to connect to.
-JToggleButton Student buttons: “True/ False” and “Multiple Choice”
-JToggleButton Professor buttons: Question Answers
-JComboBox Drop-down Box: Multiple choice questions
-JButton Student Buttons: Send Anwser, Connect, Exit
-JButton Professor Buttons: Send Question, Hide/Show, Exit
+  * 4 JFormattedText boxes: IP address for students to connect to.
+  * JToggleButton Student buttons: “True/ False” and “Multiple Choice”
+  * JToggleButton Professor buttons: Question Answers
+  * JComboBox Drop-down Box: Multiple choice questions
+  * JButton Student Buttons: Send Anwser, Connect, Exit
+  * JButton Professor Buttons: Send Question, Hide/Show, Exit
 
 Outputs:
-Graph of student responses
-Text of connected students, and students that have responded
-Professor IP Address
+  * Graph of student responses
+  * Text of connected students, and students that have responded
+  * Professor IP Address
 
 == 1.3 Software context ==
-The professor gives the HTML Link for the student GGC^2, and the class then connects to the the professors IP Address. The professor then shows a word document to the students and asks the students to give a response by clicking there choice displayed on there GGC^2 applet. Once the professor has waited for a set time, he then un-hides the graph to display the results of the poll. Once the professor is ready for the next question he then selects the a new question type and hits "Send Question".
+The professor gives the HTML Link for the student GGC^2^and the class then connects to the the professors IP Address. The professor then shows a word document to the students and asks the students to give a response by clicking there choice displayed on there GGC^2^ applet. Once the professor has waited for a set time, he then un-hides the graph to display the results of the poll. Once the professor is ready for the next question he then selects the a new question type and hits "Send Question".
 
 == 1.4 Major constraints ==
 Due to the how Georgia Gwinnett College network is set up it would be difficult to establish a connection to other computers. We have tested this product on internal networks and other outside networks then Georgia Gwinnett College.
@@ -41,8 +41,8 @@ Due to the how Georgia Gwinnett College network is set up it would be difficult 
 = 2.0 Usage scenario =
 
 == 2.1 User profiles ==
-Professor: Send questions, show/hide graph, provides IP Address
-Student: Connect to teacher/ Answer Questions
+  * Professor: Send questions, show/hide graph, provides IP Address
+  * Student: Connect to teacher/ Answer Questions
 
 == 2.2 Use-cases ==
 
@@ -53,21 +53,32 @@ Use-case Interaction:
 http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/GGCUseCase2.PNG
 
 === 2.2.1 Brief Description ===
-The professor connects to his side of the GGC^2 applet which then provides the IP address, graph, and question types. The student connects to his side of the GGC^2 applet which allows them to connect to the professor to receive and send responses.
+The professor connects to his side of the GGC^2^ applet which then provides the IP address, graph, and question types. The student connects to his side of the GGC^2^ applet which allows them to connect to the professor to receive and send responses.
 
 === 2.2.2 Step-by-step description ===
-1. Professor connect to HTML page.
+
+1 Professor connect to HTML page.
+
 1.1 The IP address is then shared to the class.
+
 1.2 The professor hides the graph if so desired.
+
 1.3 The professor selects a question type to send to the class.
 
+
 2. Student connects to the HTML page.
+
 2.1 The student connects with the IP Address professor supplied.
+
 2.2 Student waits for first question type.
 
+
 3. Student responds to question type.
+
 3.1 The professor receives response.
+
 3.2 The professors graph updates received responses.
+
 
 4. Professor continues to send new questions.
 
@@ -78,36 +89,64 @@ The professor must establish his side of the connection first before the student
 Both professor and student must have JAVA 1.6 JRE install to see the applet. Also the the browser of choice must be able to support a JAVA Applet.
 
 = 3.0 Data Model and Description =
-This section describes information domain for the software
 
 == 3.1 Class Diagram ==
 http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/GGCClass3.png
 
 === 3.1.1 Classes ===
-Data objects and their major attributes are described.
+_GGCApplet Package_
+  * AppletStart *NOTE:* As of this writing this class was split into two classes.
+  * CustomGlass
+  * CustomJButton
+  * CustomJToggleButton
+  * GraphUpdater
+  * RegexFormatter
+
+_GeneralGrizzlyConsensus_
+  * GeneralGrizzlyConsensus
+  * GGCChooseGUI
+  * GGCClientGUI
+  * GGCConnection
+  * GGCGlobals
+  * GGCServer
+  * GGCServerGUI
 
 === 3.1.2 Relationships ===
-Relationships among data objects are described.
+AppletStart -> GraphUpdater
+AppletStart -> GGCConnection <- GGCClientGUI
+AppletStart -> GGCServer <- GGCServerGUI
 
 = 4.0  Dynamic Model and Description =
-dynamic Model and Description
+None
 
 == 4.1 State Diagram/s ==
 
 http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/GGCState1.PNG
 
 === 4.1.1 Description of initial state/final state ===
-initial state/ final state
+Initial state is when the client connects to the URL to the HTML Page. There is no final state since the program is design to keep running till the user exits the program.
 
 === 4.1.2 Description of each state ===
-description of each state
+  * Student panel: The GUI display for the student.
+  * Connect to professor: The panel that shows the 4 IP address boxes and connection button.
+  * Receive question type: Student receives an update from the professor panel.
+  * Pick response: Student picks a response.
+  * Send response: Student clicks the "Send Anwser" button.
+  * Update graph: The graph updates to show the type of question and anwsers sent to it.
+  * Professor panel: The GUI that displays all the tools for the professor.
+  * Show how many responded/connected: Gathers how many people connected to professor panel and sent there answer.
+  * Hide graph: Hides the bar graph.
+  * Show graph: Shows the bar graph.
+  * True/False selected: The T/F button has be selected.
+  * Multiple choice selected: Multiple choice selected.
+  * Pick how many choices: The drop down box for if they want "A-C" or "A-Z".
+  * Submit question: Sends data to the student panel on what question type they are asked.
 
 === 4.1.3 Description of each transition ===
-description of each transition
+(See image of chart)
 
 = 5.0 External Interface Requirements =
-RACHAEL: appropriate version of JVM/Reword
-A recent copy of the Java Virtual Machine, an internet browser, and a way to type in input, and select options.
+Java JRE 1.6 install on the computer, an updated internet browser that has a working JAVA plug-in, a input device that will allow you to select buttons and type test.
 
 == 5.1 User interfaces ==
 An overview of any human interfaces to be designed for the software is presented. Provide mockups.
