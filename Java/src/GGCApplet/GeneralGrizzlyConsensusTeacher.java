@@ -108,7 +108,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 				glass.setVisible(true);
 				mfContainer = mainFrame.getContentPane();
 				mfContainer.setLayout(new CardLayout());		
-				mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 				setupManagerCloseListener();
 				setupServer();
 				createSessionManager();

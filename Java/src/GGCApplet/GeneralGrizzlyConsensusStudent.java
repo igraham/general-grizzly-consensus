@@ -90,7 +90,6 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 				createResponder();
 				mfContainer.add(pResponder, "Responders Panel");
 				pConnectIP.setVisible(true);
-				mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				
 				// This get the point location of where the mouse is pressed to save it location for moving.
 				mainFrame.addMouseListener(new MouseAdapter() {
