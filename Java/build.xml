@@ -14,12 +14,128 @@
 	<property name="build.jar" location="${build}/ggc2applet.jar" />
 	<property name="build.zip" location="${build}/ggc2applet.zip" />
 
+	<!-- Path -->
+	<property name="key.dir" value="${build}/security" />
+	<property name="jarsigner" value="C:\Program Files\Java\jdk1.6.0_27\bin\jarsigner.exe" />
+
+	<!-- generateKey config-->
+	<!-- Service config -->
+	<property name="serviceKeystore.file" value="${key.dir}/service.jks" />
+	<property name="servicePublicKey.file" value="${key.dir}/service_public.key" />
+	<property name="serviceKeystore.alias" value="service" />
+	<property name="serviceKeystore.password" value="ITEC3860-service" />
+	<property name="serviceKeystore.dname" value='"CN=\"GGConsensus-Group\", OU=\"ITEC3860 - Fall 2011\", O=GGC, L=Lawrenceville, ST=GA, C=US"' />
+
+	<!-- Client config -->
+	<property name="clientKeystore.file" value="${key.dir}/client.jks" />
+	<property name="clientPublicKey.file" value="${key.dir}/client_public.key" />
+	<property name="clientKeystore.alias" value="client" />
+	<property name="clientKeystore.password" value="ITEC3860-client" />
+	<property name="clientKeystore.dname" value='"CN=\"GGConsensus-Group\", OU=\"ITEC3860 - Fall 2011\", O=GGC, L=Lawrenceville, ST=GA, C=US"' />
+
+	<!-- Macro to genererate basic key -->
+	<macrodef name="generateKey.macro">
+		<attribute name="keystore.file" />
+		<attribute name="publicKey.file" />
+		<attribute name="keystore.alias" />
+		<attribute name="keystore.password" />
+		<attribute name="keystore.dname" />
+		<sequential>
+
+			<!-- Keystore creation -->
+			<exec executable="keytool">
+				<arg value="-genkey" />
+				<arg value="-keyalg" />
+				<arg value="RSA" />
+				<arg value="-keysize" />
+				<arg value="1024" />
+				<arg value="-alias" />
+				<arg value="@{keystore.alias}" />
+				<arg value="-keystore" />
+				<arg value="@{keystore.file}" />
+				<arg value="-storepass" />
+				<arg value="@{keystore.password}" />
+				<arg value="-keypass" />
+				<arg value="@{keystore.password}" />
+				<arg value="-dname" />
+				<arg value="@{keystore.dname}" />
+			</exec>
+
+			<!-- self sign -->
+			<exec executable="keytool">
+				<arg value="-selfcert" />
+				<arg value="-alias" />
+				<arg value="@{keystore.alias}" />
+				<arg value="-keystore" />
+				<arg value="@{keystore.file}" />
+				<arg value="-storepass" />
+				<arg value="@{keystore.password}" />
+			</exec>
+
+			<!-- Public key export -->
+			<exec executable="keytool">
+				<arg value="-export" />
+				<arg value="-alias" />
+				<arg value="@{keystore.alias}" />
+				<arg value="-keystore" />
+				<arg value="@{keystore.file}" />
+				<arg value="-storepass" />
+				<arg value="@{keystore.password}" />
+				<arg value="-file" />
+				<arg value="@{publicKey.file}" />
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<!-- Macro to import public key -->
+	<macrodef name="importPublicKey.macro">
+		<attribute name="keystore.file" />
+		<attribute name="publicKey.file" />
+		<attribute name="keystore.alias" />
+		<attribute name="keystore.password" />
+		<sequential>
+			<exec executable="keytool">
+				<arg value="-import" />
+				<arg value="-noprompt" />
+				<arg value="-trustcacerts" />
+				<arg value="-alias" />
+				<arg value="@{keystore.alias}" />
+				<arg value="-keystore" />
+				<arg value="@{keystore.file}" />
+				<arg value="-storepass" />
+				<arg value="@{keystore.password}" />
+				<arg value="-file" />
+				<arg value="@{publicKey.file}" />
+			</exec>
+			<delete file="@{publicKey.file}" />
+		</sequential>
+	</macrodef>
+
 	<path id="classpath">
 		<fileset dir="${lib}">
 			<include name="jcommon-1.0.16.jar" />
 			<include name="jfreechart-1.0.13.jar" />
 		</fileset>
 	</path>
+
+	<!-- Ant Target de to generate service and client keystores -->
+	<target name="generateKeys">
+		<mkdir dir="${key.dir}" />
+		<delete file="${serviceKeystore.file}" />
+		<delete file="${clientKeystore.file}" />
+
+		<!-- Service self signed keystore creation -->
+		<generateKey.macro keystore.file="${serviceKeystore.file}" publickey.file="${servicePublicKey.file}" keystore.alias="${serviceKeystore.alias}" keystore.password="${serviceKeystore.password}" keystore.dname="${serviceKeystore.dname}" />
+
+		<!-- Client self signed keystrore creation -->
+		<generateKey.macro keystore.file="${clientKeystore.file}" publickey.file="${clientPublicKey.file}" keystore.alias="${clientKeystore.alias}" keystore.password="${clientKeystore.password}" keystore.dname="${clientKeystore.dname}" />
+
+		<!-- Import client public key in service keystore -->
+		<importPublicKey.macro keystore.file="${serviceKeystore.file}" publickey.file="${clientPublicKey.file}" keystore.alias="${clientKeystore.alias}" keystore.password="${serviceKeystore.password}" />
+
+		<!-- Import service public key in client keystore -->
+		<importPublicKey.macro keystore.file="${clientKeystore.file}" publickey.file="${servicePublicKey.file}" keystore.alias="${serviceKeystore.alias}" keystore.password="${clientKeystore.password}" />
+	</target>
 
 	<!-- The project does not use or require ScriptContext, but it is a good way to make the buildfile require Java 6 or better. -->
 	<target name="verifyRequirements" description="Checks if the necessary requirements for building GGC^2 are fulfilled">
@@ -51,13 +167,19 @@
 		</jar>
 	</target>
 
-	<target name="dist" depends="jar" description="Package for distribution.">
+	<target name="signApplet" depends="jar, generateKeys" description="Sign the applet.">
+		<signjar jar="${build.jar}" alias="${serviceKeystore.alias}" storepass="${serviceKeystore.password}"
+			keystore="${serviceKeystore.file}"
+			executable="${jarsigner}" />
+	</target>
+
+	<target name="dist" depends="signApplet" description="Package for distribution.">
 		<copy todir="${build.dist}">
 			<fileset dir="${build}">
 				<include name="*.jar" />
 			</fileset>
 			<fileset dir="${inc}">
-				<include name="*.html"/>
+				<include name="*.html" />
 			</fileset>
 		</copy>
 		<copy todir="${build.dist.lib}">
