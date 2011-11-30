@@ -29,9 +29,37 @@ http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/SessMngrCPanelHi
 It may be noted that this version of the interface does not have the default window buttons. It was done this way in an attempt to make it look smoother. However, the button labeled “Exit” may be used to exit the program at any time. In addition, the frame can be moved but it is not resizable to prevent visual interface errors.
 
 http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/SessMngrExitButtonHighlighted.jpg
-= Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+== Student View: ==
+
+The student screen begins with four fields, one for each block of an IP address, and a connect button.
+
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/ConnectionScreen.jpg
+
+The gap in the IP address fields represents the period in-between numbers in an actual IP address. The text fields represent the numbers. Only numbers can be entered into the text fields, and if an invalid IP address value is entered the text field will revert to the most recent correct text. The IP address will be supplied by the professor via his/her program. 
+
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/IPFieldsHighlighted.jpg
+
+Type in the numbers of the IP address in each “block” separated by periods and then click the connect button to connect to a professor. The connect button may be clicked on at any time, but it will show an error window and not connect should an incorrect IP address be filled into the IP address fields above it.
+
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/IPFieldsFilledOut.jpg
+
+Once the student program connects to the professor program there will be a mostly blank window with a button at the bottom labeled “Send Answer.” Basically, buttons will appear in the middle of the window when the professor sends a question to all of the connected students.
+
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/EmptyResponderScreen.jpg
+
+It will be either a true or false question where the buttons are labeled “True” and “False”.
+
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/TrueFalseOnRScreen.jpg
+
+Or it will be a multiple choice question where buttons are labeled A, B, C…etc. The purpose of the program is to survey the answers, not to display the questions themselves, and so there is only a simple question/answer interface. The professor will have some kind of Word document or PowerPoint in which he/she will display the actual questions.
+
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/MultipleChoiceOnRScreen.jpg
+
+In order to send an answer using the “Send Answer” button a response button must be selected. If it is clicked while there is no selection then nothing will be sent. However, once an answer has been sent the “Send Answer” button will be disabled, preventing any change in the particular response to the question. The “Send Answer” button will be re-enabled when the student program receives a new question type.
+
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/ResponderSendAnswerExample.jpg
+
+It may be noted that this version of the interface does not have the default window buttons. It was done this way in an attempt to make it look smoother. However, the button labeled “Exit” may be used to exit the program at any time. If this is done by accident, the program can still be opened again, but it is still required to connect to the manager program. If a question type was sent, any new clients connecting will receive that question even though they were not connected when it was sent. In addition, the frame can be moved but it is not resizable to prevent visual interface errors
+
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/ExitButtonHighlighted.jpg
