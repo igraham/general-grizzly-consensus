@@ -1,4 +1,5 @@
 #summary General Grizzly Consensus Instillation Guide
+#labels GGC,Instillation,Guide
 
 = Instillation Guide =
 
@@ -12,3 +13,10 @@ This document will explain how to install the GGC^2^ student and professor progr
   # See user guide <a href="http://code.google.com/p/general-grizzly-consensus/wiki/GGCUserGuide">Here</a> for further questions.
 
 == Google Code Download ==
+
+  # Please check or update if needed your Java (TM) run time environment and up date it to 1.6 update 10 or later. Click <a href="http://www.java.com/en/download/index.jsp">Here</a> for Java (TM) updates.
+  # Go t0 the General Grizzly Consensus home page.
+  # Click on the [http://code.google.com/p/general-grizzly-consensus/downloads/list Download] tab to get to the download page.
+  # Click the box with the "Green Down Arrow" next to the desired client.
+  # Once the application is downloaded, double click the .Jar and you will ready to go.
+  # See user guide <a href="http://code.google.com/p/general-grizzly-consensus/wiki/GGCUserGuide">Here</a> for further questions.
