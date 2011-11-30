@@ -16,49 +16,27 @@ The team members for the duration of the project are as follow:
   * Ian Graham
 
 == 1.1 Goals and objectives ==
-The main goal of GGC^2 is to establish a program for ITEC 1001 teachers and students
+The main goal of GGC2 is to establish a program for ITEC 1001 teachers and students
 Overall goals and software objectives are described.
-Ex. The business goal of the Global Personal Marketplace (GPM) system is to take advantage of the Internet and World Wide Web to radically improve the way private individuals and small companies buy and sell items.
-Ex. The business objectives of the GPM are to provide the following business benefits to its buyers, sellers, and owners.
-Ex. The GPM will:
-·         Provide its buyers with a huge selection of items (and sellers).
-·         Enable its buyers to easily search for, find, and buy the items they want.
-·         Enable buyers to buy items that they could not ordinarily find or afford.
-·         Enable buyers to help set (and thereby minimize) the price of the items they wish to buy (e.g., via auctions and reverse auctions).
-·         Make buying more convenient by allowing buyers to buy items:
--         Anytime (i.e., 24 hours a day and 7 days a week).
--         Anywhere the buyers have access to the Internet (e.g., at home, at work, and while traveling).
-·         Minimize risks associated with buying over the Internet.
-The GPM will:
-·         Provide its sellers with a huge customer base of potential buyers.
-·         Enable its sellers to easily target and personalize their marketing to appropriate potential buyers.
-·         Enable its sellers to sell items that they could not otherwise afford to sell (e.g., by minimizing their overhead and transaction costs).
-·         Enable its sellers to determine the market price of their items and set their prices accordingly (e.g., via auctions or direct sales).
-·         Make selling more convenient by allowing sellers to sell items:
--         Anytime (i.e., 24 hours a day and 7 days a week).
--         Anywhere the sellers have access to the Internet (e.g., at home, at work, while traveling).
-·         Minimize risks associated with selling over the Internet.
-The GPM will:
-·         Minimize the costs of providing a marketplace (e.g., capital costs, labor costs) compared to a physical marketplace (e.g., a shopping mall) by maximizing automation and thus minimizing labor and facilities costs.
-·         Maximize income by maximizing the number of sellers (i.e., merchants) paying marketplace fees.
 
 = 1.2 Statement of scope =
 A description of the software is presented. Major inputs, processing functionality and outputs are described without regard to implementation detail.
 Inputs:
 4 text boxes: IP address for students
-Radio buttons: True/ False and Multiple Choice
+Radio buttons: “True/ False” and “Multiple Choice”
 Radio Buttons: Question Answers
-Text Box: number of multiple choice questions
+Drop-down Box: number of multiple choice questions
+Send Button
+Connect Button
+Send New Question Button
 Outputs:
 Graph of student scores
+Text of connected students, and students that have responded
+Instructions text one student applet
 
 == 1.3 Software context ==
 The software is placed in a business or product line context. Strategic issues relevant to context are discussed. The intent is for the reader to understand the 'big picture'.
-Ex.This subsection documents the context of the GPM in terms of the significant externals with which it interacts. As illustrated in the following context diagram, the Global Personal Marketplace (GPM) interfaces with several external actors and systems:
-·         Individuals and small businesses can act as users in either the buyer or seller role.  Buyers buy items sold and shipped by the sellers when those items are bought and sold in the GPM.
-·         Accountants, security officers and user support agents are employees who work for Global Personal Marketing Corporation.  Accountants perform their accounting duties using the GPM.  Security Officers handle security violations of the GPM.  User support agents provide user support for the GPM.
-·         The GPM authorizes credit card purchases of items via the authorization processor gateway.
-[image]
+Flavor Text - A teacher opens an instance of... the teacher then opens the graph and briefly examines student results
 
 == 1.4 Major constraints ==
 Any business or product line constraints that will impact the manner in which the software is to be specified, designed, implemented or tested are noted here.
@@ -117,7 +95,8 @@ description of each state
 description of each transition
 
 = 5.0 External Interface Requirements =
-external interface requirements
+RACHAEL: appropriate version of JVM/Reword
+A recent copy of the Java Virtual Machine, an internet browser, and a way to type in input, and select options.
 
 == 5.1 User interfaces ==
 An overview of any human interfaces to be designed for the software is presented. Provide mockups.
