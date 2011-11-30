@@ -120,10 +120,10 @@ nonfunctional requirements
 performance requirements  
 
 == 6.2 Safety requirements ==
-safety requirements
+For the scope of this project there are no major safety requirements
 
 == 6.3 Security requirements ==
-security requirements  
+For the scope of this project there are no major security requirements
 
 == 6.4 Software quality attributes ==
 software quality attributes  
@@ -145,11 +145,10 @@ physical architecture
 technology platform - Java?
 
 === 7.2.1 Language ==
-language - Java.
+The language used in this project is JAVA.
 
 === 7.2.2 Development tools ===
-(such as CASE tool used)
-development tools - Eclipse    
+The compiler used for this project is Eclipse.   
 
 === 7.2.3 Run-time requirements ===
 (differentiate between the client requirements and the server requirements)
