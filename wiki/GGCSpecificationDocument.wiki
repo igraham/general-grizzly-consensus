@@ -51,8 +51,12 @@ Teacher: Send questions/ Show hidegraph
 Student: Connect to teacher/ Answer Questions
 
 == 2.2 Use-cases ==
-All use-cases for the software are presented.
-Diagram?
+
+User-Class Interaction:
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/GGCUseCase1.PNG
+
+Use-case Interaction:
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/GGCUseCase2.PNG
 
 === 2.2.1 Brief Description ===
 Brief Description use case
@@ -70,7 +74,7 @@ Special requirements associated with the use of the software are presented.
 This section describes information domain for the software
 
 == 3.1 Class Diagram ==
-Classes that will be managed/manipulated by the software are described in this section.
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/GGCClass3.png
 
 === 3.1.1 Classes ===
 Data objects and their major attributes are described.
