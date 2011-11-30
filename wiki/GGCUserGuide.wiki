@@ -1,0 +1,37 @@
+#summary General Grizzly Consensus User Guide
+#labels GGC,User,Guide,Featured
+
+= User Guide: =
+This document will explain the various functions of the GGC^2^ program and their purposes. In addition, there is a basic explanation of how to use various parts of the program. There are two views in the program, the professor view and the student view.
+
+== Professor View: ==
+
+The professor view starts out with a basic idea of what the program will look like during operation. 
+
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/SessionManager.jpg
+
+The very top of the window holds the IP address of the computer running the program. Students will need to use this stream of numbers in order to connect to the main program.
+
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/SessMngrIPHighlighted.jpg
+
+In the middle is the graph of student responses to questions that you, the professor, will send to them. Responses are updated real-time as the program receives them.
+
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/SessMngrGraphHighlighted.jpg
+
+On the bottom left is the question sending panel, which contains the option to send a true or false question or a multiple choice question. The button labeled “Send Question” is used to send a question type to the student programs. However, to send a question one of the question options must be selected (clicked on) or nothing will happen. The “Number Responses has a drop-down box which allows for various multiple choice question types.
+
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/SessMngrQPanelHighlighted.jpg
+
+The bottom right part of the window is the professor’s control window. Clicking on the “Show/Hide” button the graph will show or hide the graph on the window. Below that, the number of connected students and the number of students that have responded to a question are displayed and updated in real time.
+
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/SessMngrCPanelHighlighted.jpg
+
+It may be noted that this version of the interface does not have the default window buttons. It was done this way in an attempt to make it look smoother. However, the button labeled “Exit” may be used to exit the program at any time. In addition, the frame can be moved but it is not resizable to prevent visual interface errors.
+
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/SessMngrExitButtonHighlighted.jpg
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
