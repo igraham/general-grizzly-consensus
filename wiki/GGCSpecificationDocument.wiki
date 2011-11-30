@@ -149,23 +149,37 @@ Initial state is when the client connects to the URL to the HTML Page. There is 
 Java JRE 1.6 install on the computer, an updated internet browser that has a working JAVA plug-in, a input device that will allow you to select buttons and type test.
 
 == 5.1 User interfaces ==
-An overview of any human interfaces to be designed for the software is presented. Provide mockups.
-Perhaps the Powerpoint version here? A couple of minor design changes have happened, like ip has become box.box.box.box
+Professor UI:
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/professorUI1.PNG
+
+Student IP Address UI:
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/StudentUI1.PNG
+
+Student True/False UI:
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/StudentUI2.PNG
+
+Student Multiple Choice UI:
+http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/StudentUI3.PNG
 
 == 5.2 Hardware interfaces ==
-Interfaces to other machines (computers or devices) are described.
+Student client computers connect to the professor host connection.
 
 == 5.3 Software interfaces ==
-Interfaces to other systems, and products are described.
+The Bar graph interfaces with the two packages JFreeChart and JCommons.
 
 == 5.4 Communication protocols and interface ==
 Interfaces to networks are described.
 
 = 6.0 Nonfunctional  =
-nonfunctional requirements
+None
 
 == 6.1 Performance requirements ==
-performance requirements  
+Min. Requirements:
+  * 2.2 GHz Processor
+  * 3.0 GB Ram
+  * Windows XP SP 3
+  * 32k network connection
+  * JRE 1.6 Update 10
 
 == 6.2 Safety requirements ==
 For the scope of this project there are no major safety requirements
@@ -174,53 +188,56 @@ For the scope of this project there are no major safety requirements
 For the scope of this project there are no major security requirements
 
 == 6.4 Software quality attributes ==
-software quality attributes  
+User friendly and robust.  
 
 == 6.5 Project documentation ==
-project documentation  
+JavaDoc: http://general-grizzly-consensus.googlecode.com/svn/trunk/JavaDoc/index.html 
 
 == 6.6 User documentation ==
-user documentation - R will provide
+Download Guide: Here
+User Guide: Here
 
 = 7.0 Design Rationale =
-design rationale
 
 == 7.1 Physical Architecture ==
 (graphic required )
 physical architecture   
 
 == 7.2 Technology Platform ==
-technology platform - Java?
+Java
+JFreeChart
 
 === 7.2.1 Language ==
 The language used in this project is JAVA.
 
 === 7.2.2 Development tools ===
-The compiler used for this project is Eclipse.   
+The compiler used for this project is Eclipse.
+The UML Program used was Rational Rose from IBM.  
 
 === 7.2.3 Run-time requirements ===
-(differentiate between the client requirements and the server requirements)
+None
 
 === 7.2.3.1 Browser ===
-browser
+  * Internet Explorer
+  * Mozilla Firefox
+  * Google Chrome
 
 === 7.2.3.2 Web Server ===
-web server
+Google Code
 
 === 7.2.3.3 JRE version ===
-???                      JRE 6
+JRE 1.6 Update 26
 
 === 7.2.3.4 Messaging system ===
-messaging system                       
-
-=== 7.2.3.4 etc. ===
-etc
+Skype                     
 
 == 7.3 Design Pattern Utilized ==
-design pattern utilized
+Use-Case
+Class
+StateMachine
 
 = 8.0 Other Requirements =
-Other Requirements
+None
 
 = Appendix A: Terminology/Glossary/Definitions list =
 Appendix A  
