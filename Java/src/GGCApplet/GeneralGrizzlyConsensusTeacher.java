@@ -24,23 +24,45 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 import com.sun.awt.AWTUtilities;
 
+/**
+ * This is the professor's view of the GGC^2 program. The graph, send answer panel, and control panel are all displayed
+ * in the initial screen.
+ * @author Ian Graham
+ *
+ */
 public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionListener
 {
-	//I added this because the client/server GUI's had it.
+	/**
+	 * I added this because the client/server GUI's had it.
+	 */
 	private static final long serialVersionUID = 1L;
-	//The container to hold the layout of the main frame of the Applet.
+	/**
+	 * The container to hold the layout of the main frame of the Applet.
+	 */
 	private Container mfContainer;
-	//The panel will display the current IP of the computer in the network.
+	/**
+	 * The panel will display the current IP of the computer in the network.
+	 */
 	private JPanel pShowIP;
-	//The session managers query type and graph.
+	/**
+	 * The session managers query type and graph.
+	 */
 	private JPanel pSessionM;
-	//This is the button which shows and hides the graph.
+	/**
+	 * This is the button which shows and hides the graph.
+	 */
 	private JButton pShowHide;
-	//This button is the Session Manager's way of sending questions to the students.
+	/**
+	 * This button is the Session Manager's way of sending questions to the students.
+	 */
 	private JButton sendQuestion;
-	//The panel which contains the graph which displays the results of the question.
+	/**
+	 * The panel which contains the graph which displays the results of the question.
+	 */
 	private ChartPanel chartPanel;
-	//The IP of the computer
+	/**
+	 * The IP of the computer
+	 */
 	private String cIP = "000.000.0.0";
 	/**
 	 * This is the input for the JComboBox of multiple choice options.
@@ -52,34 +74,64 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 	 * uses the array of strings "types" as input.
 	 */
 	private JComboBox multipleChoice;
-	//This is the instance of the server that, should it need to be used, will be initialized.
+	/**
+	 * This is the instance of the server that, should it need to be used, will be initialized.
+	 */
 	private GGCServer server;
-	//This button group is used by the session manager to get the selected button and 
-	//determine the type of question sent.
+	/**
+	 * This button group is used by the session manager to get the selected button and 
+	 * determine the type of question sent.
+	 */
 	private ArrayList<JToggleButton> managerButtons;
-	//Button groups which organize the buttons used by the session manager and responder.
+	/**
+	 * Button groups which organize the buttons used by the session manager and responder.
+	 */
 	private ButtonGroup mGroup;
-	//This is the main frame for the whole GUI.
+	/**
+	 * This is the main frame for the whole GUI.
+	 */
 	private JFrame mainFrame;
-	//This is the bar graph which is used to change the colors on the graph.
+	/**
+	 * This is the bar graph which is used to change the colors on the graph.
+	 */
 	private JFreeChart graph;
-	//This is the actual object that holds the data.
+	/**
+	 * This is the actual object that holds the data.
+	 */
 	private static DefaultCategoryDataset barData;
-	//This is the object which will handle the updates of the JFreeChart data.
+	/**
+	 * This is the object which will handle the updates of the JFreeChart data.
+	 */
 	private GraphUpdater updater;
-	//Displays the number of connections in the server.
+	/**
+	 * Displays the number of connections in the server.
+	 */
 	private JLabel connected;
-	//Displays the answers received.
+	/**
+	 * Displays the answers received.
+	 */
 	private JLabel ans;
-	//Counts the number of answers received for a question.
+	/**
+	 * Counts the number of answers received for a question.
+	 */
 	private int numAnswered;
-	//This Point is used to keep track of where the JFrame Window is for dragging while in undecorated mode.
+	/**
+	 * This Point is used to keep track of where the JFrame Window is for dragging while in undecorated mode.
+	 */
 	private Point point = new Point();
-	//This boolean is used to tell when the mouse has left or entered the JFrame at least once.
+	/**
+	 * This boolean is used to tell when the mouse has left or entered the JFrame at least once.
+	 */
 	private boolean currentIn = true;
-	//Exit button
+	/**
+	 * Exit button
+	 */
 	private CustomJButton exit;
 
+	/**
+	 * This is the initialization method for the applet. It's essentially the constructor. The code is surrounded by an
+	 * EventQueue runnable because swing has threading issues.
+	 */
 	public void init()
 	{
 		Runnable runner = new Runnable() {
@@ -172,6 +224,10 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 		EventQueue.invokeLater(runner);
 	}
 
+	/**
+	 * This initializes all of the GUI elements, attaches listeners, and sets up a server waiting 
+	 * to accept connections.
+	 */
 	private void createSessionManager()
 	{
 		numAnswered = 0;
@@ -286,6 +342,11 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 		pSessionM.add(panel, BorderLayout.CENTER);
 	}
 
+	/**
+	 * Default JFreeChart dataset factory. This is what defines what appears inside the graph
+	 * when the program starts up.
+	 * @return Returns the CategoryDataset containing basic data series.
+	 */
 	private static CategoryDataset createDataset()
 	{
 
@@ -315,7 +376,13 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 		return barData;
 
 	}
-
+	/**
+	 * This creates the JFreeChart and sets colors and a few other custom settings to make the graph
+	 * look nice. This is what actually appears in the program window.
+	 * @param dataset
+	 * @return Returns the JFreeChart created from the DefaultCategoryDataset and CategoryDataset, modified
+	 * to add custom colors.
+	 */
 	private static JFreeChart createChart(CategoryDataset dataset)
 	{
 
