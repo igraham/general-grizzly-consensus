@@ -15,7 +15,7 @@ import com.sun.awt.AWTUtilities;
 
 import GeneralGrizzlyConsensus.*;
 
-public class GeneralGrizzlyConsensusStudent extends Applet
+public class GeneralGrizzlyConsensusStudent extends Applet implements ActionListener
 {
 	//I added this because the client/server GUI's had it.
 	private static final long serialVersionUID = 1L;
@@ -147,25 +147,6 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 		};
 		EventQueue.invokeLater(runner);
 	}
-	
-	/**
-	 * This listener is used as an alternative to switching the state of the window border to allow for an exit button to appear. Instead, an exit button
-	 * is placed in the appropriate place in the interface.
-	 * @author Ian Graham
-	 *
-	 */
-	class ExitButtonListener implements ActionListener
-	{
-
-		public void actionPerformed(ActionEvent e)
-		{
-			if(e.getSource() == exit1 || e.getSource() == exit2)
-			{
-				System.exit(0);
-			}
-		}
-		
-	}
 
 	private void connectIP()
 	{
@@ -176,9 +157,9 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 		pConnectIP.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
 		
 		exit1 = new CustomJButton("Exit");
-		exit1.addActionListener(new ExitButtonListener());
+		exit1.addActionListener(this);
 		exit2 = new CustomJButton("Exit");
-		exit2.addActionListener(new ExitButtonListener());
+		exit2.addActionListener(this);
 		
 		JPanel lP1 = new JPanel();
 		lP1.setBackground(new Color(0, 125, 75));
@@ -562,5 +543,17 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 			}
 		}
 
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource() == exit1 || e.getSource() == exit2)
+		{
+			mainFrame.setVisible(false);
+			mainFrame.dispose();
+			this.stop();
+			this.destroy();
+		}
 	}
 }

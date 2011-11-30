@@ -24,7 +24,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 import com.sun.awt.AWTUtilities;
 
-public class GeneralGrizzlyConsensusTeacher extends Applet
+public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionListener
 {
 	//I added this because the client/server GUI's had it.
 	private static final long serialVersionUID = 1L;
@@ -171,25 +171,6 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 		};
 		EventQueue.invokeLater(runner);
 	}
-	
-	/**
-	 * This listener is used as an alternative to switching the state of the window border to allow for an exit button to appear. Instead, an exit button
-	 * is placed in the appropriate place in the interface.
-	 * @author Ian Graham
-	 *
-	 */
-	class ExitButtonListener implements ActionListener
-	{
-
-		public void actionPerformed(ActionEvent e)
-		{
-			if(e.getSource() == exit)
-			{
-				System.exit(0);
-			}
-		}
-		
-	}
 
 	private void createSessionManager()
 	{
@@ -201,7 +182,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 		pSessionM.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 		
 		exit = new CustomJButton("Exit");
-		exit.addActionListener(new ExitButtonListener());
+		exit.addActionListener(this);
 
 		JPanel cPanel = new JPanel();
 		cPanel.setLayout(new BoxLayout(cPanel, BoxLayout.Y_AXIS));
@@ -549,6 +530,18 @@ public class GeneralGrizzlyConsensusTeacher extends Applet
 					updater.incrementData(1);
 				}
 			}
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource() == exit)
+		{
+			mainFrame.setVisible(false);
+			mainFrame.dispose();
+			this.stop();
+			this.destroy();
 		}
 	}
 }
