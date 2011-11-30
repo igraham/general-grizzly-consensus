@@ -3,12 +3,15 @@ package GGCApplet;
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.RoundRectangle2D;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.swing.*;
+
+import com.sun.awt.AWTUtilities;
 
 import GeneralGrizzlyConsensus.*;
 
@@ -43,38 +46,153 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 	private JFrame mainFrame;
 	//This is a temporary fix to the error caused when switching from multiple choice to T/F.
 	private boolean rtf;
+	//This Point is used to keep track of where the JFrame Window is for dragging while in undecorated mode.
+	private Point point = new Point();
+	//This boolean is used to tell when the mouse has left or entered the JFrame at least once.
+	private boolean currentIn = true;
+	//JPanels
+	private JPanel tfPanel, tfPanelBuff, ownPanel, numPanelBuff;
+	//Exit buttons
+	private CustomJButton exit1, exit2;
 
 	public void init()
 	{
 		Runnable runner = new Runnable() {
 			public void run() {
+				// ATWUtilities is a restricted API to Eclipes and need to be set up so it does not throw an error
+				// Window -> Preferences -> Java -> Compiler -> Error/Warnings -> Depicted/Restricted API -> Forbidden Access -> Set to Warning
+				if (!AWTUtilities.isTranslucencySupported(AWTUtilities.Translucency.TRANSLUCENT))
+				{
+					System.out.print("You do not support AWTUtilities Translucency.");
+				}
+
 				mainFrame = new JFrame("Georgia Gwinnett College General Grizzly Consensus");
-				mainFrame.setSize(500, 432);
-				mainFrame.setVisible(true);
+				mainFrame.setSize(400, 482);			
+				mainFrame.setUndecorated(true);
+				//Please keep setResizable to false till resize bug is fixed
+				mainFrame.setResizable(false);
 				mfContainer = mainFrame.getContentPane();
-				mfContainer.setLayout(new CardLayout());
+				//The color is GGC EverGreen Green
+				mfContainer.setBackground(new Color(0, 125, 75));
+				AWTUtilities.setWindowShape(mainFrame, new RoundRectangle2D.Float(0, 0,mainFrame.getWidth(), mainFrame.getHeight(), 30, 30));
+				mainFrame.setVisible(true);
+
+				final CustomGlass glass = new CustomGlass(mainFrame);
+				mainFrame.setGlassPane(glass);
+				glass.setFocusable(false);
+				glass.setEnabled(false);
+				glass.setVisible(true);
+				
 				connectIP();
+				mfContainer.setLayout(new CardLayout());
 				mfContainer.add(pConnectIP, "IP Connection Panel");
 				setupResponderCloseListener();
 				createResponder();
 				mfContainer.add(pResponder, "Responders Panel");
 				pConnectIP.setVisible(true);
 				mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				
+				// This get the point location of where the mouse is pressed to save it location for moving.
+				mainFrame.addMouseListener(new MouseAdapter() {
+					public void mousePressed(MouseEvent e) {
+						point.x = e.getX();
+						point.y = e.getY();
+					}
+				});
+
+				// This is what drags the JFrame when the frame is undecorated.
+				mainFrame.addMouseMotionListener(new MouseMotionAdapter() {
+					public void mouseDragged(MouseEvent e) {
+						Point p = mainFrame.getLocation();
+						mainFrame.setLocation(p.x + e.getX() - point.x, p.y + e.getY() - point.y);
+					}
+				});
+
+				// When the mouse leaves the JFrame it disposes of the frame and redraws the decorated boarder
+				mainFrame.addMouseListener(new MouseAdapter() {
+					public void mouseExited(MouseEvent e) {
+						/*
+						//This is the get the bounding box of the where the JFrame is on the screen.
+						Dimension bD = new Dimension(mainFrame.getWidth(), mainFrame.getHeight());
+						Rectangle bR = new Rectangle(mainFrame.getLocation(),bD);
+
+						if(!bR.contains(e.getLocationOnScreen()))
+						{
+							//System.out.println(bR.contains(e.getLocationOnScreen()));
+							//System.out.println("Out");
+							mainFrame.dispose();
+							mainFrame.setUndecorated(false);
+							//frame.setBounds(frame.getGraphicsConfiguration().getBounds());
+							mainFrame.setVisible(true);
+							currentIn = false;
+						}*/
+					}
+				});
+
+				// When the mouse enters the JFrame it disposes of the frame and redraws the undecorated boarder
+				mainFrame.addMouseListener(new MouseAdapter() {
+					public void mouseEntered(MouseEvent e) {
+						if(!currentIn)
+						{
+							/*//System.out.println("In");
+							mainFrame.dispose();
+							mainFrame.setUndecorated(true);
+							AWTUtilities.setWindowShape(mainFrame, new RoundRectangle2D.Float(0, 0,mainFrame.getWidth(), mainFrame.getHeight(), 30, 30));
+							currentIn = true;
+							mainFrame.setVisible(true);*/
+						}
+					}
+				});
+				mfContainer.validate();
 			}
 		};
 		EventQueue.invokeLater(runner);
+	}
+	
+	/**
+	 * This listener is used as an alternative to switching the state of the window border to allow for an exit button to appear. Instead, an exit button
+	 * is placed in the appropriate place in the interface.
+	 * @author Ian Graham
+	 *
+	 */
+	class ExitButtonListener implements ActionListener
+	{
+
+		public void actionPerformed(ActionEvent e)
+		{
+			if(e.getSource() == exit1 || e.getSource() == exit2)
+			{
+				System.exit(0);
+			}
+		}
+		
 	}
 
 	private void connectIP()
 	{
 		pConnectIP = new JPanel();
-		pConnectIP.setLayout(new GridLayout(2,1));
+		pConnectIP.setLayout(new BorderLayout());
 		pConnectIP.setVisible(false);
+		pConnectIP.setBackground(new Color(0, 125, 75));
+		pConnectIP.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
+		
+		exit1 = new CustomJButton("Exit");
+		exit1.addActionListener(new ExitButtonListener());
+		exit2 = new CustomJButton("Exit");
+		exit2.addActionListener(new ExitButtonListener());
+		
 		JPanel lP1 = new JPanel();
-		lP1.setLayout(new FlowLayout(FlowLayout.TRAILING));
+		lP1.setBackground(new Color(0, 125, 75));
+		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
 
 		JPanel lP2 = new JPanel();
-		lP1.setLayout(new FlowLayout(FlowLayout.CENTER));
+		lP2.setBackground(new Color(0, 125, 75));
+		lP2.setLayout(new FlowLayout(FlowLayout.CENTER));
+		
+		JPanel lP3 = new JPanel();
+		lP3.setBackground(new Color(0, 125, 75));
+		lP3.setLayout(new GridLayout(2,1));
+		
 		//This is the pattern that captures an IP address. It can't be, "(?:25[0-4]|2[0-4][0-9]|[01]?[1-9][0-9]?)" because 
 		//that discludes 100, and many other non-zero values with a zero in it, from the list of valid IP's.
 		//_254_1 is for the outer two blocks.
@@ -104,6 +222,16 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 
 		rContorlP = new CustomJButton("Connect");
 		rContorlP.addActionListener(new GGCConnectListener());
+		
+		JLabel ipText = new JLabel("Please enter your instructor's IP address Here: ");
+		JPanel exitPanel = new JPanel(new BorderLayout());
+		exitPanel.setBackground(new Color(0, 125, 75));
+		exitPanel.add(exit1, BorderLayout.EAST);
+		JPanel ipTextPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		ipTextPanel.setBackground(new Color(0, 125, 75));
+		lP3.add(exitPanel);
+		ipTextPanel.add(ipText);
+		lP3.add(ipTextPanel);
 
 		lP1.add(ip1);
 		lP1.add(dot1);
@@ -114,8 +242,9 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 		lP1.add(ip4);
 		lP2.add(rContorlP);
 
-		pConnectIP.add(lP1);
-		pConnectIP.add(lP2);
+		pConnectIP.add(lP1, BorderLayout.CENTER);
+		pConnectIP.add(lP2, BorderLayout.PAGE_END);
+		pConnectIP.add(lP3, BorderLayout.NORTH);
 	}
 
 	private void createResponder()
@@ -123,17 +252,41 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 		pResponder = new JPanel();
 		pResponder.setLayout(new BorderLayout());
 		pResponder.setVisible(false);
-
+		pResponder.setBackground(new Color(0, 125, 75));
+		pResponder.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
+		
+		tfPanel = new JPanel();
+		tfPanel.setBackground(new Color(0, 125, 75));
+		tfPanelBuff = new JPanel();
+		tfPanelBuff.setBackground(new Color(0, 125, 75));
+		tfPanelBuff.setLayout(new BoxLayout(tfPanelBuff, BoxLayout.PAGE_AXIS));
+		tfPanelBuff.add(Box.createVerticalGlue());
+		tfPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		
+		ownPanel = new JPanel();
+		ownPanel.setBackground(new Color(0, 125, 75));
+		numPanelBuff = new JPanel();
+		numPanelBuff.setBackground(new Color(0, 125, 75));
+		numPanelBuff.setLayout(new BoxLayout(numPanelBuff, BoxLayout.PAGE_AXIS));
+		numPanelBuff.add(Box.createVerticalGlue());
+		numPanelBuff.add(ownPanel);
+		
+		JPanel exitPanel = new JPanel(new BorderLayout());
+		exitPanel.setBackground(new Color(0, 125, 75));
+		exitPanel.add(exit2, BorderLayout.EAST);
+		pResponder.add(exitPanel, BorderLayout.NORTH);
+		
+		pResponder.add(numPanelBuff);
+		pResponder.add(tfPanelBuff);
+		
 		JPanel lP1 = new JPanel();
+		lP1.setBackground(new Color(0, 125, 75));
 		lP1.setLayout(new GridLayout(3,1));
 
-		//Whatever buttons end up here, add them to the Button group.
 		responderButtons = new ArrayList<JToggleButton>();
 		trueFalseButtons = new ArrayList<JToggleButton>();
 		rGroup = new ButtonGroup();
 		tGroup = new ButtonGroup();
-
-		//pResponder.add(lP1,BorderLayout.CENTER);
 	}
 	private void setupResponderCloseListener()
 	{
@@ -161,6 +314,7 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 					GGCGlobals.INSTANCE.COMMUNICATION_PORT), new ResponderListener());
 			Thread t = new Thread(client);
 			JPanel sa = new JPanel();
+			sa.setBackground(new Color(0, 125, 75));
 			t.start();
 			pResponder.setVisible(true);
 			pConnectIP.setVisible(false);
@@ -226,17 +380,15 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 		else if(trueFalse)
 		{
 			showHideButtons(responderButtons, false);
+			pResponder.remove(numPanelBuff);
+			pResponder.remove(tfPanelBuff);
+			pResponder.add(tfPanelBuff);
 			if(trueFalseButtons.size() == 2)
 			{
 				showHideButtons(trueFalseButtons, true);
 			}
 			else
 			{
-				JPanel tfPanel = new JPanel();
-				JPanel tfPanelBuff = new JPanel();
-				tfPanelBuff.setLayout(new BoxLayout(tfPanelBuff, BoxLayout.PAGE_AXIS));
-				tfPanelBuff.add(Box.createVerticalGlue());
-				tfPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 				JToggleButton b1 = new CustomJToggleButton("True");
 				trueFalseButtons.add(b1);
 				tGroup.add(b1);
@@ -244,32 +396,31 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 				JToggleButton b2 = new CustomJToggleButton("False");
 				trueFalseButtons.add(b2);
 				tGroup.add(b2);
-				
+
 				tfPanel.add(b1);
 				tfPanel.add(b2);
+				
 				tfPanelBuff.add(tfPanel);
-				pResponder.add(tfPanelBuff, BorderLayout.CENTER);
+				
 				pResponder.validate();
 			}
 		}
 		else
 		{
-			JPanel ownPanel = new JPanel();
-			JPanel numPanelBuff = new JPanel();
-			numPanelBuff.setLayout(new BoxLayout(numPanelBuff, BoxLayout.PAGE_AXIS));
-			numPanelBuff.add(Box.createVerticalGlue());
-			ownPanel.setLayout(new GridLayout(10,3));
 			showHideButtons(trueFalseButtons, false);
+			
+			pResponder.remove(numPanelBuff);
+			pResponder.remove(tfPanelBuff);
+			pResponder.add(numPanelBuff);
 			if(num > responderButtons.size())
 			{
-				for(int i = 0; i < num; i++)
+				showHideButtons(responderButtons,true);
+				for(int i = responderButtons.size(); i < num; i++)
 				{
-					JToggleButton r = new CustomJToggleButton(""+i);
+					JToggleButton r = new CustomJToggleButton(""+(char)('A'+i));
 					rGroup.add(r);
 					responderButtons.add(r);
 					ownPanel.add(r);
-					numPanelBuff.add(ownPanel);
-					pResponder.add(numPanelBuff);
 					pResponder.validate();
 				}
 			}
@@ -332,7 +483,14 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == sendAnswer)
 			{
-				String messageR = findSelected(responderButtons);
+				String messageR = "";
+				for(int i = 0; i < responderButtons.size(); i++)
+				{
+					if(responderButtons.get(i).isSelected())
+					{
+						messageR = ""+i;
+					}
+				}
 				String messageT = findSelected(trueFalseButtons);
 				if(messageR.length() < 1 && messageT.length() < 1)
 				{
@@ -340,7 +498,6 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 				}
 				else if(messageR.length() > 0 && rtf)
 				{
-					
 					client.sendMessage(messageR);
 					sendAnswer.setEnabled(false);
 				}
@@ -405,5 +562,6 @@ public class GeneralGrizzlyConsensusStudent extends Applet
 				}
 			}
 		}
+
 	}
 }
