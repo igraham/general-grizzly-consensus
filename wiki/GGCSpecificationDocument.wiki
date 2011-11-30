@@ -82,8 +82,8 @@ Relationships among data objects are described.
 dynamic Model and Description
 
 == 4.1 State Diagram/s ==
-(or similar depending on the tool used)
-This section explains the business flow to developer
+
+<wiki:image url="http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/GGCState1.PNG"/>
 
 === 4.1.1 Description of initial state/final state ===
 initial state/ final state
