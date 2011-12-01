@@ -14,7 +14,7 @@ The very top of the window holds the IP address of the computer running the prog
 
 http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/SessMngrIPHighlighted.jpg
 
-In the middle is the graph of student responses to questions that you, the professor, will send to them. Responses are updated real-time as the program receives them.
+In the middle is the graph of student responses to questions that you, the professor, will send to them. Responses are updated real-time as the program receives them. The Program starts with a default graph that does not represent student answers.
 
 http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/SessMngrGraphHighlighted.jpg
 
@@ -60,6 +60,6 @@ In order to send an answer using the “Send Answer” button a response button 
 
 http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/ResponderSendAnswerExample.jpg
 
-It may be noted that this version of the interface does not have the default window buttons. It was done this way in an attempt to make it look smoother. However, the button labeled “Exit” may be used to exit the program at any time. If this is done by accident, the program can still be opened again, but it is still required to connect to the manager program. If a question type was sent, any new clients connecting will receive that question even though they were not connected when it was sent. In addition, the frame can be moved but it is not resizable to prevent visual interface errors
+It may be noted that this version of the interface does not have the default window buttons. It was done this way in an attempt to make it look smoother. However, the button labeled “Exit” may be used to exit the program at any time. If this is done by accident, the program can still be opened again, but the student must connect to the manager program again. If a question type was sent, any new clients connecting will receive that question even though they were not connected when it was sent. In addition, the frame can be moved but it is not resizable to prevent visual interface errors
 
 http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/ExitButtonHighlighted.jpg
