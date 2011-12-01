@@ -1,5 +1,5 @@
 #summary General Grizzly Consensus Instillation Guide
-#labels GGC,Instillation,Guide
+#labels GGC,Instillation,Guide,Featured
 
 = Instillation Guide =
 
