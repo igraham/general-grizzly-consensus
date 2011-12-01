@@ -302,7 +302,10 @@ public enum GGCServer implements Runnable
 	{
 		messageSink = listener;
 	}
-
+	/**
+	 * This method will stop listening for new connections and gracefully exit remaining threads.
+	 * This allows the main program to exit without leaving connections open.
+	 */
 	public synchronized void stopListening()
 	{
 		keepListening = false;

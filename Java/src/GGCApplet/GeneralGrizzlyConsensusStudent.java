@@ -592,6 +592,7 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 		{
 			mainFrame.setVisible(false);
 			mainFrame.dispose();
+			client.closeConnection();
 			this.stop();
 			this.destroy();
 		}

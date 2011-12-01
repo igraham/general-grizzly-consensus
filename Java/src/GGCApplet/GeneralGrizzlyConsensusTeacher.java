@@ -4,6 +4,7 @@ import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -607,6 +608,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 		{
 			mainFrame.setVisible(false);
 			mainFrame.dispose();
+			server.stopListening();
 			this.stop();
 			this.destroy();
 		}
