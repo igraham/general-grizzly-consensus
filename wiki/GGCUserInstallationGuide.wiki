@@ -11,6 +11,7 @@ This document will explain how to install the GGC^2^ student and professor progr
   # Check to make sure your web browser has Java enabled.
   # Connect to student page: http://general-grizzly-consensus.googlecode.com/svn/trunk/Java/build/dist/studentpage.html    
   # Connect to professor page: http://general-grizzly-consensus.googlecode.com/svn/trunk/Java/build/dist/profpage.html
+  # When prompted select "Run" that you trust this application, and "No" on the next prompt about a security concern.
   # See user guide <a href="http://code.google.com/p/general-grizzly-consensus/wiki/GGCUserGuide">Here</a> for further questions.
 
 == Google Code Download ==
