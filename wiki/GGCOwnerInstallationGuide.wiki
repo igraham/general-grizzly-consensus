@@ -1,0 +1,8 @@
+#summary General Grizzly Consensus Owner Installation Guide
+#labels GGC,Owner,Installation,Guide,Featured
+
+= Installation Guide =
+
+This document will explain how to install the GGC^2^ project code to Eclipse and the repository to your computer. You would need <a herf="http://www.eclipse.org/downloads/packages/release/indigo/r">Eclipse</a> if you don't have it. Also you would need <a herf="http://tortoisesvn.net/downloads.html">TortoiseSVN</a> for adding or removing things from the SVN repository. Next you would need the plug-in for Eclipse called <a herf="http://subclipse.tigris.org/">Subclipse</a>.
+
+== Installing Sub-clips in Eclipse ==
