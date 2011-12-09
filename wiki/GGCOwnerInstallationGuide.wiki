@@ -3,13 +3,14 @@
 
 = Installation Guide =
 
-This document will explain how to install the GGC^2^ project code to Eclipse and the repository to your computer. You would need <a href="http://www.eclipse.org/downloads/packages/release/indigo/r">Eclipse</a> if you don't have it. Also you would need <a href="http://tortoisesvn.net/downloads.html">TortoiseSVN</a> for adding or removing things from the SVN repository. Next you would need the plug-in for Eclipse called <a hrfe="http://subclipse.tigris.org/">Subclipse</a>.
+This document will explain how to install the GGC^2^ project code to Eclipse and the repository to your computer. You would need <a href="http://www.eclipse.org/downloads/packages/release/indigo/r">Eclipse</a> if you don't have it. Also you would need <a href="http://tortoisesvn.net/downloads.html">TortoiseSVN</a> for adding or removing things from the SVN repository. Next you would need the plug-in for Eclipse called <a href="http://subclipse.tigris.org/">Subclipse</a>.
 
 == Installing Sub-clips in Eclipse ==
   # Go to the the <a hrfe="http://subclipse.tigris.org/">Subclipse</a> download site.
   # Copy the Eclipse update site URL. (http://subclipse.tigris.org/update_1.8.x)
   # Open Eclipse.
-  # Go to the Help -> install new software... option. You should have this screen:
+  # Go to the Help -> install new software... option. You should have this screen: general-grizzly-consensus.googlecode.com/svn/wiki/Images/EclipseInstall.PNG
+
   # Click the "Add" button and type in "Subclipse" for the name and type the URL from the Subclipse site in to the location box.
   # Check the check box next to Subclipse and press "Next".
   # Click "Finish".
