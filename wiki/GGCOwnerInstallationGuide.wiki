@@ -9,7 +9,7 @@ This document will explain how to install the GGC^2^ project code to Eclipse and
   # Go to the the <a hrfe="http://subclipse.tigris.org/">Subclipse</a> download site.
   # Copy the Eclipse update site URL. (http://subclipse.tigris.org/update_1.8.x)
   # Open Eclipse.
-  # Go to the Help -> install new software... option. You should have this screen: general-grizzly-consensus.googlecode.com/svn/wiki/Images/EclipseInstall.PNG
+  # Go to the Help -> install new software... option. You should have this screen: http://general-grizzly-consensus.googlecode.com/svn/wiki/Images/EclipseInstall.PNG
 
   # Click the "Add" button and type in "Subclipse" for the name and type the URL from the Subclipse site in to the location box.
   # Check the check box next to Subclipse and press "Next".
