@@ -3,6 +3,29 @@
 
 = Installation Guide =
 
-This document will explain how to install the GGC^2^ project code to Eclipse and the repository to your computer. You would need <a herf="http://www.eclipse.org/downloads/packages/release/indigo/r">Eclipse</a> if you don't have it. Also you would need <a herf="http://tortoisesvn.net/downloads.html">TortoiseSVN</a> for adding or removing things from the SVN repository. Next you would need the plug-in for Eclipse called <a herf="http://subclipse.tigris.org/">Subclipse</a>.
+This document will explain how to install the GGC^2^ project code to Eclipse and the repository to your computer. You would need <a href="http://www.eclipse.org/downloads/packages/release/indigo/r">Eclipse</a> if you don't have it. Also you would need <a href="http://tortoisesvn.net/downloads.html">TortoiseSVN</a> for adding or removing things from the SVN repository. Next you would need the plug-in for Eclipse called <a hrfe="http://subclipse.tigris.org/">Subclipse</a>.
 
 == Installing Sub-clips in Eclipse ==
+  # Go to the the <a hrfe="http://subclipse.tigris.org/">Subclipse</a> download site.
+  # Copy the Eclipse update site URL. (http://subclipse.tigris.org/update_1.8.x)
+  # Open Eclipse.
+  # Go to the Help -> install new software... option. You should have this screen:
+  # Click the "Add" button and type in "Subclipse" for the name and type the URL from the Subclipse site in to the location box.
+  # Check the check box next to Subclipse and press "Next".
+  # Click "Finish".
+  # Accept the terms of service and install product.
+
+== Downloading the repository in Eclipse ==
+  # Open a new prospective called "SVN Repository Exploring".
+  # Right click or click the "Add Repository location".
+  # Copy this URL: <https://general-grizzly-consensus.googlecode.com/svn/trunk/java> and paste it in the URL box.
+  # Click "Finish".
+  # Right click the new location and select the "checkout" option.
+  # wait for all the files to load and you will then see it in your projects folder.
+
+== Downloading the repository from TortoiseSVN ==
+  # Right click in the folder you wish to download the repository.
+  # Select "SVN Checkout" and paste this URL: <https://general-grizzly-consensus.googlecode.com/svn> in the "URL of Repository" box.
+  # Click "Ok".
+
+*Note the SVN options in Eclipse is under the team tab.
