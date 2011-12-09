@@ -1,4 +1,5 @@
 #summary General Grizzly Consensus Installation Guide
+#labels GGC,User,Installation,Guide,Featured
 
 = Installation Guide =
 
