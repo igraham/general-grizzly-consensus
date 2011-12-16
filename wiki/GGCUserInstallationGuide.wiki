@@ -36,10 +36,10 @@ This document will explain how to install the GGC^2^ student and professor progr
   # To install a new version: Upload the zip file
   # sudo apt-get install unzip
   # unzip GeneralGrizzlyConsensus.zip (or the name of your .zip file)
-  # The most current zip file is ound in GGC^2\GeneralGrizzlyConsensus
+  # The most current zip file is found in GGC^2\GeneralGrizzlyConsensus
   # sudo cp -rp asterisk /var/www
   # Now try the URLs in the browser: 10.0.14.109\profpage.html
   # and 10.0.14.109\studentpage.html 
-  # Run the app
+  # Run the application
   # Answer no to the security dialog
   
