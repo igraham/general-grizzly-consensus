@@ -22,3 +22,24 @@ This document will explain how to install the GGC^2^ student and professor progr
   # Click the box with the "Green Down Arrow" next to the desired client.
   # Once the application is downloaded, double click the .Jar and you will be ready to go.
   # See user guide <a href="http://code.google.com/p/general-grizzly-consensus/wiki/GGCUserGuide">Here</a> for further questions.
+
+== GGC Server Install Guidelines ==
+  # The OS for the server is Ubuntu 11.10 (as of 12/15/2011)
+  # Verify that you have sudo permissions. Without this you will not be capable of installation.
+  # Install Putty if you currently do not have it.
+  # All commands are case sensitive.
+  # On the command line type: service apache2 status
+  # This command should return: apache2 is running. 
+  # If apache2 is not running on the command line type: sudo apt-get install apache2 
+  # Go to a browser: 10.0.14.109
+  # You should see: It works!
+  # To install a new version: Upload the zip file
+  # sudo apt-get install unzip
+  # unzip GeneralGrizzlyConsensus.zip (or the name of your .zip file)
+  # The most current zip file is ound in GGC^2\GeneralGrizzlyConsensus
+  # sudo cp -rp /* /var/www
+  # Now try the URLs in the browser: 10.0.14.109\profpage.html
+  # and 10.0.14.109\studentpage.html 
+  # Run the app
+  # Answer no to the security dialog
+  
