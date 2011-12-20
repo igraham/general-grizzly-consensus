@@ -78,8 +78,9 @@ public enum GGCServer implements Runnable
 	}
 
 	/**
-	 * The constructor instantiates the list of clients and starts the clean-up thread. It also initializes
-	 * the last sent message and sets the connection acceptor condition to true.
+	 * The constructor instantiates the list of clients and starts the clean-up
+	 * thread. It also initializes the last sent message and sets the connection
+	 * acceptor condition to true.
 	 */
 	GGCServer()
 	{
@@ -92,8 +93,9 @@ public enum GGCServer implements Runnable
 	}
 
 	/**
-	 * Looks through the list of IPv4 addresses and attempts to locate the most likely one.
-	 * NOTE: Now just a wrapper for getLikelyIpAddress(false)
+	 * Looks through the list of IPv4 addresses and attempts to locate the most
+	 * likely one. NOTE: Now just a wrapper for getLikelyIpAddress(false)
+	 * 
 	 * @return Returns the first found likely IPv4 address.
 	 */
 	public static InetAddress getLikelyIpv4Address()
@@ -102,17 +104,21 @@ public enum GGCServer implements Runnable
 	}
 
 	/**
-	 * Looks through the list of IPv6 addresses and attempts to locate the most likely one.
-	 * NOTE: Now just a wrapper for getLikelyIpAddress(true)
+	 * Looks through the list of IPv6 addresses and attempts to locate the most
+	 * likely one. NOTE: Now just a wrapper for getLikelyIpAddress(true)
+	 * 
 	 * @return Returns the first found likely IPv6 address.
 	 */
 	public static InetAddress getLikelyIpv6Address()
 	{
 		return getLikelyIpAddress(true);
 	}
-	
+
 	/**
-	 * Looks through the list of IP addresses and attempts to locate the most likely one which IP version depends on the value of the boolean parameter ipv6.
+	 * Looks through the list of IP addresses and attempts to locate the most
+	 * likely one which IP version depends on the value of the boolean parameter
+	 * ipv6.
+	 * 
 	 * @param ipv6
 	 * @return Returns the first found likely IP address.
 	 */
@@ -167,7 +173,9 @@ public enum GGCServer implements Runnable
 				return fallbackAddress;
 			else
 			{
-				// Due to Virtual Adapters showing up before real adapters (VirtualBox, etc...) choose the last likely address instead of the first one.
+				// Due to Virtual Adapters showing up before real adapters
+				// (VirtualBox, etc...) choose the last likely address instead
+				// of the first one.
 				return likelyAddresses.get(likelyAddresses.size() - 1);
 			}
 		}
@@ -175,14 +183,17 @@ public enum GGCServer implements Runnable
 
 	/**
 	 * Returns the current amount of clients stored in the clients list.
+	 * 
 	 * @return Returns the size of the clients list.
 	 */
 	public int getNumberOfConnectedClients()
 	{
 		return clients.size();
 	}
+
 	/**
 	 * Gets the server socket so that connections can be made.
+	 * 
 	 * @return Returns the reference to the server socket.
 	 */
 	public ServerSocket getRawServerSocket()
@@ -248,8 +259,9 @@ public enum GGCServer implements Runnable
 	}
 
 	/**
-	 * Sends the specified message to all connected clients, and also sets the last sent message
-	 * to the message in case new client.
+	 * Sends the specified message to all connected clients, and also sets the
+	 * last sent message to the message in case new client.
+	 * 
 	 * @param msg
 	 */
 	public void sendMessageToAll(String msg)
@@ -268,9 +280,11 @@ public enum GGCServer implements Runnable
 	{
 		messageSink = listener;
 	}
+
 	/**
-	 * This method will stop listening for new connections and gracefully exit remaining threads.
-	 * This allows the main program to exit without leaving connections open.
+	 * This method will stop listening for new connections and gracefully exit
+	 * remaining threads. This allows the main program to exit without leaving
+	 * connections open.
 	 */
 	public synchronized void stopListening()
 	{

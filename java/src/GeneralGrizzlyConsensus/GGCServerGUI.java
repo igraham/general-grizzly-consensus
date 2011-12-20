@@ -12,6 +12,7 @@ import javax.swing.*;
  *         things is working properly for the server.
  * 
  */
+@Deprecated
 public class GGCServerGUI extends JFrame implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
