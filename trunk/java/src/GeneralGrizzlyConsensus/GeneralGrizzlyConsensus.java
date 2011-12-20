@@ -6,6 +6,7 @@ package GeneralGrizzlyConsensus;
  *         This is intended to be the main executable class for the clicker.
  * 
  */
+@Deprecated
 public class GeneralGrizzlyConsensus
 {
 
