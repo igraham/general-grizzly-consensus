@@ -93,67 +93,30 @@ public enum GGCServer implements Runnable
 
 	/**
 	 * Looks through the list of IPv4 addresses and attempts to locate the most likely one.
+	 * NOTE: Now just a wrapper for getLikelyIpAddress(false)
 	 * @return Returns the first found likely IPv4 address.
 	 */
 	public static InetAddress getLikelyIpv4Address()
 	{
-		InetAddress[] allIps = {};
-		ArrayList<InetAddress> likelyAddresses = new ArrayList<InetAddress>();
-		InetAddress fallbackAddress = null;
-
-		// Try and get any IPs available on the system.
-		try
-		{
-			allIps = InetAddress.getAllByName(InetAddress.getLocalHost()
-					.getCanonicalHostName());
-		}
-		catch (UnknownHostException e)
-		{
-			// This should only occur if the computer has no network cards in
-			// which case running this program is pretty pointless.
-			JOptionPane.showMessageDialog(null,
-					"Unable to obtain this computer's IP addresses.");
-		}
-
-		if (allIps.length < 1)
-			return null;
-		else if (allIps.length == 1)
-			return allIps[0];
-		else
-		{
-			for (int i = 0; i < allIps.length; i++)
-			{
-				// Exclude IPv6 Addresses
-				if (!allIps[i].getHostAddress().contains(":"))
-				{
-					// This block is for finding and excluding auto-configured
-					// and loop-back addresses
-					if (allIps[i].isLinkLocalAddress())
-					{
-						// Assign auto-configured address as a fall-back only
-						// when a preferred global address is not available.
-						fallbackAddress = allIps[i];
-					}
-					else if (!allIps[i].isLoopbackAddress())
-					{
-						// To get here we know that the address is not an
-						// auto-configured address or a local loop-back address.
-						likelyAddresses.add(allIps[i]);
-					}
-				}
-			}
-			if (likelyAddresses.size() < 1)
-				return fallbackAddress;
-			else
-				return likelyAddresses.get(0);
-		}
+		return getLikelyIpAddress(false);
 	}
 
 	/**
 	 * Looks through the list of IPv6 addresses and attempts to locate the most likely one.
+	 * NOTE: Now just a wrapper for getLikelyIpAddress(true)
 	 * @return Returns the first found likely IPv6 address.
 	 */
 	public static InetAddress getLikelyIpv6Address()
+	{
+		return getLikelyIpAddress(true);
+	}
+	
+	/**
+	 * Looks through the list of IP addresses and attempts to locate the most likely one which IP version depends on the value of the boolean parameter ipv6.
+	 * @param ipv6
+	 * @return Returns the first found likely IP address.
+	 */
+	public static InetAddress getLikelyIpAddress(boolean ipv6)
 	{
 		InetAddress[] allIps = {};
 		ArrayList<InetAddress> likelyAddresses = new ArrayList<InetAddress>();
@@ -181,8 +144,8 @@ public enum GGCServer implements Runnable
 		{
 			for (int i = 0; i < allIps.length; i++)
 			{
-				// Exclude IPv4 Addresses
-				if (allIps[i].getHostAddress().contains(":"))
+				// Exclude IP Addresses by version depending on the ipv6 param.
+				if ((allIps[i].getHostAddress().contains(":")) == ipv6)
 				{
 					// This block is for finding and excluding auto-configured
 					// and loop-back addresses
@@ -203,7 +166,10 @@ public enum GGCServer implements Runnable
 			if (likelyAddresses.size() < 1)
 				return fallbackAddress;
 			else
-				return likelyAddresses.get(0);
+			{
+				// Due to Virtual Adapters showing up before real adapters (VirtualBox, etc...) choose the last likely address instead of the first one.
+				return likelyAddresses.get(likelyAddresses.size() - 1);
+			}
 		}
 	}
 
