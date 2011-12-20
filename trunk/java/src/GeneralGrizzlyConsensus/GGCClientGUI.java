@@ -14,6 +14,7 @@ import javax.swing.*;
  *         is working as it should for clients.
  * 
  */
+@Deprecated
 public class GGCClientGUI extends JFrame implements ActionListener
 {
 	private static final long serialVersionUID = 1L;

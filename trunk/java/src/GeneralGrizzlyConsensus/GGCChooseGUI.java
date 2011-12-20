@@ -12,6 +12,7 @@ import javax.swing.*;
  *         whether they are the server or a client.
  * 
  */
+@Deprecated
 public class GGCChooseGUI extends JFrame implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
