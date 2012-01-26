@@ -74,6 +74,15 @@ public class GGCConnection implements Runnable
 		{
 			try
 			{
+				while(in == null) {
+					System.out.println("in was null; sleeping....");
+					try {
+						Thread.sleep(1000L);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 				line = in.readLine().trim();
 				if (line != null && line.length() > 0)
 				{

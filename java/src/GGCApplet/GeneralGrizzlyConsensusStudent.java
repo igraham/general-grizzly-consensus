@@ -119,7 +119,7 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 				mfContainer = mainFrame.getContentPane();
 				//The color is GGC EverGreen Green
 				mfContainer.setBackground(new Color(0, 125, 75));
-				AWTUtilities.setWindowShape(mainFrame, new RoundRectangle2D.Float(0, 0,mainFrame.getWidth(), mainFrame.getHeight(), 30, 30));
+				//AWTUtilities.setWindowShape(mainFrame, new RoundRectangle2D.Float(0, 0,mainFrame.getWidth(), mainFrame.getHeight(), 30, 30));
 				mainFrame.setVisible(true);
 
 				final CustomGlass glass = new CustomGlass(mainFrame);
