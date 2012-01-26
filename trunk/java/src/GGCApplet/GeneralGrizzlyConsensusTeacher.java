@@ -151,7 +151,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 				mainFrame.setResizable(false);
 				//The color is GGC EverGreen Green
 				mainFrame.getContentPane().setBackground(new Color(0, 125, 75));
-				AWTUtilities.setWindowShape(mainFrame, new RoundRectangle2D.Float(0, 0,mainFrame.getWidth(), mainFrame.getHeight(), 30, 30));
+				//AWTUtilities.setWindowShape(mainFrame, new RoundRectangle2D.Float(0, 0,mainFrame.getWidth(), mainFrame.getHeight(), 30, 30));
 				mainFrame.setVisible(true);
 
 				final CustomGlass glass = new CustomGlass(mainFrame);
@@ -231,6 +231,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 	 */
 	private void createSessionManager()
 	{
+		System.out.println("check 1");
 		numAnswered = 0;
 		pSessionM = new JPanel();
 		pSessionM.setVisible(true);
@@ -238,6 +239,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 		pSessionM.setBackground(new Color(0, 125, 75));
 		pSessionM.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 		
+		System.out.println("check 2");
 		exit = new CustomJButton("Exit");
 		exit.addActionListener(this);
 
@@ -250,6 +252,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 		pShowHide.addActionListener(new GGCGraphListener());
 		cPanel.add(pShowHide);
 		connected = new JLabel("Connected: 0");
+		System.out.println("check 3");
 		Thread t = new Thread(new Runnable(){
 
 			@Override
@@ -273,6 +276,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 		tfPanel.setBackground(new Color(0, 125, 75));
 		numPanel.setBackground(new Color(0, 125, 75));
 
+		System.out.println("check 4");
 		qPanel.setLayout(new GridLayout(3,1));
 		tfPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		qPanel.setBorder(BorderFactory.createTitledBorder("Question Type"));
@@ -289,6 +293,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 		multipleChoice = new JComboBox(types);
 		multipleChoice.setMaximumRowCount(5);
 		ButtonGroup bg = new ButtonGroup();
+		System.out.println("check 5");
 
 		bg.add(tfButton);
 		bg.add(numButton);
@@ -310,6 +315,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 
 		chartPanel.setMinimumSize(new Dimension(350, 250));
 		chartPanel.setMaximumSize(new Dimension(500, 450));
+		System.out.println("check 6");
 
 		JPanel exitPanel = new JPanel(new BorderLayout());
 		exitPanel.setBackground(new Color(0, 125, 75));
@@ -323,6 +329,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 		panel.setLayout(layout);
 		panel.add(chartPanel);
 
+		System.out.println("check 7");
 		ipPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		JLabel myIP = new JLabel("Your IP: ");
 		// At this time people are more likely to be using IPv4 addresses instead of IPv6 addresses.
@@ -332,7 +339,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 		ipPanel.add(myIP1);
 		exitPanel.add(ipPanel, BorderLayout.CENTER);
 
-
+		System.out.println("check 8");
 		JPanel buttonPanel = new JPanel(new BorderLayout());
 		buttonPanel.setBackground(new Color(0, 125, 75));
 		buttonPanel.add(qPanel, BorderLayout.WEST);
@@ -341,6 +348,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 		pSessionM.add(buttonPanel, BorderLayout.SOUTH);
 		pSessionM.add(exitPanel, BorderLayout.PAGE_START);
 		pSessionM.add(panel, BorderLayout.CENTER);
+		System.out.println("check 9");
 	}
 
 	/**
