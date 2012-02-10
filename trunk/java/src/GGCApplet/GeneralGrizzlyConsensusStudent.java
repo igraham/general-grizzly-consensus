@@ -87,10 +87,14 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 	 */
 	private boolean currentIn = true;
 	/**
+	 * This boolean is used as a first time only check to see if the initial student screen is there or not.
+	 */
+	private boolean waiting = true;
+	/**
 	 * JPanels, true/false, and multiple choice, and their buffer panel to make them center and organize nicely
 	 * in the GUI.
 	 */
-	private JPanel tfPanel, tfPanelBuff, ownPanel, numPanelBuff;
+	private JPanel tfPanel, tfPanelBuff, ownPanel, numPanelBuff, waitingPanel;
 	/**
 	 * Exit buttons, one for the connection panel, one for the answer panel.
 	 */
@@ -289,8 +293,9 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 		exitPanel.add(exit2, BorderLayout.EAST);
 		pResponder.add(exitPanel, BorderLayout.NORTH);
 		
-		pResponder.add(numPanelBuff);
-		pResponder.add(tfPanelBuff);
+		waitingPanel = waitingPanel();
+		
+		pResponder.add(waitingPanel);
 		
 		JPanel lP1 = new JPanel();
 		lP1.setBackground(new Color(0, 125, 75));
@@ -376,7 +381,18 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 			setupConnection(ipAddress);
 		}
 	}
-
+	/**
+	 * This is just a basic panel that is used to show the student that they have connected successfully.
+	 * @return Returns a panel with a label on it specifying "Waiting on initial question from professor..."
+	 */
+	private JPanel waitingPanel()
+	{
+		JPanel panel = new JPanel();
+		panel.add(new JLabel("Waiting on initial question from professor..."));
+		panel.setBackground(new Color(0, 125, 75));
+		return panel;
+	}
+	
 	/**
 	 * This method will usually only generate/show 3-5 buttons (regularly multiple choice)
 	 * or 2 buttons (regularly true/false), and hide the ones that are not relevant to the
@@ -438,8 +454,8 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 					rGroup.add(r);
 					responderButtons.add(r);
 					ownPanel.add(r);
-					pResponder.validate();
 				}
+				pResponder.validate();
 			}
 			else
 			{
@@ -545,6 +561,11 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 				//This if statement means that it will always be at least one character. 
 				//Hopefully if it's one, it's a "T"
 				//It also means if it's multiple choice, that we aren't going to go past double digit buttons.
+				if(waiting)
+				{
+					waiting = false;
+					pResponder.remove(waitingPanel);
+				}
 				if(message.length() > 0 && message.length() < 4)
 				{
 					if(message.substring(0,1).equals("T") && message.length() == 1)
@@ -559,14 +580,14 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 						{
 							rtf = true;
 							int num = Integer.parseInt(message.substring(1, message.length()));
-							if(num > 2 && num < 27)
+							if(num > 1 && num < 27)
 							{
 								generateButtons(num, false);
 								sendAnswer.setEnabled(true);
 							}
 							else
 							{
-								//Someone did something ridiculous like 2 or less choices or more than 26 choices.
+								//Someone did something ridiculous like less than 2 choices or more than 26 choices.
 								//Two is defaulted to true/false, less than two is not a valid question, and more than 26 is unreasonable.
 							}
 						}
@@ -592,7 +613,8 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 		{
 			mainFrame.setVisible(false);
 			mainFrame.dispose();
-			client.closeConnection();
+			if(client != null)
+				client.closeConnection();
 			this.stop();
 			this.destroy();
 		}

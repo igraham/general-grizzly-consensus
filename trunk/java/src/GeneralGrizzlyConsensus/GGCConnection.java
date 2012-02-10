@@ -58,6 +58,13 @@ public class GGCConnection implements Runnable
 	public synchronized void closeConnection()
 	{
 		keepConnected = false;
+		try {
+			socket.close();
+			in.close();
+		} catch (IOException e) {
+			//Most likely every time the socket closing will throw an IOException but it should not cause
+			//any issues.
+		}
 	}
 
 	public Socket getRawSocket()

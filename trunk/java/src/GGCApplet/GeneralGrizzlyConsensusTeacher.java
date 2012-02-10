@@ -68,7 +68,7 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 	/**
 	 * This is the input for the JComboBox of multiple choice options.
 	 */
-	private String[] types = {"A-C", "A-D", "A-E", "A-F", "A-G", "A-H", "A-I", "A-J", "A-K", "A-L", "A-M", 
+	private String[] types = {"A-B","A-C", "A-D", "A-E", "A-F", "A-G", "A-H", "A-I", "A-J", "A-K", "A-L", "A-M", 
 			"A-N", "A-O", "A-P", "A-Q", "A-R", "A-S", "A-T", "A-U", "A-V", "A-W", "A-X", "A-Y", "A-Z"};
 	/**
 	 * This is the replacement for the number text field in the previous GUI. It is a drop-down list which
@@ -554,8 +554,8 @@ public class GeneralGrizzlyConsensusTeacher extends Applet implements ActionList
 					label0:
 						try
 				{
-							int num = multipleChoice.getSelectedIndex()+3;
-							if(num > 2 && num < 27)
+							int num = multipleChoice.getSelectedIndex()+2;
+							if(num > 1 && num < 27)
 							{
 								server.sendMessageToAll("M"+num);
 								updater.newQuestion(false, num);
