@@ -501,6 +501,16 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 		}
 		return "";
 	}
+	
+	/**
+	 * This method is called right as the student program receives a new question from the professor.
+	 * It is used in order to generate the appearance of an entirely new screen.
+	 */
+	private void deSelectAllButtons()
+	{
+		rGroup.clearSelection();
+		tGroup.clearSelection();
+	}
 
 	/**
 	 * This class listens for when the professor clicks the send question button.
@@ -557,6 +567,7 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 			}
 			else if (e.getID() == GGCGlobals.INSTANCE.MESSAGE_EVENT_ID)
 			{
+				deSelectAllButtons();
 				String message = e.getActionCommand();
 				//This if statement means that it will always be at least one character. 
 				//Hopefully if it's one, it's a "T"
