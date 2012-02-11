@@ -42,7 +42,7 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 	/**
 	 * This is the button for the responder to connect to the IP.
 	 */
-	private JButton rContorlP;
+	private JButton rControlP;
 	/**
 	 * This button is the Responder's way of sending an answer to the professor.
 	 */
@@ -233,8 +233,8 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 		JLabel dot2= new JLabel(".");
 		JLabel dot3= new JLabel(".");
 
-		rContorlP = new CustomJButton("Connect");
-		rContorlP.addActionListener(new GGCConnectListener());
+		rControlP = new CustomJButton("Connect");
+		rControlP.addActionListener(new GGCConnectListener());
 		
 		JLabel ipText = new JLabel("Please enter your instructor's IP address Here: ");
 		JPanel exitPanel = new JPanel(new BorderLayout());
@@ -253,7 +253,7 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 		lP1.add(ip3);
 		lP1.add(dot3);
 		lP1.add(ip4);
-		lP2.add(rContorlP);
+		lP2.add(rControlP);
 
 		pConnectIP.add(lP1, BorderLayout.CENTER);
 		pConnectIP.add(lP2, BorderLayout.PAGE_END);
@@ -614,7 +614,6 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 				}
 			}
 		}
-
 	}
 
 	@Override
@@ -622,12 +621,9 @@ public class GeneralGrizzlyConsensusStudent extends Applet implements ActionList
 	{
 		if(e.getSource() == exit1 || e.getSource() == exit2)
 		{
-			mainFrame.setVisible(false);
-			mainFrame.dispose();
 			if(client != null)
 				client.closeConnection();
-			this.stop();
-			this.destroy();
+			mainFrame.setVisible(false);
 		}
 	}
 }

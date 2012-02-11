@@ -60,6 +60,7 @@ public class GGCConnection implements Runnable
 		keepConnected = false;
 		try {
 			socket.close();
+			in.close();
 		} catch (IOException e) {
 			//Most likely every time the socket closing will throw an IOException but it should not cause
 			//any issues.
@@ -104,6 +105,7 @@ public class GGCConnection implements Runnable
 				}
 				catch(NullPointerException e)
 				{
+					break;
 					//Most likely if an exception occurs, it was purposefully induced.
 				}
 				

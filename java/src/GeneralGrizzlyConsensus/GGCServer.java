@@ -63,7 +63,7 @@ public enum GGCServer implements Runnable
 					// This way we only try to cleanup our list once a second.
 					synchronized (lock)
 					{
-						lock.wait(1000);
+						lock.wait(50);
 					}
 				}
 				catch (InterruptedException e)
