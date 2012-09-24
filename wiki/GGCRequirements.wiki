@@ -1,0 +1,35 @@
+#summary Customer Requirements
+
+= Customer Requirements =
+
+The following are user requirements or stories for each of the issues and enhancement requests in the backlog.
+
+
+== Issue 6: Display application's version ==
+
+6.1 As an instructor, I want to see the application's version number from within the application so I can ensure I'm using the latest version or provide the information to someone who is supporting me.
+
+6.2  As a student, I want to see the application's version number from within the application so I can provide it to the instructor when asked.
+
+6.3 As an instructor or support staff, I want the version number of the application to be clear and easy to find so anyone using the application can determine the version quickly.
+
+== Issue 21: Add support for a countdown timer ==
+
+21.1 As an instructor, I want to limit the amount of time students have to respond to a question so it's clear when results can be revealed and I can move on.
+
+21.2 As an instructor, I want students to be able to see how much time is remaining on an open question so they are encouraged to provide an answer quickly.
+
+21.2 As an instructor, I want it to be an option to apply a time limit to questions so I don't have to limit every question.
+
+21.3 As an instructor, I want an option to hide the displayed timer so I can use it as a reference for myself and not distract students with the time limit.
+
+21.4 As an instructor, I want the most common amount of time (30 seconds) to appear by default so I don't have to enter a value every time.
+
+21.5 As an instructor, I want to be able to use any amount of time, in one-second increments, as the question duration so I can be precise about how long students are allowed to answer.
+
+21.6 As an instructor, I want students to still be able to respond when the timer expires, but not after I choose to close a question, so I can make exceptions to allow for more time.
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
