@@ -5,7 +5,7 @@
 The following are user requirements or stories for each of the issues and enhancement requests in the backlog.
 
 
-== Issue 6: Display application's version ==
+== Issue 6: Display application's version == Green group
 
 6.1 As an instructor, I want to see the application's version number from within the application so I can ensure I'm using the latest version or provide the information to someone who is supporting me.
 
