@@ -5,7 +5,7 @@
 The following are user requirements or stories for each of the issues and enhancement requests in the backlog.
 
 
-== Issue 6: Display application's version == Green group
+== Issue 6: Display application's version - Green group ==
 
 6.1 As an instructor, I want to see the application's version number from within the application so I can ensure I'm using the latest version or provide the information to someone who is supporting me.
 
@@ -13,7 +13,7 @@ The following are user requirements or stories for each of the issues and enhanc
 
 6.3 As an instructor or support staff, I want the version number of the application to be clear and easy to find so anyone using the application can determine the version quickly.
 
-== Issue 21: Add support for a countdown timer ==
+== Issue 21: Add support for a countdown timer - Green group ==
 
 21.1 As an instructor, I want to limit the amount of time students have to respond to a question so it's clear when results can be revealed and I can move on.
 
@@ -33,7 +33,7 @@ The following are user requirements or stories for each of the issues and enhanc
 
 21.8 As a student, I want to be able to clearly see the amount of time remaining on a question so I can prepare and submit my answer in time.
 
-== Issue 26: Font sizes and colors don't display well ==
+== Issue 26: Font sizes and colors don't display well - Green group ==
 
 26.1 As an instructor, I want all text within my application and the student's application to be easy to read so mistakes aren't made and delays aren't caused.
 
