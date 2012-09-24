@@ -29,7 +29,18 @@ The following are user requirements or stories for each of the issues and enhanc
 
 21.6 As an instructor, I want students to still be able to respond when the timer expires, but not after I choose to close a question, so I can make exceptions to allow for more time.
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+21.7 As an instructor, I want to be able to use the timer feature with a minimal number of additional steps or clicks, so I can present a series of questions to the class without delay.
+
+21.8 As a student, I want to be able to clearly see the amount of time remaining on a question so I can prepare and submit my answer in time.
+
+== Issue 26: Font sizes and colors don't display well ==
+
+26.1 As an instructor, I want all text within my application and the student's application to be easy to read so mistakes aren't made and delays aren't caused.
+
+26.2 As a student, I want all text within in the instructor's application to be easy to read so I don't miss an questions or details displayed on the screen while I'm sitting in the back of the room.
+
+26.3 As a student, I want it to be clear when I've made my selection and submission so I don't mistakenly re-submit it or assume it wasn't submitted.
+
+26.4 As an instructor, I want it to be visually clear when buttons have been pressed or options selected so I don't cause delays while trying to determine my selections.
+
+26.5 As an instructor, I want the visual design of the application to be displayed properly on both a Mac and Windows machine so it is consistent and so layout problems don't lead to confusion.
