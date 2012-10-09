@@ -13,6 +13,8 @@ The following are user requirements or stories for each of the issues and enhanc
 
 6.3 As an instructor or support staff, I want the version number of the application to be clear and easy to find so anyone using the application can determine the version quickly.
 
+http://general-grizzly-consensus.googlecode.com/files/issue6.png
+
 == Issue 21: Add support for a countdown timer - Green group ==
 
 21.1 As an instructor, I want to limit the amount of time students have to respond to a question so it's clear when results can be revealed and I can move on.
