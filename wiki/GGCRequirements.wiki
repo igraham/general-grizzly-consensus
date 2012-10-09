@@ -51,6 +51,10 @@ http://general-grizzly-consensus.googlecode.com/files/issue21.png
 
 http://general-grizzly-consensus.googlecode.com/files/issue26.png
 
+== Issue 36: Feedback when user waiting for initial question - Green group ==
+
+36.1 As an instructor, I want it to be clear to students when they are connected to my session, but simply waiting for the first question to be opened, so they are not wondering if it is functioning properly.
+
 == Issue 39: User Cursor Position - Green group ==
 
 39.1 As a student, I want focus to be in the IP address field when I launch the app so I don't have to make an extra click before entering the IP address.
