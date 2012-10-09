@@ -44,3 +44,7 @@ The following are user requirements or stories for each of the issues and enhanc
 26.4 As an instructor, I want it to be visually clear when buttons have been pressed or options selected so I don't cause delays while trying to determine my selections.
 
 26.5 As an instructor, I want the visual design of the application to be displayed properly on both a Mac and Windows machine so it is consistent and so layout problems don't lead to confusion.
+
+== Issue 39: User Cursor Position - Green group ==
+
+39.1 As a student, I want focus to be in the IP address field when I launch the app so I don't have to make an extra click before entering the IP address.
