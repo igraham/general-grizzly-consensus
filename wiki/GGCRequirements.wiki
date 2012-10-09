@@ -33,7 +33,7 @@ The following are user requirements or stories for each of the issues and enhanc
 
 21.8 As a student, I want to be able to clearly see the amount of time remaining on a question so I can prepare and submit my answer in time.
 
-http://code.google.com/p/general-grizzly-consensus/downloads/detail?name=issue21.png
+issue21.png
 
 == Issue 26: Font sizes and colors don't display well - Green group ==
 
