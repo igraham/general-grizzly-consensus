@@ -21,19 +21,19 @@ http://general-grizzly-consensus.googlecode.com/files/issue6.png
 
 21.2 As an instructor, I want students to be able to see how much time is remaining on an open question so they are encouraged to provide an answer quickly.
 
-21.2 As an instructor, I want it to be an option to apply a time limit to questions so I don't have to limit every question.
+21.3 As an instructor, I want it to be an option to apply a time limit to questions so I don't have to limit every question.
 
-21.3 As an instructor, I want an option to hide the displayed timer so I can use it as a reference for myself and not distract students with the time limit.
+21.4 As an instructor, I want an option to hide the displayed timer so I can use it as a reference for myself and not distract students with the time limit.
 
-21.4 As an instructor, I want the most common amount of time (30 seconds) to appear by default so I don't have to enter a value every time.
+21.5 As an instructor, I want the most common amount of time (30 seconds) to appear by default so I don't have to enter a value every time.
 
-21.5 As an instructor, I want to be able to use any amount of time, in one-second increments, as the question duration so I can be precise about how long students are allowed to answer.
+21.6 As an instructor, I want to be able to use any amount of time, in one-second increments, as the question duration so I can be precise about how long students are allowed to answer.
 
-21.6 As an instructor, I want students to still be able to respond when the timer expires, but not after I choose to close a question, so I can make exceptions to allow for more time.
+21.7 As an instructor, I want students to still be able to respond when the timer expires, but not after I choose to close a question, so I can make exceptions to allow for more time.
 
-21.7 As an instructor, I want to be able to use the timer feature with a minimal number of additional steps or clicks, so I can present a series of questions to the class without delay.
+21.8 As an instructor, I want to be able to use the timer feature with a minimal number of additional steps or clicks, so I can present a series of questions to the class without delay.
 
-21.8 As a student, I want to be able to clearly see the amount of time remaining on a question so I can prepare and submit my answer in time.
+21.9 As a student, I want to be able to clearly see the amount of time remaining on a question so I can prepare and submit my answer in time.
 
 http://general-grizzly-consensus.googlecode.com/files/issue21.png
 
